@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sticker gestalten – Stickiverse Editor</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="description" content="Gestalte deinen individuellen Sticker im Stickiverse-Editor. Text, Bilder, Farben – alles anpassbar.">
+  <link rel="stylesheet" href="css/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.1/fabric.min.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { overflow: hidden; height: 100vh; font-family: 'Inter', sans-serif; background: #f0f2f5; color: #1a1a2e; }
+
+    /* ── Editor Layout ── */
+    .editor-layout {
+      display: grid;
+      grid-template-rows: 52px 1fr;
+      height: 100vh;
+      padding-top: var(--nav-height, 72px);
+    }
+    
+    /* Ensure the nav has a dark background on this light page */
+    #mainNav {
+      background: #08080f;
+    }
+
+    /* ── Top Bar ── */
+    .editor-topbar {
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      background: #ffffff;
+      border-bottom: 1px solid #e5e7eb;
+      gap: 12px;
+      position: relative;
+      z-index: 100;
+    }
+
+    .topbar-back {
+      display: flex; align-items: center; gap: 6px;
+      padding: 6px 12px; border-radius: 8px;
+      color: #6b7280; cursor: pointer; text-decoration: none;
+      font-size: 14px; font-weight: 500; transition: all 0.15s;
+    }
+    .topbar-back:hover { background: #f3f4f6; color: #111827; }
+
+    .topbar-divider { width: 1px; height: 24px; background: #e5e7eb; }
+
+    .topbar-file-btn {
+      display: flex; align-items: center; gap: 4px;
+      padding: 6px 12px; border-radius: 6px;
+      font-size: 14px; font-weight: 500; color: #374151;
+      background: none; border: none; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .topbar-file-btn:hover { background: #f3f4f6; }
+    .topbar-file-btn svg { width: 12px; height: 12px; }
+
+    .topbar-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px; font-weight: 600; color: #111827;
+    }
+
+    .topbar-status {
+      font-size: 13px; color: #9ca3af; font-weight: 400;
+    }
+
+    .topbar-actions {
+      display: flex; align-items: center; gap: 8px; margin-left: auto;
+    }
+
+    .topbar-btn {
+      display: flex; align-items: center; gap: 6px;
+      padding: 7px 14px; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s; border: 1px solid #e5e7eb;
+      background: #fff; color: #374151;
+    }
+    .topbar-btn:hover { background: #f9fafb; border-color: #d1d5db; }
+    .topbar-btn svg { width: 16px; height: 16px; }
+
+    .topbar-btn--undo, .topbar-btn--redo {
+      width: 34px; height: 34px; padding: 0;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .topbar-btn--order {
+      background: #8B5CF6; color: white; border-color: #8B5CF6;
+      font-weight: 700; padding: 8px 20px;
+    }
+    .topbar-btn--order:hover { background: #6D28D9; border-color: #6D28D9; }
+
+    /* ── Main Area ── */
+    .editor-main {
+      display: grid;
+      grid-template-columns: 56px 280px 1fr;
+      overflow: hidden;
+    }
+
+    /* ── Left Tool Sidebar ── */
+    .tool-sidebar {
+      background: #ffffff;
+      border-right: 1px solid #e5e7eb;
+      display: flex; flex-direction: column;
+      padding: 8px 4px;
+      gap: 2px;
+      overflow-y: auto;
+    }
+
+    .tool-sidebar-btn {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 8px 4px; gap: 3px;
+      border-radius: 8px; border: none;
+      background: transparent; cursor: pointer;
+      color: #6b7280; font-size: 18px;
+      transition: all 0.15s;
+      min-height: 52px;
+    }
+    .tool-sidebar-btn:hover { background: #f3f4f6; color: #111827; }
+    .tool-sidebar-btn.active { background: #f5f3ff; color: #8B5CF6; }
+
+    .tool-sidebar-btn .tool-label {
+      font-size: 9px; font-weight: 600;
+      font-family: 'Inter', sans-serif;
+      line-height: 1; letter-spacing: 0.2px;
+    }
+
+    .tool-sidebar-btn .tool-icon {
+      width: 22px; height: 22px;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .tool-sep {
+      width: 32px; height: 1px;
+      background: #e5e7eb; margin: 4px auto;
+    }
+
+    .tool-sidebar-spacer { flex: 1; }
+
+    /* ── Properties Panel ── */
+    .props-panel {
+      background: #ffffff;
+      border-right: 1px solid #e5e7eb;
+      overflow-y: auto; display: flex; flex-direction: column;
+    }
+    .props-panel::-webkit-scrollbar { width: 4px; }
+    .props-panel::-webkit-scrollbar-track { background: transparent; }
+    .props-panel::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+
+    .panel-header {
+      padding: 16px 16px 12px; font-size: 14px; font-weight: 700;
+      color: #111827; border-bottom: 1px solid #f3f4f6;
+    }
+
+    .panel-section {
+      padding: 16px; border-bottom: 1px solid #f3f4f6;
+    }
+
+    .panel-section__label {
+      font-size: 12px; font-weight: 600; color: #6b7280;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .panel-section__sublabel {
+      font-size: 12px; color: #9ca3af; margin-bottom: 8px;
+    }
+
+    /* ── Cutline Shape Grid ── */
+    .cutline-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;
+    }
+
+    .cutline-option {
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 12px 8px; gap: 6px;
+      background: #f9fafb; border: 2px solid #e5e7eb;
+      border-radius: 10px; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cutline-option:hover { border-color: #d1d5db; background: #f3f4f6; }
+    .cutline-option.active { border-color: #3b82f6; background: #eff6ff; }
+
+    .cutline-option__icon {
+      width: 32px; height: 32px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .cutline-option__icon svg { width: 24px; height: 24px; stroke: #6b7280; fill: none; stroke-width: 1.5; }
+    .cutline-option.active .cutline-option__icon svg { stroke: #3b82f6; }
+
+    .cutline-option__label {
+      font-size: 11px; font-weight: 600; color: #6b7280;
+    }
+    .cutline-option.active .cutline-option__label { color: #3b82f6; }
+
+    /* ── Checkbox ── */
+    .panel-checkbox {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 13px; color: #374151; cursor: pointer;
+    }
+    .panel-checkbox input[type="checkbox"] {
+      width: 16px; height: 16px; accent-color: #3b82f6;
+    }
+
+    /* ── Range Slider ── */
+    .panel-range-row {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .panel-range-row input[type="range"] {
+      flex: 1; accent-color: #3b82f6;
+    }
+    .panel-range-row .range-value {
+      font-size: 13px; font-weight: 600; color: #374151;
+      min-width: 36px; text-align: right;
+    }
+    .panel-range-row .range-preview {
+      width: 28px; height: 28px; border-radius: 6px;
+      border: 1px solid #e5e7eb;
+    }
+
+    /* ── Background Options ── */
+    .bg-option-grid {
+      display: flex; gap: 8px;
+    }
+    .bg-option {
+      width: 36px; height: 36px; border-radius: 8px;
+      border: 2px solid #e5e7eb; cursor: pointer;
+      transition: all 0.15s; position: relative; overflow: hidden;
+    }
+    .bg-option:hover { border-color: #d1d5db; }
+    .bg-option.active { border-color: #3b82f6; }
+    .bg-option--none {
+      background: #fff;
+      background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
+        linear-gradient(-45deg, #ccc 25%, transparent 25%),
+        linear-gradient(45deg, transparent 75%, #ccc 75%),
+        linear-gradient(-45deg, transparent 75%, #ccc 75%);
+      background-size: 10px 10px;
+      background-position: 0 0, 0 5px, 5px -5px, -5px 0px;
+    }
+    .bg-option--none-label {
+      font-size: 11px; color: #9ca3af; margin-left: 4px;
+    }
+
+    /* ── Text Controls ── */
+    .text-input-full {
+      width: 100%; padding: 10px 12px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 8px; color: #111827;
+      font-size: 14px; outline: none; transition: all 0.15s;
+      font-family: 'Inter', sans-serif; resize: vertical;
+    }
+    .text-input-full:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+
+    .font-select {
+      width: 100%; padding: 9px 12px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 8px; color: #111827;
+      font-size: 14px; outline: none; cursor: pointer;
+      margin-bottom: 10px;
+    }
+    .font-select:focus { border-color: #3b82f6; }
+
+    .font-size-row { display: flex; align-items: center; gap: 8px; }
+
+    .font-size-btn {
+      width: 32px; height: 32px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 6px; color: #374151;
+      font-size: 16px; display: flex;
+      align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s; flex-shrink: 0;
+    }
+    .font-size-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+
+    .font-size-display {
+      flex: 1; text-align: center;
+      font-size: 15px; font-weight: 700;
+      font-family: 'Outfit', sans-serif; color: #111827;
+    }
+
+    .text-style-row { display: flex; gap: 6px; }
+
+    .style-btn {
+      flex: 1; height: 34px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 6px; color: #374151;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      transition: all 0.15s;
+    }
+    .style-btn:hover { background: #f3f4f6; }
+    .style-btn.active { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+
+    /* ── Color Picker ── */
+    .color-grid {
+      display: grid; grid-template-columns: repeat(8, 1fr);
+      gap: 6px; margin-bottom: 12px;
+    }
+
+    .color-swatch {
+      aspect-ratio: 1; border-radius: 6px; cursor: pointer;
+      border: 2px solid transparent; transition: all 0.15s;
+    }
+    .color-swatch:hover { transform: scale(1.15); }
+    .color-swatch.active { border-color: #111827; box-shadow: 0 0 0 2px #3b82f6; }
+
+    .color-custom-row { display: flex; align-items: center; gap: 10px; }
+
+    .color-picker-input {
+      width: 36px; height: 36px; padding: 0;
+      border: none; border-radius: 8px; cursor: pointer; background: none;
+    }
+    .color-picker-input::-webkit-color-swatch-wrapper { padding: 0; }
+    .color-picker-input::-webkit-color-swatch { border: none; border-radius: 6px; }
+
+    .color-hex-input {
+      flex: 1; padding: 8px 10px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 6px; color: #111827;
+      font-size: 13px; font-family: monospace; outline: none;
+    }
+    .color-hex-input:focus { border-color: #3b82f6; }
+
+    /* ── Shape Picker ── */
+    .shape-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+    .shape-option {
+      aspect-ratio: 1; background: #f9fafb;
+      border: 1px solid #e5e7eb; border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s; font-size: 22px;
+      color: #6b7280;
+    }
+    .shape-option:hover { background: #f3f4f6; border-color: #d1d5db; }
+    .shape-option.active { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+
+    /* ── Upload Area ── */
+    .upload-zone {
+      border: 2px dashed #d1d5db; border-radius: 12px;
+      padding: 32px 16px; text-align: center;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .upload-zone:hover { border-color: #3b82f6; background: #f9fafb; }
+    .upload-zone__icon { font-size: 28px; margin-bottom: 8px; color: #9ca3af; }
+    .upload-zone__text { font-size: 13px; color: #6b7280; }
+
+    /* ── Emoji Grid ── */
+    .emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; }
+
+    .emoji-btn {
+      aspect-ratio: 1; font-size: 20px;
+      background: #f9fafb; border: 1px solid transparent;
+      border-radius: 6px; cursor: pointer;
+      transition: all 0.15s; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .emoji-btn:hover { background: #f3f4f6; border-color: #e5e7eb; transform: scale(1.1); }
+
+    /* ── Gradient Grid ── */
+    .gradient-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+
+    .gradient-option {
+      aspect-ratio: 1; border-radius: 8px; cursor: pointer;
+      border: 2px solid transparent; transition: all 0.15s;
+    }
+    .gradient-option:hover { transform: scale(1.05); }
+    .gradient-option.active { border-color: #3b82f6; }
+
+    /* ── Sticker Type / Size / Qty Grids (moved to left panel) ── */
+    .sticker-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+    .sticker-type-btn {
+      padding: 10px 8px; background: #f9fafb;
+      border: 2px solid #e5e7eb; border-radius: 10px;
+      text-align: center; cursor: pointer; transition: all 0.15s;
+    }
+    .sticker-type-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
+    .sticker-type-btn.active { background: #eff6ff; border-color: #3b82f6; }
+    .sticker-type-btn__shape { font-size: 22px; margin-bottom: 2px; }
+    .sticker-type-btn__name { font-size: 11px; font-weight: 600; color: #6b7280; }
+    .sticker-type-btn.active .sticker-type-btn__name { color: #3b82f6; }
+
+    .size-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+
+    .size-option {
+      padding: 10px; background: #f9fafb;
+      border: 2px solid #e5e7eb; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .size-option:hover { background: #f3f4f6; border-color: #d1d5db; }
+    .size-option.active { background: #eff6ff; border-color: #3b82f6; }
+    .size-option__label { font-size: 13px; font-weight: 700; font-family: 'Outfit', sans-serif; color: #111827; }
+
+    .qty-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+
+    .qty-option {
+      padding: 8px 6px; background: #f9fafb;
+      border: 2px solid #e5e7eb; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s; text-align: center;
+    }
+    .qty-option:hover { background: #f3f4f6; border-color: #d1d5db; }
+    .qty-option.active { background: #eff6ff; border-color: #3b82f6; }
+    .qty-option__count { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: #111827; }
+    .qty-option__label { font-size: 10px; color: #9ca3af; }
+
+    /* ── Price Display ── */
+    .price-display {
+      background: #f5f3ff; border: 1px solid #ddd6fe;
+      border-radius: 12px; padding: 16px; text-align: center;
+    }
+    .price-display__from { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    .price-display__total {
+      font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 900;
+      color: #6D28D9; line-height: 1; margin-bottom: 4px;
+    }
+    .price-display__per { font-size: 13px; color: #6b7280; }
+    .price-display__note { font-size: 11px; color: #9ca3af; margin-top: 6px; }
+
+    /* ── Layer List ── */
+    .layer-list { display: flex; flex-direction: column; gap: 4px; }
+    .layer-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; background: #f9fafb;
+      border: 1px solid #e5e7eb; border-radius: 8px;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .layer-item:hover { background: #f3f4f6; }
+    .layer-item.selected { border-color: #3b82f6; background: #eff6ff; }
+    .layer-item__icon { font-size: 16px; flex-shrink: 0; color: #6b7280; }
+    .layer-item__name { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #374151; }
+    .layer-del-btn {
+      width: 22px; height: 22px; background: transparent;
+      border: none; color: #9ca3af; font-size: 14px;
+      cursor: pointer; opacity: 0; transition: all 0.15s;
+      border-radius: 4px; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .layer-item:hover .layer-del-btn { opacity: 1; }
+    .layer-del-btn:hover { color: #ef4444; background: rgba(239,68,68,0.1); }
+
+    /* ── Drawing Controls ── */
+    .brush-size-row { display: flex; align-items: center; gap: 10px; }
+    .brush-preview {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid #e5e7eb; display: flex;
+      align-items: center; justify-content: center;
+    }
+    .brush-dot { border-radius: 50%; background: #111827; }
+
+    /* ── Tool Content Panels ── */
+    .tool-content { display: none; }
+    .tool-content.active { display: block; }
+
+    /* ── Canvas Area ── */
+    .canvas-area {
+      background: #e8ecf1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      position: relative; overflow: hidden;
+    }
+
+    .canvas-wrapper {
+      position: relative; z-index: 1;
+      border-radius: 4px; overflow: visible;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    #stickerCanvas { display: block; }
+
+    /* ── Zoom Controls ── */
+    .canvas-zoom-controls {
+      position: absolute; bottom: 20px; right: 20px;
+      display: flex; align-items: center; gap: 8px;
+      background: #ffffff; border: 1px solid #e5e7eb;
+      border-radius: 10px; padding: 6px 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .zoom-btn {
+      width: 28px; height: 28px;
+      background: #f9fafb; border: 1px solid #e5e7eb;
+      border-radius: 6px; color: #374151; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; transition: all 0.15s;
+    }
+    .zoom-btn:hover { background: #f3f4f6; color: #111827; }
+
+    .zoom-slider { width: 80px; accent-color: #3b82f6; }
+
+    .zoom-level {
+      font-size: 13px; font-weight: 600; color: #6b7280;
+      min-width: 44px; text-align: center;
+    }
+
+    .zoom-hint {
+      position: absolute; bottom: 20px; right: 200px;
+      font-size: 11px; color: #9ca3af;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    /* ── Cutline Overlay ── */
+    .cutline-info {
+      position: absolute; top: 16px; left: 50%;
+      transform: translateX(-50%);
+      font-size: 11px; color: #9ca3af;
+      background: rgba(255,255,255,0.9);
+      padding: 4px 12px; border-radius: 6px;
+      border: 1px solid #e5e7eb;
+      pointer-events: none; z-index: 2;
+    }
+
+    /* ── Add to Cart Button (in panel) ── */
+    .add-to-cart-btn {
+      width: 100%; padding: 14px;
+      background: #8B5CF6; border: none;
+      border-radius: 10px; color: white;
+      font-size: 15px; font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer; transition: all 0.15s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .add-to-cart-btn:hover { background: #6D28D9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,92,246,0.3); }
+
+    /* ── Templates Grid ── */
+    .template-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+    .template-card {
+      aspect-ratio: 1; border-radius: 10px;
+      border: 2px solid #e5e7eb; cursor: pointer;
+      transition: all 0.15s; overflow: hidden;
+      background: #f9fafb; display: flex;
+      align-items: center; justify-content: center;
+      font-size: 11px; color: #9ca3af; text-align: center;
+      padding: 8px; font-weight: 600;
+    }
+    .template-card:hover { border-color: #3b82f6; background: #eff6ff; }
+
+    /* ── File Menu Dropdown ── */
+    .file-menu {
+      position: absolute; top: 100%; left: 52px;
+      background: #fff; border: 1px solid #e5e7eb;
+      border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+      min-width: 200px; z-index: 200;
+      display: none; padding: 6px;
+    }
+    .file-menu.show { display: block; }
+    .file-menu-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 12px; border-radius: 6px;
+      font-size: 13px; color: #374151; cursor: pointer;
+      transition: all 0.1s; border: none; background: none;
+      width: 100; text-align: left;
+    }
+    .file-menu-item:hover { background: #f3f4f6; }
+    .file-menu-item svg { width: 16px; height: 16px; color: #6b7280; }
+    .file-menu-sep { height: 1px; background: #f3f4f6; margin: 4px 0; }
+
+    /* ── Toast ── */
+    .toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .editor-main { grid-template-columns: 56px 1fr; }
+      .props-panel { display: none; position: absolute; left: 56px; top: 0; bottom: 0; z-index: 10; box-shadow: 4px 0 12px rgba(0,0,0,0.1); }
+      .props-panel.active { display: block; }
+    }
+    
+    @media (max-width: 768px) {
+      .editor-layout {
+        padding-top: var(--nav-height, 60px);
+        height: 100vh;
+        height: 100dvh;
+      }
+      .editor-main {
+        display: flex;
+        flex-direction: column;
+      }
+      .canvas-container {
+        flex: 1;
+        order: 1;
+        min-height: 40vh;
+      }
+      .props-panel {
+        position: static;
+        width: 100%;
+        max-height: 35vh;
+        order: 2;
+        border-right: none;
+        border-top: 1px solid #e5e7eb;
+        box-shadow: none;
+        display: none;
+      }
+      .props-panel.active { display: block; }
+      .tool-sidebar {
+        flex-direction: row;
+        width: 100%;
+        height: auto;
+        min-height: 60px;
+        order: 3;
+        border-right: none;
+        border-top: 1px solid #e5e7eb;
+        overflow-x: auto;
+        padding: 4px 8px;
+        gap: 8px;
+      }
+      .tool-sidebar-btn {
+        min-height: 48px;
+        min-width: 56px;
+      }
+      .tool-sep {
+        width: 1px; height: 32px;
+        margin: auto 4px;
+      }
+      .editor-topbar {
+        overflow-x: auto;
+        white-space: nowrap;
+        padding: 0 8px;
+      }
+      .topbar-actions {
+        margin-left: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+<div class="editor-layout">
+
+  <!-- ── Top Bar ── -->
+  <div class="editor-topbar">
+    <a href="products.html" onclick="if(document.referrer) { history.back(); return false; }" class="topbar-back" title="Zurück">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      Zurück
+    </a>
+
+    <button class="topbar-file-btn" id="fileMenuBtn">
+      Datei <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5l3 3 3-3"/></svg>
+    </button>
+
+    <div class="file-menu" id="fileMenu">
+      <button class="file-menu-item" id="menuNewDesign">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        Neues Design
+      </button>
+      <button class="file-menu-item" id="menuDownload">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Herunterladen (PNG)
+      </button>
+      <div class="file-menu-sep"></div>
+      <button class="file-menu-item" id="menuClearCanvas">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"/></svg>
+        Canvas leeren
+      </button>
+    </div>
+
+    <div class="topbar-divider"></div>
+
+    <span class="topbar-title" id="topbarProductName">Runde Sticker</span>
+    <span class="topbar-status">Gespeichert</span>
+
+    <div class="topbar-actions">
+      <button class="topbar-btn topbar-btn--undo" id="undoBtn" title="Rückgängig (Ctrl+Z)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></svg>
+      </button>
+      <button class="topbar-btn topbar-btn--redo" id="redoBtn" title="Wiederholen (Ctrl+Y)">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.13-9.36L23 10"/></svg>
+      </button>
+
+      <div class="topbar-divider"></div>
+
+      <button class="topbar-btn" id="downloadBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Herunterladen
+      </button>
+
+      <button class="topbar-btn topbar-btn--order" id="topAddToCart">
+        Bestellen
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Main Area ── -->
+  <div class="editor-main">
+
+    <!-- Left Tool Icons -->
+    <div class="tool-sidebar">
+      <button class="tool-sidebar-btn active" data-tool="cutline">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 9a3 3 0 100-6 3 3 0 000 6z"/><path d="M6 21a3 3 0 100-6 3 3 0 000 6z"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg></span>
+        <span class="tool-label">Schnittlinie</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="size">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg></span>
+        <span class="tool-label">Größe</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="material">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 2a15 15 0 014 10 15 15 0 01-4 10 15 15 0 01-4-10 15 15 0 014-10z"/></svg></span>
+        <span class="tool-label">Material</span>
+      </button>
+
+      <div class="tool-sep"></div>
+
+      <button class="tool-sidebar-btn" data-tool="templates">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <span class="tool-label">Vorlagen</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="shapes">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="4"/><rect x="2" y="2" width="8" height="8" rx="1"/><polygon points="18 2 22 10 14 10"/></svg></span>
+        <span class="tool-label">Elemente</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="draw">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 19l7-7 3 3-7 7-3-3z"/><path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/><path d="M2 2l7.586 7.586"/><circle cx="11" cy="11" r="2"/></svg></span>
+        <span class="tool-label">Zeichnen</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="text">
+        <span class="tool-icon" style="font-size:18px;font-weight:800;font-family:'Outfit',sans-serif;">T</span>
+        <span class="tool-label">Text</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="image">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></span>
+        <span class="tool-label">Uploads</span>
+      </button>
+
+      <div class="tool-sidebar-spacer"></div>
+      <div class="tool-sep"></div>
+
+      <button class="tool-sidebar-btn" data-tool="layers">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></span>
+        <span class="tool-label">Ebenen</span>
+      </button>
+      <button class="tool-sidebar-btn" data-tool="bg">
+        <span class="tool-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 16l5-5 4 4"/><circle cx="15.5" cy="8.5" r="2.5"/></svg></span>
+        <span class="tool-label">Hinter.</span>
+      </button>
+    </div>
+
+    <!-- Left Properties Panel -->
+    <div class="props-panel" id="propsPanel">
+
+      <!-- CUTLINE tool -->
+      <div class="tool-content active" id="tool-cutline">
+        <div class="panel-header">Schnittlinie</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Form</div>
+          <div class="cutline-grid" id="stickerTypeGrid">
+            <!-- via JS -->
+          </div>
+        </div>
+        <div class="panel-section">
+          <label class="panel-checkbox">
+            <input type="checkbox" id="showCutlineCheck" checked>
+            Show cut line on canvas
+          </label>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Rand <span style="font-weight:400;text-transform:none;letter-spacing:0;">(innerhalb des Schnitts)</span></div>
+          <div class="panel-range-row">
+            <div class="range-preview" id="marginPreview" style="background:#f9fafb;"></div>
+            <input type="range" id="marginSlider" min="0" max="20" value="0">
+            <span class="range-value" id="marginValue">0mm</span>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Hintergrund <span style="font-weight:400;text-transform:none;letter-spacing:0;">(Füllung hinter Ihrem Design)</span></div>
+          <div class="bg-option-grid">
+            <div class="bg-option bg-option--none active" id="bgNone" title="Keiner"></div>
+            <span class="bg-option--none-label">Keine</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- SIZE tool -->
+      <div class="tool-content" id="tool-size">
+        <div class="panel-header">Größe & Menge</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Größe</div>
+          <div class="size-grid" id="sizeGrid"></div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Menge</div>
+          <div class="qty-grid" id="qtyGrid"></div>
+        </div>
+        <div class="panel-section">
+          <div class="price-display">
+            <div class="price-display__from">Gesamtpreis</div>
+            <div class="price-display__total" id="priceTotal">–</div>
+            <div class="price-display__per" id="pricePerUnit">– pro Stück</div>
+            <div class="price-display__note">zzgl. Versandkosten</div>
+          </div>
+        </div>
+        <div class="panel-section">
+          <button class="add-to-cart-btn" id="addToCartBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            In den Warenkorb
+          </button>
+          <div style="margin-top:10px;text-align:center;">
+            <a href="products.html" style="font-size:12px;color:#9ca3af;text-decoration:none;">← Anderes Produkt wählen</a>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Inklusive</div>
+          <div id="productFeatures" style="display:flex;flex-direction:column;gap:6px;"></div>
+        </div>
+      </div>
+
+      <!-- MATERIAL tool -->
+      <div class="tool-content" id="tool-material">
+        <div class="panel-header">Material</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Material wählen</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div class="cutline-option active" data-material="Hochglanz" id="matGloss">
+              <div style="font-size:14px;font-weight:700;color:#111827;">Hochglanz</div>
+              <div style="font-size:11px;color:#6b7280;">Glänzend & farbstark</div>
+            </div>
+            <div class="cutline-option" data-material="Matt" id="matMatte">
+              <div style="font-size:14px;font-weight:700;color:#111827;">Matt</div>
+              <div style="font-size:11px;color:#6b7280;">Edel & spiegelfrei</div>
+            </div>
+            <div class="cutline-option" data-material="Holografisch" id="matHolo">
+              <div style="font-size:14px;font-weight:700;color:#111827;">Holografisch</div>
+              <div style="font-size:11px;color:#6b7280;">Regenbogen-Effekt (+15%)</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEMPLATES tool -->
+      <div class="tool-content" id="tool-templates">
+        <div class="panel-header">Vorlagen</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Kategorie</div>
+          <select class="font-select" id="templateCategory">
+            <option value="all">Alle</option>
+            <option value="party">Party & Events</option>
+            <option value="business">Business</option>
+            <option value="kids">Kinder</option>
+            <option value="minimal">Minimal</option>
+          </select>
+        </div>
+        <div class="panel-section">
+          <div class="template-grid" id="templateGrid">
+            <div class="template-card" data-template="jga">JGA Party</div>
+            <div class="template-card" data-template="birthday">Happy Birthday</div>
+            <div class="template-card" data-template="love">Love</div>
+            <div class="template-card" data-template="logo">Logo Badge</div>
+            <div class="template-card" data-template="sale">Sale</div>
+            <div class="template-card" data-template="thankyou">Danke!</div>
+            <div class="template-card" data-template="nature">Nature</div>
+            <div class="template-card" data-template="retro">Retro</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SHAPES/ELEMENTS tool -->
+      <div class="tool-content" id="tool-shapes">
+        <div class="panel-header">Elemente</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Grundformen</div>
+          <div class="shape-grid">
+            <div class="shape-option" data-shape="circle">●</div>
+            <div class="shape-option" data-shape="rect">■</div>
+            <div class="shape-option" data-shape="triangle">▲</div>
+            <div class="shape-option" data-shape="star">★</div>
+            <div class="shape-option" data-shape="heart">♥</div>
+            <div class="shape-option" data-shape="diamond">◆</div>
+            <div class="shape-option" data-shape="line">―</div>
+            <div class="shape-option" data-shape="arrow">→</div>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Füllfarbe</div>
+          <div class="color-grid" id="shapeFillColorGrid"></div>
+          <div class="color-custom-row">
+            <input type="color" class="color-picker-input" id="shapeFillPicker" value="#3b82f6">
+            <input type="text" class="color-hex-input" id="shapeFillHex" value="#3b82f6" maxlength="7">
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Emojis</div>
+          <div class="emoji-grid" id="emojiGrid"></div>
+        </div>
+      </div>
+
+      <!-- DRAW tool -->
+      <div class="tool-content" id="tool-draw">
+        <div class="panel-header">Zeichnen</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Pinselgröße</div>
+          <div class="brush-size-row">
+            <div class="brush-preview"><div class="brush-dot" id="brushDot" style="width:4px;height:4px;"></div></div>
+            <input type="range" id="brushSize" min="1" max="40" value="4" style="flex:1;accent-color:#3b82f6;">
+            <span class="range-value" id="brushSizeValue">4px</span>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Pinselfarbe</div>
+          <div class="color-grid" id="drawColorGrid"></div>
+          <div class="color-custom-row">
+            <input type="color" class="color-picker-input" id="drawColorPicker" value="#111827">
+            <input type="text" class="color-hex-input" id="drawColorHex" value="#111827" maxlength="7">
+          </div>
+        </div>
+        <div class="panel-section">
+          <button class="style-btn" id="eraserBtn" style="width:100%;height:38px;">Radierer</button>
+        </div>
+      </div>
+
+      <!-- TEXT tool -->
+      <div class="tool-content" id="tool-text">
+        <div class="panel-header">Text</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Text eingeben</div>
+          <textarea id="textInput" class="text-input-full" rows="3" placeholder="Dein Text hier..."></textarea>
+          <button class="add-to-cart-btn" id="addTextBtn" style="margin-top:10px;background:#3b82f6;">
+            + Text hinzufügen
+          </button>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Schriftart</div>
+          <select id="fontFamily" class="font-select">
+            <option value="Outfit">Outfit (Standard)</option>
+            <option value="Inter">Inter</option>
+            <option value="Arial">Arial</option>
+            <option value="Georgia">Georgia</option>
+            <option value="Impact">Impact</option>
+            <option value="Courier New">Courier New</option>
+            <option value="Comic Sans MS">Comic Sans</option>
+            <option value="Trebuchet MS">Trebuchet MS</option>
+          </select>
+          <div class="panel-section__label">Schriftgröße</div>
+          <div class="font-size-row">
+            <button class="font-size-btn" id="fontSizeMinus">−</button>
+            <div class="font-size-display" id="fontSizeDisplay">40</div>
+            <button class="font-size-btn" id="fontSizePlus">+</button>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Stil</div>
+          <div class="text-style-row">
+            <button class="style-btn" id="boldBtn"><b>F</b></button>
+            <button class="style-btn" id="italicBtn"><i>K</i></button>
+            <button class="style-btn" id="underlineBtn"><u>U</u></button>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Textfarbe</div>
+          <div class="color-grid" id="textColorGrid"></div>
+          <div class="color-custom-row">
+            <input type="color" class="color-picker-input" id="textColorPicker" value="#111827">
+            <input type="text" class="color-hex-input" id="textColorHex" value="#111827" maxlength="7">
+          </div>
+        </div>
+      </div>
+
+      <!-- IMAGE/UPLOAD tool -->
+      <div class="tool-content" id="tool-image">
+        <div class="panel-header">Bild hochladen</div>
+        <div class="panel-section">
+          <div class="upload-zone" id="uploadZone">
+            <div class="upload-zone__icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <div class="upload-zone__text">Klicke oder ziehe dein Bild hierher<br><span style="color:#9ca3af;font-size:12px;">PNG, JPG, SVG, WEBP – max. 10MB</span></div>
+          </div>
+          <input type="file" id="imageFileInput" accept="image/png, image/jpeg, image/jpg, image/svg+xml, image/webp" style="display:none;">
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label" style="margin-bottom:8px;">Tipps</div>
+          <div style="font-size:12px;color:#9ca3af;line-height:1.7;">
+            • PNG mit transparentem Hintergrund empfohlen<br>
+            • Logo als SVG für beste Qualität<br>
+            • Mindestens 300 DPI für Druck
+          </div>
+        </div>
+      </div>
+
+      <!-- LAYERS tool -->
+      <div class="tool-content" id="tool-layers">
+        <div class="panel-header">Ebenen</div>
+        <div class="panel-section">
+          <div class="layer-list" id="layerList">
+            <div style="font-size:13px;color:#9ca3af;text-align:center;padding:20px 0;">
+              Noch keine Elemente
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- BG tool -->
+      <div class="tool-content" id="tool-bg">
+        <div class="panel-header">Hintergrund</div>
+        <div class="panel-section">
+          <div class="panel-section__label">Farbe</div>
+          <div class="color-grid" id="bgColorGrid"></div>
+          <div class="color-custom-row">
+            <input type="color" class="color-picker-input" id="bgColorPicker" value="#ffffff">
+            <input type="text" class="color-hex-input" id="bgColorHex" value="#ffffff" maxlength="7">
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Verlauf</div>
+          <div class="gradient-grid">
+            <div class="gradient-option" data-gradient="purple" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);"></div>
+            <div class="gradient-option" data-gradient="sunset" style="background:linear-gradient(135deg,#F59E0B,#EC4899);"></div>
+            <div class="gradient-option" data-gradient="ocean" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6);"></div>
+            <div class="gradient-option" data-gradient="nature" style="background:linear-gradient(135deg,#10B981,#06B6D4);"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SELECTED OBJECT props (shown when any object is selected) -->
+      <div id="selectedObjectProps" style="display:none;">
+        <div class="panel-section" style="border-top:2px solid #e5e7eb;">
+          <div class="panel-section__label">Position & Größe</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <div>
+              <label style="font-size:11px;color:#9ca3af;">X</label>
+              <input type="number" id="objX" class="text-input-full" style="margin-top:4px;">
+            </div>
+            <div>
+              <label style="font-size:11px;color:#9ca3af;">Y</label>
+              <input type="number" id="objY" class="text-input-full" style="margin-top:4px;">
+            </div>
+          </div>
+        </div>
+        <div class="panel-section">
+          <div class="panel-section__label">Deckkraft</div>
+          <input type="range" id="objOpacity" min="0" max="100" value="100" style="width:100%;accent-color:#3b82f6;">
+          <div style="text-align:right;font-size:12px;color:#9ca3af;" id="opacityLabel">100%</div>
+        </div>
+        <div class="panel-section">
+          <button class="style-btn" id="deleteObjBtn" style="width:100%;height:38px;color:#ef4444;border-color:rgba(239,68,68,0.3);">
+            Element löschen
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Canvas Area -->
+    <div class="canvas-area" id="canvasArea">
+      <div class="canvas-wrapper" id="canvasWrapper">
+        <canvas id="stickerCanvas"></canvas>
+      </div>
+
+      <div class="zoom-hint">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        Die angezeigte Größe ist ungefähr
+      </div>
+
+      <div class="canvas-zoom-controls">
+        <button class="zoom-btn" id="zoomOut">−</button>
+        <input type="range" class="zoom-slider" id="zoomSlider" min="30" max="200" value="100">
+        <button class="zoom-btn" id="zoomIn">+</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="js/products.js?v=2"></script>
+<script src="js/cart.js"></script>
+<script src="js/auth-ui.js"></script>
+<script>
+// ============================================
+// STICKIVERSE EDITOR v2 – StickerIt Style
+// ============================================
+
+const COLORS = [
+  '#ffffff', '#000000', '#374151', '#6B7280',
+  '#EF4444', '#F97316', '#F59E0B', '#EAB308',
+  '#22C55E', '#10B981', '#06B6D4', '#3B82F6',
+  '#8B5CF6', '#EC4899', '#F472B6', '#A78BFA',
+];
+
+const EMOJIS = ['⭐','🔥','❤️','💜','💙','💚','💛','🧡',
+  '🎉','🎨','🌟','🦋','🌈','⚡','🎯','💎',
+  '🚀','🍀','🌸','🦊','🐱','🐶','🎸','🎮',
+  '🏆','💪','👑','🌙','☀️','🍕','🎂','🌺'];
+
+const STICKER_TYPES = [
+  { id: 'sticker-rund', name: 'Kreis', shape: 'circle', svg: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/></svg>' },
+  { id: 'sticker-quadrat', name: 'Rechteck', shape: 'rect', svg: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16"/></svg>' },
+  { id: 'sticker-rechteck', name: 'Abgerundet', shape: 'rect-wide', svg: '<svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/></svg>' },
+  { id: 'sticker-oval', name: 'Oval', shape: 'oval', svg: '<svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="7"/></svg>' },
+  { id: 'sticker-freigestanzt', name: 'Dreieck', shape: 'star', svg: '<svg viewBox="0 0 24 24"><polygon points="12,4 20,20 4,20"/></svg>' },
+  { id: 'sticker-transparent', name: 'Frei', shape: 'circle', svg: '<svg viewBox="0 0 24 24"><path d="M12 3c-2 2-5 4-5 8s3 7 5 9c2-2 5-5 5-9s-3-6-5-8z"/></svg>' },
+];
+
+// State
+let canvas;
+let currentProductId = 'sticker-rund';
+let currentSize = '5x5';
+let currentQty = 100;
+let currentTool = 'cutline';
+let zoom = 1;
+let editorHistory = [];
+let historyIndex = -1;
+let isUndoRedo = false;
+let selectedFontSize = 40;
+let selectedBold = false;
+let selectedItalic = false;
+let selectedUnderline = false;
+let isDrawingMode = false;
+let currentMaterial = 'Hochglanz';
+
+// ── Init ──────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('product')) currentProductId = params.get('product');
+  if (params.get('size')) currentSize = params.get('size');
+  if (params.get('qty')) currentQty = parseInt(params.get('qty'));
+  if (params.get('material')) currentMaterial = decodeURIComponent(params.get('material'));
+
+  initCanvas();
+  renderStickerTypes();
+  renderSizes();
+  renderQuantities();
+  renderColorGrids();
+  renderEmojiGrid();
+  updatePrice();
+  updateProductInfo();
+  setupEventListeners();
+  addDefaultWelcomeText();
+  saveHistory();
+});
+
+// ── Canvas ────────────────────────────────
+function initCanvas() {
+  const CANVAS_SIZE = 500;
+  canvas = new fabric.Canvas('stickerCanvas', {
+    width: CANVAS_SIZE, height: CANVAS_SIZE,
+    backgroundColor: '#ffffff',
+    preserveObjectStacking: true,
+  });
+
+  updateCanvasShape();
+
+  canvas.on('object:modified', saveHistory);
+  canvas.on('object:added', () => { if (!isUndoRedo) saveHistory(); updateLayerList(); });
+  canvas.on('object:removed', () => { if (!isUndoRedo) saveHistory(); updateLayerList(); });
+  canvas.on('selection:created', onObjectSelected);
+  canvas.on('selection:updated', onObjectSelected);
+  canvas.on('selection:cleared', onSelectionCleared);
+  canvas.on('object:modified', updateLayerList);
+}
+
+function updateCanvasShape() {
+  const wrapper = document.getElementById('canvasWrapper');
+  const product = getProductById(currentProductId);
+  if (!product) { wrapper.style.borderRadius = '4px'; return; }
+  switch (product.shape) {
+    case 'circle': wrapper.style.borderRadius = '50%'; break;
+    case 'oval': wrapper.style.borderRadius = '50%'; break;
+    case 'rect': wrapper.style.borderRadius = '4px'; break;
+    case 'rect-wide': wrapper.style.borderRadius = '16px'; break;
+    case 'star': wrapper.style.borderRadius = '30% 70% 70% 30% / 30% 30% 70% 70%'; break;
+    default: wrapper.style.borderRadius = '4px';
+  }
+}
+
+function addDefaultWelcomeText() {
+  const text = new fabric.IText('Dein Text', {
+    left: 250, top: 250,
+    originX: 'center', originY: 'center',
+    fontFamily: 'Outfit', fontSize: 42,
+    fill: '#1a1a2e', fontWeight: 'bold',
+  });
+  canvas.add(text);
+  canvas.setActiveObject(text);
+  canvas.renderAll();
+}
+
+// ── Sticker Types ─────────────────────────
+function renderStickerTypes() {
+  const grid = document.getElementById('stickerTypeGrid');
+  grid.innerHTML = STICKER_TYPES.map(t => `
+    <div class="cutline-option ${t.id === currentProductId ? 'active' : ''}"
+      onclick="selectStickerType('${t.id}')">
+      <div class="cutline-option__icon">${t.svg}</div>
+      <div class="cutline-option__label">${t.name}</div>
+    </div>
+  `).join('');
+}
+
+function selectStickerType(id) {
+  currentProductId = id;
+  renderStickerTypes();
+  renderSizes();
+  updatePrice();
+  updateProductInfo();
+  updateCanvasShape();
+}
+
+// ── Sizes ─────────────────────────────────
+function renderSizes() {
+  const product = getProductById(currentProductId);
+  if (!product) return;
+  if (!product.prices[currentSize]) currentSize = product.sizes[0].value;
+  const grid = document.getElementById('sizeGrid');
+  grid.innerHTML = product.sizes.map(s => `
+    <div class="size-option ${s.value === currentSize ? 'active' : ''}"
+      onclick="selectSize('${s.value}')">
+      <div class="size-option__label">${s.label}</div>
+    </div>
+  `).join('');
+}
+
+function selectSize(val) { currentSize = val; renderSizes(); updatePrice(); }
+
+// ── Quantities ────────────────────────────
+function renderQuantities() {
+  const product = getProductById(currentProductId);
+  if (!product) return;
+  const grid = document.getElementById('qtyGrid');
+  grid.innerHTML = product.quantities.map(q => `
+    <div class="qty-option ${q === currentQty ? 'active' : ''}"
+      onclick="selectQty(${q})">
+      <div class="qty-option__count">${q}</div>
+      <div class="qty-option__label">Stück</div>
+    </div>
+  `).join('');
+}
+
+function selectQty(qty) { currentQty = qty; renderQuantities(); updatePrice(); }
+
+let currentSku = null;
+let currentLivePrice = 0;
+
+// ── Price ─────────────────────────────────
+async function updatePrice() {
+  const totalDisplay = document.getElementById('priceTotal');
+  const unitDisplay = document.getElementById('pricePerUnit');
+  totalDisplay.textContent = 'Lade...';
+  unitDisplay.textContent = '';
+
+  try {
+    const { price, sku } = await getLivePriceDetails(currentProductId, currentSize, currentQty);
+    let finalPrice = price;
+    if (currentMaterial === 'Holografisch') finalPrice = price * 1.15;
+    currentLivePrice = finalPrice;
+    currentSku = sku;
+    totalDisplay.textContent = formatPrice(finalPrice);
+    unitDisplay.textContent = formatPrice(finalPrice / currentQty) + ' pro Stück';
+  } catch (err) {
+    const staticPrice = getPrice(currentProductId, currentSize, currentQty);
+    let finalPrice = staticPrice;
+    if (currentMaterial === 'Holografisch') finalPrice = staticPrice * 1.15;
+    currentLivePrice = finalPrice;
+    currentSku = null;
+    totalDisplay.textContent = formatPrice(finalPrice);
+    unitDisplay.textContent = formatPrice(finalPrice / currentQty) + ' pro Stück';
+  }
+}
+
+// ── Product Info ──────────────────────────
+function updateProductInfo() {
+  const product = getProductById(currentProductId);
+  if (!product) return;
+  document.getElementById('topbarProductName').textContent = product.name;
+  const featuresEl = document.getElementById('productFeatures');
+  featuresEl.innerHTML = product.features.map(f => `
+    <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
+      <span style="color:#8B5CF6;">✓</span>
+      <span style="color:#6b7280;">${f}</span>
+    </div>
+  `).join('');
+}
+
+// ── Color Grids ───────────────────────────
+function renderColorGrids() {
+  const grids = ['textColorGrid', 'shapeFillColorGrid', 'bgColorGrid', 'drawColorGrid'];
+  grids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = COLORS.map(c => `
+      <div class="color-swatch"
+        style="background:${c};${c === '#ffffff' ? 'border:1px solid #e5e7eb;' : ''}"
+        onclick="applyColor('${id}', '${c}')">
+      </div>
+    `).join('');
+  });
+}
+
+function applyColor(gridId, color) {
+  document.querySelectorAll(`#${gridId} .color-swatch`).forEach(s => s.classList.remove('active'));
+  if (event && event.target) event.target.classList.add('active');
+
+  if (gridId === 'bgColorGrid') {
+    canvas.setBackgroundColor(color, canvas.renderAll.bind(canvas));
+    document.getElementById('bgColorPicker').value = color;
+    document.getElementById('bgColorHex').value = color;
+  } else if (gridId === 'textColorGrid') {
+    setTextColor(color);
+    document.getElementById('textColorPicker').value = color;
+    document.getElementById('textColorHex').value = color;
+  } else if (gridId === 'shapeFillColorGrid') {
+    document.getElementById('shapeFillPicker').value = color;
+    document.getElementById('shapeFillHex').value = color;
+  } else if (gridId === 'drawColorGrid') {
+    canvas.freeDrawingBrush.color = color;
+    document.getElementById('drawColorPicker').value = color;
+    document.getElementById('drawColorHex').value = color;
+  }
+}
+
+function setTextColor(color) {
+  const obj = canvas.getActiveObject();
+  if (obj && (obj.type === 'i-text' || obj.type === 'text')) {
+    obj.set('fill', color);
+    canvas.renderAll();
+  }
+}
+
+// ── Emoji Grid ────────────────────────────
+function renderEmojiGrid() {
+  const grid = document.getElementById('emojiGrid');
+  grid.innerHTML = EMOJIS.map(e => `
+    <button class="emoji-btn" onclick="addEmoji('${e}')">${e}</button>
+  `).join('');
+}
+
+function addEmoji(emoji) {
+  const text = new fabric.IText(emoji, {
+    left: 250 + (Math.random() - 0.5) * 100,
+    top: 250 + (Math.random() - 0.5) * 100,
+    originX: 'center', originY: 'center', fontSize: 60,
+  });
+  canvas.add(text);
+  canvas.setActiveObject(text);
+  canvas.renderAll();
+}
+
+// ── Tool Switching ────────────────────────
+function switchTool(toolName) {
+  currentTool = toolName;
+
+  // Disable drawing mode if not draw tool
+  if (toolName !== 'draw') {
+    canvas.isDrawingMode = false;
+    isDrawingMode = false;
+    document.getElementById('eraserBtn')?.classList.remove('active');
+  } else {
+    canvas.isDrawingMode = true;
+    isDrawingMode = true;
+    canvas.freeDrawingBrush.width = parseInt(document.getElementById('brushSize').value);
+    canvas.freeDrawingBrush.color = document.getElementById('drawColorPicker').value;
+  }
+
+  document.querySelectorAll('.tool-sidebar-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tool === toolName);
+  });
+  document.querySelectorAll('.tool-content').forEach(tc => tc.classList.remove('active'));
+  const tc = document.getElementById(`tool-${toolName}`);
+  if (tc) tc.classList.add('active');
+  
+  // On mobile, show props-panel when a tool is selected
+  const propsPanel = document.querySelector('.props-panel');
+  if (propsPanel) {
+    propsPanel.classList.add('active');
+  }
+}
+
+// ── Close props panel on mobile when clicking canvas ──
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    if (window.canvas) {
+      canvas.on('mouse:down', (e) => {
+        if (window.innerWidth <= 900 && !e.target) {
+          const propsPanel = document.querySelector('.props-panel');
+          if (propsPanel) propsPanel.classList.remove('active');
+        }
+      });
+    }
+  }, 1000);
+});
+
+// ── Object Selection ─────────────────────
+function onObjectSelected(e) {
+  const obj = e.selected?.[0] || canvas.getActiveObject();
+  if (!obj) return;
+  document.getElementById('selectedObjectProps').style.display = 'block';
+  document.getElementById('objX').value = Math.round(obj.left);
+  document.getElementById('objY').value = Math.round(obj.top);
+  document.getElementById('objOpacity').value = Math.round(obj.opacity * 100);
+  document.getElementById('opacityLabel').textContent = Math.round(obj.opacity * 100) + '%';
+
+  if (obj.type === 'i-text' || obj.type === 'text') {
+    switchTool('text');
+    document.getElementById('textInput').value = obj.text;
+    selectedFontSize = obj.fontSize;
+    document.getElementById('fontSizeDisplay').textContent = selectedFontSize;
+    if (obj.fontFamily) document.getElementById('fontFamily').value = obj.fontFamily;
+    document.getElementById('boldBtn').classList.toggle('active', obj.fontWeight === 'bold');
+    document.getElementById('italicBtn').classList.toggle('active', obj.fontStyle === 'italic');
+    document.getElementById('underlineBtn').classList.toggle('active', !!obj.underline);
+  }
+}
+
+function onSelectionCleared() {
+  document.getElementById('selectedObjectProps').style.display = 'none';
+}
+
+// ── Layer List ────────────────────────────
+function updateLayerList() {
+  const list = document.getElementById('layerList');
+  const objects = canvas.getObjects();
+  if (objects.length === 0) {
+    list.innerHTML = '<div style="font-size:13px;color:#9ca3af;text-align:center;padding:20px 0;">Noch keine Elemente</div>';
+    return;
+  }
+  list.innerHTML = [...objects].reverse().map((obj, i) => {
+    const idx = objects.length - 1 - i;
+    let icon = '■', name = 'Element';
+    if (obj.type === 'i-text' || obj.type === 'text') { icon = 'T'; name = obj.text?.slice(0, 20) || 'Text'; }
+    else if (obj.type === 'image') { icon = '🖼'; name = 'Bild'; }
+    else if (obj.type === 'circle') { icon = '●'; name = 'Kreis'; }
+    else if (obj.type === 'rect') { icon = '■'; name = 'Rechteck'; }
+    else if (obj.type === 'path') { icon = '✏'; name = 'Zeichnung'; }
+    return `
+      <div class="layer-item" onclick="selectLayer(${idx})">
+        <span class="layer-item__icon">${icon}</span>
+        <span class="layer-item__name">${name}</span>
+        <button class="layer-del-btn" onclick="event.stopPropagation();deleteLayer(${idx})">✕</button>
+      </div>
+    `;
+  }).join('');
+}
+
+function selectLayer(idx) {
+  const objects = canvas.getObjects();
+  if (objects[idx]) { canvas.setActiveObject(objects[idx]); canvas.renderAll(); }
+}
+
+function deleteLayer(idx) {
+  const objects = canvas.getObjects();
+  if (objects[idx]) { canvas.remove(objects[idx]); canvas.renderAll(); }
+}
+
+// ── History ───────────────────────────────
+function saveHistory() {
+  if (isUndoRedo) return;
+  const json = JSON.stringify(canvas.toJSON());
+  editorHistory = editorHistory.slice(0, historyIndex + 1);
+  editorHistory.push(json);
+  historyIndex = editorHistory.length - 1;
+}
+
+function undo() {
+  if (historyIndex <= 0) return;
+  historyIndex--;
+  isUndoRedo = true;
+  canvas.loadFromJSON(editorHistory[historyIndex], () => {
+    canvas.renderAll(); isUndoRedo = false; updateLayerList();
+  });
+}
+
+function redo() {
+  if (historyIndex >= editorHistory.length - 1) return;
+  historyIndex++;
+  isUndoRedo = true;
+  canvas.loadFromJSON(editorHistory[historyIndex], () => {
+    canvas.renderAll(); isUndoRedo = false; updateLayerList();
+  });
+}
+
+// ── Zoom ──────────────────────────────────
+function setZoom(newZoom) {
+  zoom = Math.max(0.3, Math.min(2, newZoom));
+  canvas.setZoom(zoom);
+  canvas.setWidth(500 * zoom);
+  canvas.setHeight(500 * zoom);
+  document.getElementById('zoomLevel').textContent = Math.round(zoom * 100) + '%';
+  document.getElementById('zoomSlider').value = Math.round(zoom * 100);
+}
+
+// ── Add to Cart ───────────────────────────
+function addStickerToCart() {
+  const previewImage = canvas.toDataURL({ format: 'png', quality: 0.8, multiplier: 0.5 });
+  const product = getProductById(currentProductId);
+  const matObj = MATERIALS.find(m => m.id === currentMaterialId) || MATERIALS[0];
+  addToCart({
+    productId: currentProductId,
+    productName: product?.name || 'Sticker',
+    size: currentSize,
+    sizeLabel: product?.sizes.find(s => s.value === currentSize)?.label || currentSize,
+    quantity: currentQty,
+    price: currentLivePrice || getPrice(currentProductId, currentSize, currentQty),
+    sku: currentSku,
+    material: matObj.label,
+    previewImage,
+  });
+}
+
+// ── Templates ─────────────────────────────
+function loadTemplate(templateName) {
+  canvas.clear();
+  canvas.setBackgroundColor('#ffffff', () => {});
+
+  const templates = {
+    'jga': () => {
+      canvas.add(new fabric.IText('TEAM\nBRIDE', { left:250,top:200,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:64,fill:'#EC4899',fontWeight:'bold',textAlign:'center' }));
+      canvas.add(new fabric.IText('JGA 2025', { left:250,top:320,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:28,fill:'#8B5CF6',fontWeight:'bold' }));
+    },
+    'birthday': () => {
+      canvas.add(new fabric.IText('Happy\nBirthday!', { left:250,top:220,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:52,fill:'#F59E0B',fontWeight:'bold',textAlign:'center' }));
+      canvas.add(new fabric.IText('🎉🎂🎈', { left:250,top:360,originX:'center',originY:'center',fontSize:48 }));
+    },
+    'love': () => {
+      canvas.add(new fabric.IText('❤️', { left:250,top:180,originX:'center',originY:'center',fontSize:80 }));
+      canvas.add(new fabric.IText('LOVE', { left:250,top:300,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:60,fill:'#EF4444',fontWeight:'bold' }));
+    },
+    'logo': () => {
+      canvas.add(new fabric.Circle({ radius:100,fill:'transparent',stroke:'#111827',strokeWidth:3,left:250,top:250,originX:'center',originY:'center' }));
+      canvas.add(new fabric.IText('LOGO', { left:250,top:250,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:36,fill:'#111827',fontWeight:'bold' }));
+    },
+    'sale': () => {
+      canvas.setBackgroundColor('#EF4444', () => {});
+      canvas.add(new fabric.IText('SALE', { left:250,top:200,originX:'center',originY:'center',fontFamily:'Impact',fontSize:72,fill:'#ffffff',fontWeight:'bold' }));
+      canvas.add(new fabric.IText('-50%', { left:250,top:310,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:48,fill:'#FEF08A',fontWeight:'bold' }));
+    },
+    'thankyou': () => {
+      canvas.add(new fabric.IText('Danke!', { left:250,top:220,originX:'center',originY:'center',fontFamily:'Georgia',fontSize:52,fill:'#10B981',fontStyle:'italic' }));
+      canvas.add(new fabric.IText('🌸', { left:250,top:340,originX:'center',originY:'center',fontSize:48 }));
+    },
+    'nature': () => {
+      const gradient = new fabric.Gradient({ type:'linear', coords:{x1:0,y1:0,x2:500,y2:500}, colorStops:[{offset:0,color:'#10B981'},{offset:1,color:'#06B6D4'}] });
+      canvas.setBackgroundColor(gradient, () => {});
+      canvas.add(new fabric.IText('🌿', { left:250,top:200,originX:'center',originY:'center',fontSize:80 }));
+      canvas.add(new fabric.IText('NATURE', { left:250,top:330,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:36,fill:'#ffffff',fontWeight:'bold' }));
+    },
+    'retro': () => {
+      canvas.setBackgroundColor('#FEF08A', () => {});
+      canvas.add(new fabric.IText('RETRO', { left:250,top:200,originX:'center',originY:'center',fontFamily:'Impact',fontSize:64,fill:'#DC2626' }));
+      canvas.add(new fabric.IText('VIBES', { left:250,top:300,originX:'center',originY:'center',fontFamily:'Impact',fontSize:48,fill:'#1D4ED8' }));
+    },
+  };
+
+  if (templates[templateName]) {
+    templates[templateName]();
+    canvas.renderAll();
+    saveHistory();
+    showToast('Vorlage geladen!', 'success');
+  }
+}
+
+// ── Event Listeners ───────────────────────
+function setupEventListeners() {
+  // Tool buttons
+  document.querySelectorAll('.tool-sidebar-btn').forEach(btn => {
+    btn.addEventListener('click', () => switchTool(btn.dataset.tool));
+  });
+
+  // File Menu
+  document.getElementById('fileMenuBtn').addEventListener('click', (e) => {
+    e.stopPropagation();
+    document.getElementById('fileMenu').classList.toggle('show');
+  });
+  document.addEventListener('click', () => document.getElementById('fileMenu').classList.remove('show'));
+
+  document.getElementById('menuNewDesign').addEventListener('click', () => {
+    canvas.clear(); canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas));
+    editorHistory = []; historyIndex = -1; saveHistory(); updateLayerList();
+  });
+  document.getElementById('menuClearCanvas').addEventListener('click', () => {
+    canvas.clear(); canvas.setBackgroundColor('#ffffff', canvas.renderAll.bind(canvas));
+    editorHistory = []; historyIndex = -1; saveHistory(); updateLayerList();
+  });
+  document.getElementById('menuDownload').addEventListener('click', downloadCanvas);
+
+  // Templates
+  document.querySelectorAll('.template-card').forEach(card => {
+    card.addEventListener('click', () => loadTemplate(card.dataset.template));
+  });
+
+  // Material
+  document.querySelectorAll('[data-material]').forEach(el => {
+    el.addEventListener('click', () => {
+      currentMaterial = el.dataset.material;
+      document.querySelectorAll('[data-material]').forEach(m => m.classList.remove('active'));
+      el.classList.add('active');
+      updatePrice();
+    });
+  });
+
+  // Add Text
+  document.getElementById('addTextBtn').addEventListener('click', () => {
+    const val = document.getElementById('textInput').value || 'Text';
+    const text = new fabric.IText(val, {
+      left: 250, top: 250, originX: 'center', originY: 'center',
+      fontFamily: document.getElementById('fontFamily').value || 'Outfit',
+      fontSize: selectedFontSize,
+      fill: document.getElementById('textColorPicker').value || '#111827',
+      fontWeight: selectedBold ? 'bold' : 'normal',
+      fontStyle: selectedItalic ? 'italic' : 'normal',
+      underline: selectedUnderline,
+    });
+    canvas.add(text); canvas.setActiveObject(text); canvas.renderAll();
+  });
+
+  // Font Family
+  document.getElementById('fontFamily').addEventListener('change', function() {
+    const obj = canvas.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'text')) {
+      obj.set('fontFamily', this.value); canvas.renderAll();
+    }
+  });
+
+  // Font Size
+  document.getElementById('fontSizePlus').addEventListener('click', () => {
+    selectedFontSize = Math.min(200, selectedFontSize + 4);
+    document.getElementById('fontSizeDisplay').textContent = selectedFontSize;
+    const obj = canvas.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'text')) { obj.set('fontSize', selectedFontSize); canvas.renderAll(); }
+  });
+  document.getElementById('fontSizeMinus').addEventListener('click', () => {
+    selectedFontSize = Math.max(8, selectedFontSize - 4);
+    document.getElementById('fontSizeDisplay').textContent = selectedFontSize;
+    const obj = canvas.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'text')) { obj.set('fontSize', selectedFontSize); canvas.renderAll(); }
+  });
+
+  // Text styles
+  document.getElementById('boldBtn').addEventListener('click', function() {
+    selectedBold = !selectedBold; this.classList.toggle('active', selectedBold);
+    const obj = canvas.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'text')) { obj.set('fontWeight', selectedBold ? 'bold' : 'normal'); canvas.renderAll(); }
+  });
+  document.getElementById('italicBtn').addEventListener('click', function() {
+    selectedItalic = !selectedItalic; this.classList.toggle('active', selectedItalic);
+    const obj = canvas.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'text')) { obj.set('fontStyle', selectedItalic ? 'italic' : 'normal'); canvas.renderAll(); }
+  });
+  document.getElementById('underlineBtn').addEventListener('click', function() {
+    selectedUnderline = !selectedUnderline; this.classList.toggle('active', selectedUnderline);
+    const obj = canvas.getActiveObject();
+    if (obj && (obj.type === 'i-text' || obj.type === 'text')) { obj.set('underline', selectedUnderline); canvas.renderAll(); }
+  });
+
+  // Text Color
+  document.getElementById('textColorPicker').addEventListener('input', function() {
+    setTextColor(this.value); document.getElementById('textColorHex').value = this.value;
+  });
+  document.getElementById('textColorHex').addEventListener('change', function() {
+    if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) { setTextColor(this.value); document.getElementById('textColorPicker').value = this.value; }
+  });
+
+  // Bg Color
+  document.getElementById('bgColorPicker').addEventListener('input', function() {
+    canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
+    document.getElementById('bgColorHex').value = this.value;
+  });
+  document.getElementById('bgColorHex').addEventListener('change', function() {
+    if (/^#[0-9A-Fa-f]{6}$/.test(this.value)) {
+      canvas.setBackgroundColor(this.value, canvas.renderAll.bind(canvas));
+      document.getElementById('bgColorPicker').value = this.value;
+    }
+  });
+
+  // Gradients
+  document.querySelectorAll('[data-gradient]').forEach(el => {
+    el.addEventListener('click', () => {
+      const gradients = {
+        purple: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#8B5CF6'},{offset:1,color:'#EC4899'}] },
+        sunset: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#F59E0B'},{offset:1,color:'#EC4899'}] },
+        ocean:  { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#06B6D4'},{offset:1,color:'#8B5CF6'}] },
+        nature: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#10B981'},{offset:1,color:'#06B6D4'}] },
+      };
+      const g = gradients[el.dataset.gradient];
+      if (g) {
+        const gradient = new fabric.Gradient({ type:'linear', coords:{x1:g.x1,y1:g.y1,x2:g.x2,y2:g.y2}, colorStops:g.colorStops });
+        canvas.setBackgroundColor(gradient, canvas.renderAll.bind(canvas));
+      }
+    });
+  });
+
+  // Shapes
+  document.querySelectorAll('[data-shape]').forEach(el => {
+    el.addEventListener('click', () => {
+      const color = document.getElementById('shapeFillPicker').value || '#3b82f6';
+      let shape;
+      switch (el.dataset.shape) {
+        case 'circle': shape = new fabric.Circle({radius:60,fill:color,left:250,top:250,originX:'center',originY:'center'}); break;
+        case 'rect': shape = new fabric.Rect({width:120,height:120,fill:color,rx:10,ry:10,left:250,top:250,originX:'center',originY:'center'}); break;
+        case 'triangle': shape = new fabric.Triangle({width:120,height:100,fill:color,left:250,top:250,originX:'center',originY:'center'}); break;
+        case 'line': shape = new fabric.Line([0,0,150,0],{stroke:color,strokeWidth:4,left:250,top:250,originX:'center',originY:'center'}); break;
+        default: shape = new fabric.Rect({width:100,height:100,fill:color,left:250,top:250,originX:'center',originY:'center'});
+      }
+      canvas.add(shape); canvas.setActiveObject(shape); canvas.renderAll();
+    });
+  });
+
+  // Drawing
+  document.getElementById('brushSize').addEventListener('input', function() {
+    const size = parseInt(this.value);
+    canvas.freeDrawingBrush.width = size;
+    document.getElementById('brushSizeValue').textContent = size + 'px';
+    document.getElementById('brushDot').style.width = Math.min(size, 30) + 'px';
+    document.getElementById('brushDot').style.height = Math.min(size, 30) + 'px';
+  });
+
+  document.getElementById('drawColorPicker').addEventListener('input', function() {
+    canvas.freeDrawingBrush.color = this.value;
+    document.getElementById('drawColorHex').value = this.value;
+  });
+
+  document.getElementById('eraserBtn').addEventListener('click', function() {
+    this.classList.toggle('active');
+    if (this.classList.contains('active')) {
+      canvas.freeDrawingBrush.color = canvas.backgroundColor || '#ffffff';
+    } else {
+      canvas.freeDrawingBrush.color = document.getElementById('drawColorPicker').value;
+    }
+  });
+
+  // Image Upload
+  const uploadZone = document.getElementById('uploadZone');
+  const fileInput = document.getElementById('imageFileInput');
+  uploadZone.addEventListener('click', () => fileInput.click());
+  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = '#3b82f6'; });
+  uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
+  uploadZone.addEventListener('drop', (e) => { e.preventDefault(); uploadZone.style.borderColor = ''; if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]); });
+  fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadImageFile(e.target.files[0]); });
+
+  // Opacity / Position / Delete
+  document.getElementById('objOpacity').addEventListener('input', function() {
+    document.getElementById('opacityLabel').textContent = this.value + '%';
+    const obj = canvas.getActiveObject();
+    if (obj) { obj.set('opacity', this.value / 100); canvas.renderAll(); }
+  });
+  document.getElementById('deleteObjBtn').addEventListener('click', () => {
+    const obj = canvas.getActiveObject();
+    if (obj) { canvas.remove(obj); canvas.renderAll(); }
+  });
+  document.getElementById('objX').addEventListener('change', function() {
+    const obj = canvas.getActiveObject();
+    if (obj) { obj.set('left', parseInt(this.value)); canvas.renderAll(); }
+  });
+  document.getElementById('objY').addEventListener('change', function() {
+    const obj = canvas.getActiveObject();
+    if (obj) { obj.set('top', parseInt(this.value)); canvas.renderAll(); }
+  });
+
+  // Undo/Redo
+  document.getElementById('undoBtn').addEventListener('click', undo);
+  document.getElementById('redoBtn').addEventListener('click', redo);
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'z') { e.preventDefault(); undo(); }
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.shiftKey && e.key === 'z'))) { e.preventDefault(); redo(); }
+    if (e.key === 'Delete' || e.key === 'Backspace') {
+      if (document.activeElement.tagName === 'BODY') {
+        const obj = canvas.getActiveObject();
+        if (obj) { canvas.remove(obj); canvas.renderAll(); }
+      }
+    }
+  });
+
+  // Download
+  document.getElementById('downloadBtn').addEventListener('click', downloadCanvas);
+
+  // Zoom
+  document.getElementById('zoomIn').addEventListener('click', () => setZoom(zoom + 0.15));
+  document.getElementById('zoomOut').addEventListener('click', () => setZoom(zoom - 0.15));
+  document.getElementById('zoomSlider').addEventListener('input', function() { setZoom(this.value / 100); });
+
+  // Margin Slider
+  document.getElementById('marginSlider').addEventListener('input', function() {
+    document.getElementById('marginValue').textContent = this.value + 'mm';
+  });
+
+  // Cart
+  document.getElementById('addToCartBtn').addEventListener('click', addStickerToCart);
+  document.getElementById('topAddToCart').addEventListener('click', addStickerToCart);
+}
+
+function downloadCanvas() {
+  const url = canvas.toDataURL({ format: 'png', quality: 1, multiplier: 2 });
+  const a = document.createElement('a');
+  a.download = 'sticker-vorschau.png'; a.href = url; a.click();
+  showToast('Vorschau heruntergeladen!', 'success');
+}
+
+function loadImageFile(file) {
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    fabric.Image.fromURL(e.target.result, (img) => {
+      const maxDim = 300;
+      const scale = maxDim / Math.max(img.width, img.height);
+      img.set({ left:250, top:250, originX:'center', originY:'center', scaleX:scale, scaleY:scale });
+      canvas.add(img); canvas.setActiveObject(img); canvas.renderAll();
+      showToast('Bild hinzugefügt!', 'success');
+    });
+  };
+  reader.readAsDataURL(file);
+}
+
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.style.cssText = `padding:12px 24px;background:#fff;border:1px solid #e5e7eb;border-radius:10px;box-shadow:0 4px 16px rgba(0,0,0,0.1);font-size:14px;font-weight:500;color:#111827;animation:fadeIn 0.3s;`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  setTimeout(() => { toast.style.opacity = '0'; toast.style.transition = 'opacity 0.3s'; setTimeout(() => toast.remove(), 300); }, 2500);
+}
+</script>
+<script src="js/nav.js"></script>
+</body>
+</html>

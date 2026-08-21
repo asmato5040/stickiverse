@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vielen Dank für deine Bestellung! – Stickiverse</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .success-page {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #080810;
+      padding: 24px;
+    }
+
+    .success-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      text-align: center;
+      max-width: 520px;
+      width: 100%;
+      box-shadow: 0 32px 128px rgba(139,92,246,0.2);
+      animation: fadeIn 0.6s ease;
+    }
+
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #10B981, #34D399);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 40px;
+      color: white;
+      margin: 0 auto 28px;
+      box-shadow: 0 8px 32px rgba(16,185,129,0.3);
+      animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) delay 0.2s;
+    }
+
+    .success-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .success-text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .order-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 16px 24px;
+      margin-bottom: 32px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .order-number {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      color: #A78BFA;
+    }
+
+    .actions-row {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    @keyframes scaleUp {
+      0% { transform: scale(0); }
+      100% { transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="success-page">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      
+      <h1 class="success-title">Zahlung erfolgreich!</h1>
+      <p class="success-text">
+        Vielen Dank für dein Vertrauen! Deine Zahlung wurde erfolgreich verarbeitet. Wir fangen direkt mit der Vorbereitung deiner Sticker an.
+      </p>
+
+      <div class="order-box">
+        <span style="font-size:14px;color:var(--text-muted);">Bestellnummer:</span>
+        <span class="order-number" id="orderNumDisplay">STV-XXXXXX</span>
+      </div>
+
+      <div class="actions-row">
+        <a href="account.html" class="btn btn--primary btn--sm">👤 Zum Kundenkonto</a>
+        <a href="index.html" class="btn btn--secondary btn--sm">🌐 Zur Startseite</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const params = new URLSearchParams(window.location.search);
+      const orderNum = params.get('order');
+      if (orderNum) {
+        document.getElementById('orderNumDisplay').textContent = orderNum;
+      }
+    });
+  </script>
+<script src="js/theme-toggle.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

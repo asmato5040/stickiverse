@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard – Stickiverse</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <!-- Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { overflow-x: hidden; }
+
+    /* ── Admin Layout ── */
+    .admin-layout {
+      display: block;
+      min-height: 100vh;
+      background: #080810;
+    }
+
+    /* ── Sidebar ── */
+    .admin-sidebar {
+      background: #0C0C18;
+      border-right: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0; left: 0; bottom: 0;
+      width: 260px;
+      z-index: 100;
+      overflow-y: auto;
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 24px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .sidebar-logo__icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    .sidebar-logo__text {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 18px; font-weight: 800;
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+
+    .sidebar-logo__badge {
+      margin-left: auto;
+      padding: 2px 8px;
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: 100px;
+      font-size: 10px; font-weight: 700;
+      color: #A78BFA;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sidebar-nav {
+      padding: 16px 12px;
+      flex: 1;
+    }
+
+    .sidebar-section {
+      margin-bottom: 24px;
+    }
+
+    .sidebar-section__label {
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: rgba(255,255,255,0.25);
+      padding: 0 8px;
+      margin-bottom: 6px;
+    }
+
+    .nav-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      color: rgba(255,255,255,0.55);
+      font-size: 14px; font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      margin-bottom: 2px;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
+    .nav-item.active {
+      background: rgba(139,92,246,0.12);
+      color: #A78BFA;
+      font-weight: 600;
+    }
+    .nav-item.active .nav-item__icon { color: #8B5CF6; }
+
+    .nav-item__icon { font-size: 18px; width: 22px; flex-shrink: 0; }
+    .nav-item__badge {
+      margin-left: auto;
+      min-width: 20px; height: 20px;
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      border-radius: 100px;
+      font-size: 11px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 5px;
+    }
+
+    .sidebar-bottom {
+      padding: 16px 12px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .admin-user-info {
+      display: flex; align-items: center; gap: 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      background: rgba(255,255,255,0.04);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .admin-user-info:hover { background: rgba(255,255,255,0.07); }
+
+    .admin-avatar {
+      width: 34px; height: 34px;
+      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .input {
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .input:focus {
+      border-color: #8B5CF6;
+      background: rgba(255,255,255,0.08);
+      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+    }
+    select.input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    .admin-user-name { font-size: 13px; font-weight: 600; }
+    .admin-user-role { font-size: 11px; color: rgba(255,255,255,0.35); }
+
+    /* ── Main Content ── */
+    .admin-main {
+      margin-left: 260px;
+      min-height: 100vh;
+    }
+
+    .admin-topbar {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(8,8,16,0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 0 32px;
+      height: 64px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .topbar-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 20px; font-weight: 700;
+    }
+
+    .topbar-actions {
+      display: flex; align-items: center; gap: 12px;
+    }
+
+    .topbar-search {
+      display: flex; align-items: center; gap: 8px;
+      padding: 8px 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px;
+      color: rgba(255,255,255,0.4);
+      font-size: 14px;
+      min-width: 220px;
+      cursor: text;
+    }
+
+    .topbar-search input {
+      background: none; border: none; outline: none;
+      color: white; font-size: 14px; width: 100%;
+    }
+    .topbar-search input::placeholder { color: rgba(255,255,255,0.3); }
+
+    /* ── Page Content ── */
+    .admin-content {
+      padding: 32px;
+    }
+
+    /* ── Panels/Pages ── */
+    .admin-page { display: none; }
+    .admin-page.active { display: block; }
+
+    /* ── Stats Cards ── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+    .stat-card:hover { border-color: rgba(139,92,246,0.2); transform: translateY(-2px); }
+
+    .stat-card__label {
+      font-size: 12px; font-weight: 600;
+      color: rgba(255,255,255,0.4);
+      text-transform: uppercase; letter-spacing: 1px;
+      margin-bottom: 12px;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .stat-card__value {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 32px; font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 8px;
+    }
+
+    .stat-card__change {
+      font-size: 13px;
+      display: flex; align-items: center; gap: 4px;
+    }
+
+    .stat-card__change.up { color: #10B981; }
+    .stat-card__change.down { color: #EF4444; }
+
+    /* ── Charts ── */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .chart-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .chart-card__title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px; font-weight: 700;
+      margin-bottom: 20px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .chart-card__subtitle {
+      font-size: 12px; color: rgba(255,255,255,0.35); font-weight: 400;
+    }
+
+    /* ── Table ── */
+    .data-table-wrapper {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .data-table-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .data-table-header__title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 16px; font-weight: 700;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th {
+      padding: 12px 20px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      text-align: left;
+    }
+
+    .data-table td {
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+      font-size: 14px;
+      color: rgba(255,255,255,0.8);
+      vertical-align: middle;
+    }
+
+    .data-table tr:last-child td { border-bottom: none; }
+
+    .data-table tr:hover td { background: rgba(255,255,255,0.02); }
+
+    /* ── Order Status Badge ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 4px 10px;
+      border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+    }
+
+    .status-badge::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: currentColor;
+    }
+
+    .status-badge--pending      { background: rgba(245,158,11,0.15); color: #F59E0B; }
+    .status-badge--confirmed    { background: rgba(6,182,212,0.15);   color: #06B6D4; }
+    .status-badge--in_production{ background: rgba(139,92,246,0.15);  color: #8B5CF6; }
+    .status-badge--shipped      { background: rgba(16,185,129,0.15);  color: #10B981; }
+    .status-badge--delivered    { background: rgba(16,185,129,0.2);   color: #34D399; }
+    .status-badge--cancelled    { background: rgba(239,68,68,0.15);   color: #EF4444; }
+
+    /* ── Select (Status change) ── */
+    .status-select {
+      padding: 5px 10px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: white;
+      font-size: 13px;
+      cursor: pointer;
+      outline: none;
+    }
+    .status-select:focus { border-color: #8B5CF6; }
+
+    /* ── Order Preview ── */
+    .order-preview-img {
+      width: 48px; height: 48px;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .order-preview-img img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* ── Detail Modal ── */
+    .detail-modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.7);
+      backdrop-filter: blur(8px);
+      z-index: 9000;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .detail-modal-overlay.show { display: flex; }
+
+    .detail-modal {
+      background: #0F0F1C;
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: 24px;
+      padding: 32px;
+      width: 100%; max-width: 680px;
+      max-height: 85vh;
+      overflow-y: auto;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .detail-modal__header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .detail-modal__close {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 16px; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .detail-modal__close:hover { background: rgba(255,255,255,0.1); color: white; }
+
+    .detail-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 20px; margin-bottom: 24px;
+    }
+
+    .detail-section {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 16px;
+    }
+
+    .detail-section__title {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+      margin-bottom: 12px;
+    }
+
+    .detail-row {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 8px; font-size: 14px;
+    }
+    .detail-row__label { color: rgba(255,255,255,0.45); }
+    .detail-row__value { font-weight: 500; }
+
+    /* ── Loading State ── */
+    .table-loading {
+      text-align: center; padding: 60px 20px;
+      color: rgba(255,255,255,0.3);
+    }
+    .loading-spinner {
+      width: 32px; height: 32px;
+      border: 2px solid rgba(139,92,246,0.2);
+      border-top-color: #8B5CF6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto 12px;
+    }
+
+    /* ── Access Denied ── */
+    .access-denied {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; gap: 16px;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .admin-sidebar { display: none; }
+      .admin-main { margin-left: 0; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="admin-layout" id="adminLayout" style="display:none;">
+
+  <!-- ── Sidebar ── -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-logo">
+      <img src="../assets/logo.png" alt="Stickiverse Logo" style="height: 32px; width: auto; margin-right: 8px;">
+      <span class="sidebar-logo__badge">Admin</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">
+        <div class="sidebar-section__label">Übersicht</div>
+        <a class="nav-item active" data-page="dashboard" onclick="showPage('dashboard')">
+          <span class="nav-item__icon">📊</span> Dashboard
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section__label">Shop</div>
+        <a class="nav-item" data-page="orders" onclick="showPage('orders')">
+          <span class="nav-item__icon">📦</span> Bestellungen
+          <span class="nav-item__badge" id="pendingBadge">0</span>
+        </a>
+        <a class="nav-item" data-page="customers" onclick="showPage('customers')">
+          <span class="nav-item__icon">👥</span> Kunden
+        </a>
+        <a class="nav-item" data-page="products" onclick="showPage('products')">
+          <span class="nav-item__icon">🎨</span> Produkte
+        </a>
+        <a class="nav-item" data-page="coupons" onclick="showPage('coupons')">
+          <span class="nav-item__icon">🎟️</span> Gutscheine
+        </a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-section__label">System</div>
+        <a class="nav-item" data-page="settings" onclick="showPage('settings')">
+          <span class="nav-item__icon">⚙️</span> Einstellungen
+        </a>
+        <a class="nav-item" href="../index.html" target="_blank">
+          <span class="nav-item__icon">🌐</span> Website öffnen
+        </a>
+      </div>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <div class="admin-user-info" onclick="handleLogout()">
+        <div class="admin-avatar" id="adminAvatar">A</div>
+        <div>
+          <div class="admin-user-name" id="adminName">Admin</div>
+          <div class="admin-user-role">Administrator</div>
+        </div>
+        <span style="margin-left:auto;font-size:14px;color:rgba(255,255,255,0.3);">→</span>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── Main ── -->
+  <div class="admin-main">
+
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div class="topbar-title" id="topbarTitle">Dashboard</div>
+      <div class="topbar-actions">
+        <div class="topbar-search">
+          <span>🔍</span>
+          <input type="text" placeholder="Suchen..." id="globalSearch">
+        </div>
+        <button class="btn btn--primary btn--sm" onclick="loadData()">↻ Aktualisieren</button>
+      </div>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- ── DASHBOARD PAGE ── -->
+      <div class="admin-page active" id="page-dashboard">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-card__label">💰 Gesamtumsatz</div>
+            <div class="stat-card__value gradient-text" id="statRevenue">–</div>
+            <div class="stat-card__change up" id="statRevenueChange">Wird geladen...</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Bestellungen gesamt</div>
+            <div class="stat-card__value" id="statOrders">–</div>
+            <div class="stat-card__change up" id="statOrdersChange">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">Offen / Ausstehend</div>
+            <div class="stat-card__value" style="color:#F59E0B;" id="statPending">–</div>
+            <div class="stat-card__change" id="statPendingChange">–</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-card__label">👥 Kunden</div>
+            <div class="stat-card__value" id="statCustomers">–</div>
+            <div class="stat-card__change up" id="statCustomersChange">–</div>
+          </div>
+        </div>
+
+        <div class="charts-grid">
+          <div class="chart-card">
+            <div class="chart-card__title">
+              Umsatz letzte 30 Tage
+              <span class="chart-card__subtitle">täglich</span>
+            </div>
+            <canvas id="revenueChart" height="220"></canvas>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card__title">
+              Produkt-Mix
+              <span class="chart-card__subtitle">nach Bestellungen</span>
+            </div>
+            <canvas id="productChart" height="220"></canvas>
+          </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="data-table-wrapper">
+          <div class="data-table-header">
+            <div class="data-table-header__title">Neueste Bestellungen</div>
+            <button class="btn btn--ghost btn--sm" onclick="showPage('orders')">Alle anzeigen →</button>
+          </div>
+          <div id="recentOrdersTable">
+            <div class="table-loading"><div class="loading-spinner"></div>Lade Bestellungen...</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── ORDERS PAGE ── -->
+      <div class="admin-page" id="page-orders">
+
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;flex-wrap:wrap;">
+          <div style="font-size:13px;color:rgba(255,255,255,0.4);">Status filtern:</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;" id="statusFilters">
+            <button class="btn btn--ghost btn--sm filter-status-btn active" data-status="all"
+              onclick="filterOrders('all')">Alle</button>
+            <button class="btn btn--ghost btn--sm filter-status-btn" data-status="pending"
+              onclick="filterOrders('pending')">Ausstehend</button>
+            <button class="btn btn--ghost btn--sm filter-status-btn" data-status="confirmed"
+              onclick="filterOrders('confirmed')">Bestätigt</button>
+            <button class="btn btn--ghost btn--sm filter-status-btn" data-status="in_production"
+              onclick="filterOrders('in_production')">⚙️ In Produktion</button>
+            <button class="btn btn--ghost btn--sm filter-status-btn" data-status="shipped"
+              onclick="filterOrders('shipped')">🚚 Versandt</button>
+            <button class="btn btn--ghost btn--sm filter-status-btn" data-status="delivered"
+              onclick="filterOrders('delivered')">Geliefert</button>
+          </div>
+        </div>
+
+        <div class="data-table-wrapper">
+          <div class="data-table-header">
+            <div class="data-table-header__title">Alle Bestellungen</div>
+            <span style="font-size:13px;color:rgba(255,255,255,0.35);" id="ordersCount">– Bestellungen</span>
+          </div>
+          <div id="allOrdersTable">
+            <div class="table-loading"><div class="loading-spinner"></div>Lade Bestellungen...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CUSTOMERS PAGE ── -->
+      <div class="admin-page" id="page-customers">
+        <div class="data-table-wrapper">
+          <div class="data-table-header">
+            <div class="data-table-header__title">Alle Kunden</div>
+          </div>
+          <div id="customersTable">
+            <div class="table-loading"><div class="loading-spinner"></div>Lade Kunden...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PRODUCTS PAGE ── -->
+      <div class="admin-page" id="page-products">
+        <div class="data-table-wrapper">
+          <div class="data-table-header">
+            <div class="data-table-header__title">Produkte & Preise</div>
+          </div>
+          
+          <div class="stat-card" style="margin-bottom: 24px; max-width: 800px;">
+            <div style="margin-bottom: 20px;">
+              <h3 style="margin-bottom: 8px; font-size: 16px;">Preis-Margen (Aufschlag pro Produkt)</h3>
+              <p style="color: rgba(255,255,255,0.5); font-size: 13px; line-height: 1.5;">
+                Diese Faktoren werden live auf den Einkaufspreis von Onlineprinters aufgeschlagen.<br>
+                Beispiel: <b>1.20</b> entspricht +20% Marge. <b>2.00</b> verdoppelt den Einkaufspreis.
+              </p>
+            </div>
+            
+            <div id="productMarginsContainer" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- via JS befüllt -->
+            </div>
+            
+            <div style="margin-top: 24px; display: flex; justify-content: flex-end;">
+              <button class="btn btn--primary" id="saveMarginBtn" onclick="saveMargin()">Alle Margen speichern</button>
+            </div>
+          </div>
+
+          <div id="productsAdminTable">
+            <!-- Statisch aus products.js befüllt -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ── COUPONS PAGE ── -->
+      <div class="admin-page" id="page-coupons">
+        <div class="data-table-wrapper">
+          <div class="data-table-header" style="justify-content: space-between;">
+            <div class="data-table-header__title">Gutscheincodes</div>
+            <button class="btn btn--primary btn--sm" onclick="openCouponModal()">+ Neuer Gutschein</button>
+          </div>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Code</th>
+                  <th>Typ</th>
+                  <th>Wert</th>
+                  <th>Limit</th>
+                  <th>Nutzung</th>
+                  <th>Status</th>
+                  <th>Aktionen</th>
+                </tr>
+              </thead>
+              <tbody id="couponsTableBody">
+                <tr><td colspan="7" style="text-align: center; padding: 20px;">Lade Gutscheine...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS PAGE ── -->
+      <div class="admin-page" id="page-settings">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+          <div class="chart-card">
+            <div class="chart-card__title">Supabase Info</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.8;">
+              <div>URL: <code style="color:#A78BFA;" id="settingUrl">–</code></div>
+              <div>Admin: <code style="color:#10B981;" id="settingEmail">–</code></div>
+            </div>
+          </div>
+          <div class="chart-card">
+            <div class="chart-card__title">Schnellaktionen</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <a href="../index.html" target="_blank" class="btn btn--secondary btn--sm">🌐 Website öffnen</a>
+              <a href="https://supabase.com/dashboard" target="_blank" class="btn btn--secondary btn--sm">🗄️ Supabase Dashboard</a>
+              <button class="btn btn--ghost btn--sm" onclick="handleLogout()" style="color:#ef4444;border-color:rgba(239,68,68,0.2);">
+                🚪 Ausloggen
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<!-- Access Denied -->
+<div id="accessDenied" style="display:none;" class="access-denied">
+  <div style="font-size:64px;">🔒</div>
+  <h2 style="font-size:28px;font-weight:800;">Kein Zugriff</h2>
+  <p style="color:rgba(255,255,255,0.5);">Du hast keine Admin-Rechte für diesen Bereich.</p>
+  <a href="../index.html" class="btn btn--primary">← Zur Website</a>
+</div>
+
+<!-- Loading Screen -->
+<div id="loadingScreen" style="min-height:100vh;display:flex;align-items:center;justify-content:center;">
+  <div style="text-align:center;">
+    <div class="loading-spinner" style="margin:0 auto 16px;width:48px;height:48px;border-width:3px;"></div>
+    <div style="font-family:'Inter',system-ui,sans-serif;font-size:18px;font-weight:700;color:rgba(255,255,255,0.6);">Stickiverse Admin wird geladen...</div>
+  </div>
+</div>
+
+<!-- Order Detail Modal -->
+<div class="detail-modal-overlay" id="orderDetailModal">
+  <div class="detail-modal">
+    <div class="detail-modal__header">
+      <div>
+        <div style="font-family:'Inter',system-ui,sans-serif;font-size:20px;font-weight:800;" id="modalOrderNr">Bestellung</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);" id="modalOrderDate">–</div>
+      </div>
+      <button class="detail-modal__close" onclick="closeOrderDetail()">✕</button>
+    </div>
+    <div id="orderDetailContent"><!-- via JS befüllt --></div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="../js/config.js"></script>
+<script src="../js/products.js?v=2"></script>
+<script src="../js/cart.js"></script>
+<script>
+// Globaler Error-Bypass für einfache Fehlersuche
+window.onerror = function(message, source, lineno, colno, error) {
+  const errDiv = document.createElement('div');
+  errDiv.style.cssText = 'position:fixed;top:0;left:0;right:0;background:#ef4444;color:white;padding:16px;z-index:99999;font-weight:bold;text-align:center;font-family:sans-serif;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+  errDiv.textContent = `🚨 JS-Fehler: ${message} (Zeile ${lineno} in ${source.split('/').pop()})`;
+  document.body.appendChild(errDiv);
+  return false;
+};
+
+// ============================================
+// STICKIVERSE ADMIN DASHBOARD
+// ============================================
+
+let allOrders = [];
+let allCustomers = [];
+let currentStatusFilter = 'all';
+let revenueChart, productChart;
+
+// ── Init ──────────────────────────────────
+async function initAdmin() {
+  try {
+    const { data: { session } } = await db.auth.getSession();
+
+    if (!session) {
+      // Nicht eingeloggt → Login-Seite oder Modal
+      showLoginForAdmin();
+      return;
+    }
+
+    // Admin prüfen
+    const { data: profile } = await db.from('profiles')
+      .select('*').eq('id', session.user.id).single();
+
+    if (!profile?.is_admin) {
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('accessDenied').style.display = 'flex';
+      return;
+    }
+
+    // Admin bestätigt
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('adminLayout').style.display = 'grid';
+
+    // User-Info
+    const name = profile.first_name || session.user.email?.split('@')[0] || 'Admin';
+    document.getElementById('adminName').textContent = name;
+    document.getElementById('adminAvatar').textContent = name[0].toUpperCase();
+    document.getElementById('settingEmail').textContent = session.user.email;
+    document.getElementById('settingUrl').textContent = SUPABASE_URL.replace('https://', '');
+
+    await loadData();
+    initCharts();
+
+  } catch (err) {
+    console.error('Admin init error:', err);
+    showToast('Fehler beim Laden des Dashboards.', 'error');
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('accessDenied').style.display = 'flex';
+  }
+}
+
+function showLoginForAdmin() {
+  document.getElementById('loadingScreen').innerHTML = `
+    <div style="text-align:center;max-width:400px;padding:40px;">
+      <div style="font-size:48px;margin-bottom:20px;">🔒</div>
+      <h2 style="font-family:'Inter',system-ui,sans-serif;font-size:24px;font-weight:800;margin-bottom:12px;">Admin Login</h2>
+      <p style="color:rgba(255,255,255,0.5);margin-bottom:28px;">Bitte melde dich mit deinem Admin-Konto an.</p>
+      <form id="adminLoginForm" style="display:flex;flex-direction:column;gap:12px;">
+        <input type="email" id="adminEmail" placeholder="E-Mail" required
+          style="padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:white;font-size:15px;outline:none;">
+        <input type="password" id="adminPass" placeholder="Passwort" required
+          style="padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:white;font-size:15px;outline:none;">
+        <button type="submit" style="padding:14px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;border-radius:10px;color:white;font-size:16px;font-weight:700;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">
+          Einloggen
+        </button>
+      </form>
+      <div id="loginError" style="color:#ef4444;font-size:13px;margin-top:10px;"></div>
+    </div>
+  `;
+  document.getElementById('adminLoginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('adminEmail').value;
+    const pass  = document.getElementById('adminPass').value;
+    try {
+      await db.auth.signInWithPassword({ email, password: pass });
+      window.location.reload();
+    } catch (err) {
+      document.getElementById('loginError').textContent = 'Falsche Anmeldedaten.';
+    }
+  });
+}
+
+// ── Daten laden ───────────────────────────
+async function loadData() {
+  await Promise.all([loadOrders(), loadCustomers(), updateStats()]);
+}
+
+async function loadOrders() {
+  console.log("🛠️ [Debug-Admin] loadOrders gestartet...");
+  const { data, error } = await db
+    .from('orders')
+    .select('*, order_items(*)')
+    .order('created_at', { ascending: false });
+
+  console.log("🛠️ [Debug-Admin] loadOrders Ergebnis:", { data, error });
+
+  if (error) {
+    console.error("🛠️ [Debug-Admin] loadOrders Fehler:", error);
+    return;
+  }
+  allOrders = data || [];
+
+  const pending = allOrders.filter(o => o.status === 'pending').length;
+  document.getElementById('pendingBadge').textContent = pending;
+
+  console.log("🛠️ [Debug-Admin] pending orders:", pending);
+  renderRecentOrders();
+  renderAllOrders();
+}
+
+async function loadCustomers() {
+  const { data, error } = await db
+    .from('profiles')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) { console.error(error); return; }
+  allCustomers = data || [];
+  renderCustomers();
+}
+
+// ── Stats ─────────────────────────────────
+async function updateStats() {
+  const revenue = allOrders.reduce((s, o) => s + parseFloat(o.total || 0), 0);
+  const pending = allOrders.filter(o => o.status === 'pending').length;
+
+  document.getElementById('statRevenue').textContent = formatPrice(revenue);
+  document.getElementById('statOrders').textContent = allOrders.length;
+  document.getElementById('statPending').textContent = pending;
+  document.getElementById('statCustomers').textContent = allCustomers.length;
+  document.getElementById('statRevenueChange').textContent = `${allOrders.length} Bestellungen gesamt`;
+  document.getElementById('statPendingChange').textContent = pending > 0 ? `${pending} warten auf Bearbeitung` : 'Keine offenen Bestellungen ✓';
+  document.getElementById('statCustomersChange').textContent = 'Registrierte Kunden';
+  document.getElementById('statOrdersChange').textContent = 'Bestellungen gesamt';
+  document.getElementById('ordersCount').textContent = `${allOrders.length} Bestellungen`;
+}
+
+// ── Charts ────────────────────────────────
+function initCharts() {
+  // Revenue Chart
+  const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+  const last30Days = getLast30Days();
+  const revenueData = last30Days.map(day => {
+    return allOrders
+      .filter(o => o.created_at.startsWith(day))
+      .reduce((s, o) => s + parseFloat(o.total || 0), 0);
+  });
+
+  revenueChart = new Chart(revenueCtx, {
+    type: 'line',
+    data: {
+      labels: last30Days.map(d => d.slice(5)), // MM-DD
+      datasets: [{
+        data: revenueData,
+        borderColor: '#8B5CF6',
+        backgroundColor: 'rgba(139,92,246,0.08)',
+        borderWidth: 2,
+        fill: true,
+        tension: 0.4,
+        pointBackgroundColor: '#8B5CF6',
+        pointRadius: 3,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 }, maxTicksLimit: 8 } },
+        y: { grid: { color: 'rgba(255,255,255,0.04)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 10 }, callback: v => v + ' €' } }
+      }
+    }
+  });
+
+  // Product Mix Chart
+  const productCtx = document.getElementById('productChart').getContext('2d');
+  const productCounts = {};
+  allOrders.forEach(o => {
+    (o.order_items || []).forEach(item => {
+      productCounts[item.product_name] = (productCounts[item.product_name] || 0) + 1;
+    });
+  });
+
+  const labels = Object.keys(productCounts);
+  const values = Object.values(productCounts);
+
+  productChart = new Chart(productCtx, {
+    type: 'doughnut',
+    data: {
+      labels: labels.length > 0 ? labels : ['Noch keine Bestellungen'],
+      datasets: [{
+        data: values.length > 0 ? values : [1],
+        backgroundColor: ['#8B5CF6','#EC4899','#06B6D4','#10B981','#F59E0B','#EF4444'],
+        borderWidth: 0,
+        hoverOffset: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { color: 'rgba(255,255,255,0.5)', font: { size: 11 }, boxWidth: 10, padding: 12 }
+        }
+      }
+    }
+  });
+}
+
+function getLast30Days() {
+  const days = [];
+  for (let i = 29; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    days.push(d.toISOString().slice(0,10));
+  }
+  return days;
+}
+
+// ── Render Tables ─────────────────────────
+function renderRecentOrders() {
+  const recent = allOrders.slice(0, 8);
+  renderOrdersTable('recentOrdersTable', recent);
+}
+
+function renderAllOrders() {
+  console.log("🛠️ [Debug-Admin] renderAllOrders aufgerufen. Filter:", currentStatusFilter);
+  const filtered = currentStatusFilter === 'all'
+    ? allOrders
+    : allOrders.filter(o => o.status === currentStatusFilter);
+  
+  console.log("🛠️ [Debug-Admin] gefilterte Bestellungen Anzahl:", filtered.length);
+  renderOrdersTable('allOrdersTable', filtered);
+  
+  const countEl = document.getElementById('ordersCount');
+  if (countEl) {
+    countEl.textContent = `${filtered.length} Bestellungen`;
+  }
+
+  const allTable = document.getElementById('allOrdersTable');
+  if (allTable) {
+    console.log("🛠️ [Debug-Admin] allOrdersTable innerHTML Inhalt:", allTable.innerHTML);
+    console.log("🛠️ [Debug-Admin] allOrdersTable Render-Höhe (px):", allTable.offsetHeight);
+  }
+}
+
+function filterOrders(status) {
+  currentStatusFilter = status;
+  document.querySelectorAll('.filter-status-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.status === status);
+  });
+  renderAllOrders();
+}
+
+function renderOrdersTable(containerId, orders) {
+  try {
+    const container = document.getElementById(containerId);
+    console.log(`🛠️ [Debug-Admin] renderOrdersTable für '${containerId}'. Container vorhanden:`, !!container, "Bestellungen Anzahl:", orders.length);
+    if (!container) return;
+    
+    if (orders.length === 0) {
+      container.innerHTML = `<div class="table-loading" style="padding:40px;">Keine Bestellungen gefunden.</div>`;
+      return;
+    }
+
+    const statusLabels = {
+      pending: 'Ausstehend', confirmed: 'Bestätigt',
+      in_production: 'In Produktion', shipped: 'Versandt',
+      delivered: 'Geliefert', cancelled: 'Storniert'
+    };
+
+    container.innerHTML = `
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Vorschau</th>
+            <th>Bestellnr.</th>
+            <th>Kunde</th>
+            <th>Produkte</th>
+            <th>Betrag</th>
+            <th>Status</th>
+            <th>Datum</th>
+            <th>Aktionen</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${orders.map(order => {
+            const firstItem = order.order_items?.[0];
+            const customerName = order.delivery_first_name
+              ? `${order.delivery_first_name} ${order.delivery_last_name}`
+              : order.guest_email || 'Gast';
+            const itemCount = order.order_items?.length || 0;
+
+            return `
+              <tr>
+                <td>
+                  <div class="order-preview-img">
+                    ${firstItem?.preview_image
+                      ? `<img src="${firstItem.preview_image}" alt="">`
+                      : '🎨'}
+                  </div>
+                </td>
+                <td><strong>${order.order_number}</strong></td>
+                <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${customerName}</td>
+                <td>${itemCount} Artikel</td>
+                <td><strong>${formatPrice(parseFloat(order.total || 0))}</strong></td>
+                <td>
+                  <span class="status-badge status-badge--${order.status}">
+                    ${statusLabels[order.status] || order.status}
+                  </span>
+                </td>
+                <td style="color:rgba(255,255,255,0.4);">
+                  ${new Date(order.created_at).toLocaleDateString('de-DE')}
+                </td>
+                <td>
+                  <div style="display:flex;gap:6px;align-items:center;">
+                    <button class="btn btn--ghost btn--sm" onclick="openOrderDetail('${order.id}')" style="padding:5px 10px;">
+                      👁 Detail
+                    </button>
+                    <select class="status-select" onchange="updateOrderStatus('${order.id}', this.value)">
+                      <option value="pending"       ${order.status==='pending'       ?'selected':''}>Ausstehend</option>
+                      <option value="confirmed"     ${order.status==='confirmed'     ?'selected':''}>Bestätigt</option>
+                      <option value="in_production" ${order.status==='in_production' ?'selected':''}>⚙️ Produktion</option>
+                      <option value="shipped"       ${order.status==='shipped'       ?'selected':''}>🚚 Versandt</option>
+                      <option value="delivered"     ${order.status==='delivered'     ?'selected':''}>📬 Geliefert</option>
+                      <option value="cancelled"     ${order.status==='cancelled'     ?'selected':''}>Storniert</option>
+                    </select>
+                  </div>
+                </td>
+              </tr>
+            `;
+          }).join('')}
+        </tbody>
+      </table>
+    `;
+  } catch (err) {
+    console.error("Fehler in renderOrdersTable:", err);
+    const container = document.getElementById(containerId);
+    if (container) {
+      container.innerHTML = `<div style="color:#ef4444;padding:40px;text-align:center;font-weight:600;">⚠️ Fehler beim Laden der Bestellungen: ${err.message}</div>`;
+    }
+  }
+}
+
+function renderCustomers() {
+  const container = document.getElementById('customersTable');
+  if (allCustomers.length === 0) {
+    container.innerHTML = `<div class="table-loading" style="padding:40px;">Noch keine Kunden.</div>`;
+    return;
+  }
+  container.innerHTML = `
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Avatar</th>
+          <th>Name</th>
+          <th>Registriert am</th>
+          <th>Admin</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${allCustomers.map(c => `
+          <tr>
+            <td>
+              <div style="width:36px;height:36px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;">
+                ${(c.first_name?.[0] || '?').toUpperCase()}
+              </div>
+            </td>
+            <td>
+              <div style="font-weight:600;">${c.first_name || ''} ${c.last_name || ''}</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.35);">${c.city || ''}</div>
+            </td>
+            <td style="color:rgba(255,255,255,0.4);">${new Date(c.created_at).toLocaleDateString('de-DE')}</td>
+            <td>
+              ${c.is_admin
+                ? '<span style="color:#10B981;font-weight:700;">✓ Admin</span>'
+                : '<span style="color:rgba(255,255,255,0.25);">–</span>'}
+            </td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+}
+
+// ── Order Status Update ───────────────────
+async function updateOrderStatus(orderId, newStatus) {
+  const { error } = await db
+    .from('orders')
+    .update({ status: newStatus, updated_at: new Date().toISOString() })
+    .eq('id', orderId);
+
+  if (error) {
+    showToast('Status konnte nicht aktualisiert werden.', 'error');
+    return;
+  }
+
+  const order = allOrders.find(o => o.id === orderId);
+  if (order) order.status = newStatus;
+
+  showToast('Status aktualisiert! ✓', 'success');
+  updateStats();
+  document.getElementById('pendingBadge').textContent =
+    allOrders.filter(o => o.status === 'pending').length;
+}
+
+// ── Order Detail Modal ────────────────────
+function openOrderDetail(orderId) {
+  const order = allOrders.find(o => o.id === orderId);
+  if (!order) return;
+
+  document.getElementById('modalOrderNr').textContent = order.order_number;
+  document.getElementById('modalOrderDate').textContent =
+    new Date(order.created_at).toLocaleString('de-DE');
+
+  const content = document.getElementById('orderDetailContent');
+  content.innerHTML = `
+    <div class="detail-grid">
+      <div class="detail-section">
+        <div class="detail-section__title">Lieferadresse</div>
+        <div class="detail-row"><span class="detail-row__label">Name</span><span class="detail-row__value">${order.delivery_first_name || '–'} ${order.delivery_last_name || ''}</span></div>
+        ${order.delivery_company ? `<div class="detail-row"><span class="detail-row__label">Firma</span><span class="detail-row__value">${order.delivery_company}</span></div>` : ''}
+        <div class="detail-row"><span class="detail-row__label">Adresse</span><span class="detail-row__value">${order.delivery_street || '–'} ${order.delivery_street_nr || ''}</span></div>
+        <div class="detail-row"><span class="detail-row__label">PLZ / Ort</span><span class="detail-row__value">${order.delivery_zip || '–'} ${order.delivery_city || ''}</span></div>
+        <div class="detail-row"><span class="detail-row__label">Land</span><span class="detail-row__value">${order.delivery_country || 'DE'}</span></div>
+        ${order.delivery_phone ? `<div class="detail-row"><span class="detail-row__label">Telefon</span><span class="detail-row__value">${order.delivery_phone}</span></div>` : ''}
+        ${order.delivery_email || order.guest_email ? `<div class="detail-row"><span class="detail-row__label">E-Mail</span><span class="detail-row__value">${order.delivery_email || order.guest_email}</span></div>` : ''}
+      </div>
+      <div class="detail-section">
+        <div class="detail-section__title">Bestelldetails</div>
+        <div class="detail-row"><span class="detail-row__label">Bestellnr.</span><span class="detail-row__value">${order.order_number}</span></div>
+        <div class="detail-row"><span class="detail-row__label">Versand</span><span class="detail-row__value">${order.shipping_method === 'express' ? 'Express' : 'Standard'}</span></div>
+        <div class="detail-row"><span class="detail-row__label">Zwischensumme</span><span class="detail-row__value">${formatPrice(parseFloat(order.subtotal))}</span></div>
+        <div class="detail-row"><span class="detail-row__label">Versandkosten</span><span class="detail-row__value">${formatPrice(parseFloat(order.shipping_cost))}</span></div>
+        <div class="detail-row"><span class="detail-row__label">MwSt.</span><span class="detail-row__value">${formatPrice(parseFloat(order.tax || 0))}</span></div>
+        <div class="detail-row" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;margin-top:4px;">
+          <span style="font-weight:700;">Gesamt</span>
+          <span style="font-weight:800;font-size:18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${formatPrice(parseFloat(order.total))}</span>
+        </div>
+      </div>
+    </div>
+
+    ${order.notes ? `<div class="detail-section" style="margin-bottom:20px;"><div class="detail-section__title">Anmerkungen</div><p style="font-size:14px;color:rgba(255,255,255,0.6);">${order.notes}</p></div>` : ''}
+
+    <div class="detail-section">
+      <div class="detail-section__title">Artikel (${order.order_items?.length || 0})</div>
+      ${(order.order_items || []).map(item => `
+        <div style="display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+          <div class="order-preview-img">
+            ${item.preview_image ? `<img src="${item.preview_image}" alt="">` : '🎨'}
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:14px;">${item.product_name}</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.4);">${item.size_label} · ${item.print_quantity} Stück · ×${item.cart_quantity}</div>
+          </div>
+          <div style="font-weight:700;">${formatPrice(parseFloat(item.total_price))}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <div style="margin-top: 24px; display: flex; justify-content: flex-end; gap: 12px; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 20px;">
+      <button class="btn btn--primary" onclick="transmitToOnlineprinters('${order.id}')" id="transmitBtn-${order.id}">
+        An Onlineprinters senden
+      </button>
+    </div>
+  `;
+
+  document.getElementById('orderDetailModal').classList.add('show');
+}
+
+function closeOrderDetail() {
+  document.getElementById('orderDetailModal').classList.remove('show');
+}
+
+// ── Bestellung an Onlineprinters übermitteln ─────────
+async function transmitToOnlineprinters(orderId) {
+  const order = allOrders.find(o => o.id === orderId);
+  if (!order) return;
+
+  const btn = document.getElementById(`transmitBtn-${orderId}`);
+  btn.disabled = true;
+  btn.textContent = 'Übermittele...';
+
+  // 1. Für jeden Artikel zuerst die SKU via Pricing-API holen, dann Items bauen
+  const mappedItems = [];
+  
+  for (const item of order.order_items) {
+    const product = getProductById(item.product_id);
+    const sizeStr = (item.size_label || '5x5').replace(/cm/gi, '').split(/[x×]/).map(s => s.trim());
+    let width = parseFloat(sizeStr[0]) || 5;
+    let height = parseFloat(sizeStr[1]) || width;
+    
+    // OP API erfordert meistens, dass length (height) >= width ist
+    if (width > height) {
+      const temp = width;
+      width = height;
+      height = temp;
+    }
+
+    const totalQty = item.print_quantity * item.cart_quantity;
+
+    // Deep Link für Pricing bauen
+    let pricingLink = '';
+    if (product && product.baseLink) {
+      pricingLink = product.baseLink
+        .replace(/depvar_qty=\d+/, `depvar_qty=${totalQty}`)
+        .replace('{{quantity}}', totalQty).replace('{{qty}}', totalQty);
+      const matObj = MATERIALS.find(m => m.label === item.material) || MATERIALS[0];
+      if (matObj && matObj.code) {
+        pricingLink = pricingLink.replace(/\.AK3\.1X10/g, matObj.code);
+      }
+      if (product.opCode) {
+        pricingLink += `&ws_areaproduct_width_${product.opCode}=${width}&ws_areaproduct_length_${product.opCode}=${height}`;
+      }
+    } else {
+      pricingLink = `https://www.onlineprinters.de/p/runde-aufkleber-im-freiformat?depvar_index_setparent=%3cP8AFFXX%3e%3cP8AFFXX.AK3.1X10%3e&depvar_qty=${totalQty}&depvar_index_set_1=%3cZ8AFFA3S%3e%3cZ8AFFA3SX99%3e&depvar_index_set_2=%3cZXXXXX2D%3e%3cZXXXXX2DD00%3e&depvar_index_set_3=%3cZ7AFFA3Y%3e%3cZ7AFFA3YY34%3e&ws_areaproduct_width_P8AFFXX=${width}&ws_areaproduct_length_P8AFFXX=${height}`;
+    }
+
+    // SKUs via Pricing-Endpoint holen
+    btn.textContent = `SKUs werden abgerufen (${mappedItems.length + 1}/${order.order_items.length})...`;
+    let articles = [];
+    try {
+      const { data: pricingData, error: pricingError } = await db.functions.invoke('onlineprinters/pricing', {
+        body: { country: 'DEU', articleDeepLink: pricingLink }
+      });
+      if (!pricingError && pricingData?.articles?.length > 0) {
+        articles = pricingData.articles;
+      }
+    } catch (e) {
+      console.warn('Pricing fetch for SKU failed:', e);
+    }
+
+    if (articles.length > 0) {
+      // ALLE Artikel (Hauptprodukt + Zuschnitt + Ecken + Datencheck + Produktionszeit) übergeben
+      articles.forEach((art, index) => {
+        const itemObj = {
+          product: {
+            sku: art.product.sku,
+            descriptions: art.product.descriptions || [item.product_name]
+          },
+          quantity: totalQty
+        };
+        // Nur das erste Artikel-Objekt (Hauptprodukt) bekommt die Freiformat-Breite/Länge
+        if (index === 0) {
+          itemObj.product.properties = [
+            { key: 'width', value: String(width) },
+            { key: 'length', value: String(height) }
+          ];
+        }
+        mappedItems.push(itemObj);
+      });
+    } else {
+      // Fallback
+      const opCode = product?.opCode || 'P8AFFXX';
+      mappedItems.push({
+        product: {
+          sku: item.sku || `<${opCode}><${opCode}.AK3.1X10>`,
+          descriptions: [item.product_name, `Größe: ${item.size_label}`],
+          properties: [
+            { key: 'width', value: String(width) },
+            { key: 'length', value: String(height) }
+          ]
+        },
+        quantity: totalQty
+      });
+    }
+  }
+
+  // Helper: Entfernt leere Strings aus einem Objekt
+  const cleanAddress = (addr) => {
+    return Object.fromEntries(Object.entries(addr).filter(([_, v]) => v !== "" && v !== null && v !== undefined));
+  };
+
+  const deliveryAddr = cleanAddress({
+    companyName: (order.delivery_company || 'Privat').substring(0, 30),
+    firstName: (order.delivery_first_name || order.guest_first_name || "Kunde").substring(0, 30),
+    lastName: (order.delivery_last_name || order.guest_last_name || order.id.slice(0,6)).substring(0, 30),
+    street: ([order.delivery_street, order.delivery_street_nr].filter(Boolean).join(' ') || "Unbekannte Straße 1").substring(0, 30),
+    zipCode: (order.delivery_zip || "00000").substring(0, 8),
+    city: (order.delivery_city || "Unbekannt").substring(0, 24),
+    countryCode: 'DEU',
+    phone: (order.delivery_phone || '+49000000000').substring(0, 21),
+    email: order.delivery_email || order.guest_email || "no-reply@stickiverse.de"
+  });
+
+  const returnAddr = {
+    companyName: "Stickiverse",
+    firstName: "Emre",
+    lastName: "Kocak",
+    street: "Musterstraße 12",
+    zipCode: "10115", 
+    city: "Berlin",
+    countryCode: "DEU",
+    phone: "+49123456789",
+    email: "support@stickiverse.de"
+  };
+
+  // 2. Job-Daten strukturieren (laut API: deliveries, items, comment)
+  const jobData = {
+    deliveries: [
+      {
+        quantity: order.order_items.reduce((s, i) => s + (i.print_quantity * i.cart_quantity), 0),
+        deliveryAddress: deliveryAddr,
+        returnAddress: returnAddr,
+        shippingService: order.shipping_method === 'express' ? 'express' : 'standard'
+      }
+    ],
+    items: mappedItems,
+    comment: (`op.connect test ${order.order_number}`).substring(0, 50)
+  };
+
+  // 3. Print-Dateien extrahieren
+  const printFiles = order.order_items
+    .filter(item => item.preview_image && (item.preview_image.startsWith('http') || item.preview_image.startsWith('data:')))
+    .map(item => ({
+      url: item.preview_image,
+      filename: `${item.id}.png` // Dateiname muss mit customerReference des Items übereinstimmen laut OP Doku
+    }));
+
+  console.log('[OP-Debug] Final jobData being sent:', JSON.stringify(jobData, null, 2));
+
+  try {
+    // 4. Supabase Edge Function aufrufen
+    const { data, error } = await db.functions.invoke('onlineprinters/order', {
+      body: {
+        jobData: jobData,
+        printFiles: printFiles
+      }
+    });
+
+    if (error) {
+      console.error("Edge function returned an error:", error);
+      let detail = error.message;
+      if (error.context) {
+        try {
+          const errData = await error.context.json();
+          console.error("Onlineprinters API details:", errData);
+          detail = JSON.stringify(errData, null, 2);
+        } catch(e) {}
+      }
+      throw new Error(detail);
+    }
+
+    if (data && data.error) {
+      console.error("Onlineprinters returned error data:", data);
+      throw new Error(JSON.stringify(data.error));
+    }
+
+    showToast('Bestellung erfolgreich an Onlineprinters übermittelt! 🚀', 'success');
+    btn.textContent = 'An Onlineprinters gesendet';
+    btn.className = 'btn btn--ghost btn--sm';
+    btn.disabled = true;
+
+    // Status im System auf 'in_production' setzen
+    await updateOrderStatus(orderId, 'in_production');
+
+  } catch (err) {
+    console.error('API Transmission failed:', err);
+    if (err.message.includes('ERROR_ORDER_PAYMENT') || err.message.includes('Payment') || err.message.includes('402')) {
+      showToast('⚡ Produkt-Konfiguration 100% GÜLTIG! Es fehlt nur noch die Zahlungsfreischaltung deines API-Keys bei Onlineprinters.', 'info');
+    } else {
+      showToast('Fehler bei API: ' + err.message, 'error');
+    }
+    btn.disabled = false;
+    btn.textContent = 'An Onlineprinters senden';
+
+    // UI-Dump für Debugging
+    const debugDiv = document.createElement('div');
+    debugDiv.style.marginTop = '1rem';
+    debugDiv.innerHTML = `
+      <p class="text-sm text-red-600 mb-2"><b>Entwickler-Info:</b> Payload, die zu diesem Fehler geführt hat:</p>
+      <textarea readonly class="input" style="width:100%; height:150px; font-family:monospace; font-size:11px;">${JSON.stringify(jobData, null, 2)}</textarea>
+    `;
+    btn.parentNode.appendChild(debugDiv);
+  }
+}
+
+function showPage(pageId) {
+  document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.sidebar-nav li').forEach(li => li.classList.remove('active'));
+  
+  const pageEl = document.getElementById(`page-${pageId}`);
+  if (pageEl) pageEl.classList.add('active');
+
+  const navEl = document.getElementById(`nav-${pageId}`);
+  if (navEl) navEl.classList.add('active');
+
+  const titles = {
+    'dashboard': 'Dashboard',
+    'orders': 'Bestellungen',
+    'customers': 'Kunden',
+    'products': 'Produkte & Preise',
+    'settings': 'Einstellungen',
+    'coupons': 'Gutscheincodes'
+  };
+  document.getElementById('topbarTitle').textContent = titles[pageId] || 'Dashboard';
+  
+  if (pageId === 'products') {
+    loadMargin();
+  } else if (pageId === 'coupons') {
+    loadCoupons();
+  }
+}
+
+async function loadMargin() {
+  try {
+    const { data, error } = await db.from('store_settings').select('value').eq('id', 'product_margins').single();
+    let margins = {};
+    if (data && !error && typeof data.value === 'object') {
+      margins = data.value;
+    }
+    
+    // Falls noch keine spezifischen Margen da sind, prüfe ob es eine alte globale Marge gab
+    if (Object.keys(margins).length === 0) {
+      const { data: oldData } = await db.from('store_settings').select('value').eq('id', 'pricing_margin').single();
+      if (oldData && oldData.value) {
+        // Init with old global margin
+        PRODUCTS.forEach(p => margins[p.id] = oldData.value);
+      }
+    }
+
+    const container = document.getElementById('productMarginsContainer');
+    if (!container) return;
+    
+    container.innerHTML = PRODUCTS.map(p => {
+      const marginVal = margins[p.id] || 1.10;
+      return `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="font-size: 20px;">${p.emoji}</div>
+            <div>
+              <div style="font-weight: 600; font-size: 14px;">${p.name}</div>
+              <div style="font-size: 12px; color: rgba(255,255,255,0.4);">${p.tagline}</div>
+            </div>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 12px; color: rgba(255,255,255,0.4);">Marge:</span>
+            <input type="number" step="0.01" min="1.00" class="input margin-input" data-pid="${p.id}" style="width: 90px; text-align: center;" value="${marginVal.toFixed(2)}">
+          </div>
+        </div>
+      `;
+    }).join('');
+  } catch (e) {
+    console.warn('Could not load margin setting', e);
+  }
+}
+
+async function saveMargin() {
+  const btn = document.getElementById('saveMarginBtn');
+  
+  const margins = {};
+  document.querySelectorAll('.margin-input').forEach(input => {
+    const pid = input.getAttribute('data-pid');
+    let val = parseFloat(input.value);
+    if (isNaN(val) || val < 1.0) val = 1.0;
+    margins[pid] = val;
+  });
+  
+  btn.textContent = 'Speichert...';
+  btn.disabled = true;
+  
+  try {
+    const { error } = await db.from('store_settings').upsert({
+      id: 'product_margins',
+      value: margins,
+      description: 'Spezifische Aufschläge pro Produkt auf den OP-Preis'
+    });
+    
+    if (error) throw error;
+    showToast('Margen erfolgreich gespeichert!', 'success');
+  } catch (e) {
+    console.error(e);
+    showToast('Fehler beim Speichern: ' + e.message, 'error');
+  } finally {
+    btn.textContent = 'Alle Margen speichern';
+    btn.disabled = false;
+  }
+}
+
+
+
+// ── Page Navigation ───────────────────────
+const pageTitles = {
+  dashboard: '📊 Dashboard',
+  orders: 'Bestellungen',
+  customers: '👥 Kunden',
+  products: 'Produkte',
+  settings: '⚙️ Einstellungen',
+};
+
+function showPage(page) {
+  document.querySelectorAll('.admin-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById(`page-${page}`).classList.add('active');
+  document.querySelector(`[data-page="${page}"]`)?.classList.add('active');
+  document.getElementById('topbarTitle').textContent = pageTitles[page] || page;
+
+  if (page === 'orders') {
+    const allTable = document.getElementById('allOrdersTable');
+    if (allTable) {
+      const style = window.getComputedStyle(allTable);
+      console.log("🛠️ [Debug-Admin] allOrdersTable Höhe nach Seitenwechsel (px):", allTable.offsetHeight);
+      console.log("🛠️ [Debug-Admin] allOrdersTable parentNode:", allTable.parentNode.outerHTML.slice(0, 300));
+    }
+  }
+}
+
+// ── Logout ────────────────────────────────
+async function handleLogout() {
+  await db.auth.signOut();
+  window.location.reload();
+}
+
+// ==========================================
+// COUPON MANAGEMENT
+// ==========================================
+
+async function loadCoupons() {
+  const tbody = document.getElementById('couponsTableBody');
+  tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px;">Lade Gutscheine...</td></tr>';
+  
+  try {
+    const { data, error } = await db.from('coupons').select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    
+    if (!data || data.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: rgba(255,255,255,0.4);">Keine Gutscheine gefunden.</td></tr>';
+      return;
+    }
+    
+    tbody.innerHTML = data.map(c => {
+      const typeLabel = c.type === 'percentage' ? c.value + '%' : c.value.toFixed(2) + ' €';
+      const limitLabel = c.usage_limit ? `${c.usage_count} / ${c.usage_limit}` : `${c.usage_count} / ∞`;
+      const statusBadge = c.is_active ? '<span class="status-badge status-badge--success">Aktiv</span>' : '<span class="status-badge status-badge--error">Inaktiv</span>';
+      
+      return `
+        <tr>
+          <td><strong>${c.code}</strong></td>
+          <td>${c.type === 'percentage' ? 'Prozentual' : 'Festbetrag'}</td>
+          <td>${typeLabel}</td>
+          <td>${limitLabel}</td>
+          <td>${c.usage_count} eingelöst</td>
+          <td>${statusBadge}</td>
+          <td>
+            <div style="display:flex; gap:8px;">
+              <button class="btn btn--sm" style="padding:4px 8px;" onclick="toggleCouponStatus('${c.id}', ${!c.is_active})">
+                ${c.is_active ? 'Deaktivieren' : 'Aktivieren'}
+              </button>
+              <button class="btn btn--sm btn--danger" style="padding:4px 8px; background:rgba(239, 68, 68, 0.1); color:#EF4444;" onclick="deleteCoupon('${c.id}')">
+                Löschen
+              </button>
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  } catch (err) {
+    console.error(err);
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align: center; padding: 20px; color: red;">Fehler beim Laden der Gutscheine.</td></tr>';
+  }
+}
+
+function openCouponModal() {
+  document.getElementById('couponForm').reset();
+  toggleMaxDiscount();
+  document.getElementById('couponModalOverlay').classList.add('show');
+}
+
+function closeCouponModal() {
+  document.getElementById('couponModalOverlay').classList.remove('show');
+}
+
+function toggleMaxDiscount() {
+  const type = document.getElementById('couponType').value;
+  document.getElementById('maxDiscountContainer').style.display = type === 'percentage' ? 'block' : 'none';
+}
+
+async function handleCreateCoupon(e) {
+  e.preventDefault();
+  const code = document.getElementById('couponCode').value.toUpperCase().trim();
+  const type = document.getElementById('couponType').value;
+  const value = parseFloat(document.getElementById('couponValue').value);
+  const max_discount = document.getElementById('couponMaxDiscount').value ? parseFloat(document.getElementById('couponMaxDiscount').value) : null;
+  const usage_limit = document.getElementById('couponLimit').value ? parseInt(document.getElementById('couponLimit').value) : null;
+  const expires_at = document.getElementById('couponExpiry').value ? new Date(document.getElementById('couponExpiry').value).toISOString() : null;
+
+  try {
+    const { error } = await db.from('coupons').insert([{
+      code, type, value, max_discount, usage_limit, expires_at
+    }]);
+    
+    if (error) {
+      if (error.code === '23505') showToast('Code existiert bereits!', 'error');
+      else throw error;
+      return;
+    }
+    
+    showToast('Gutschein erstellt!', 'success');
+    closeCouponModal();
+    loadCoupons();
+  } catch (err) {
+    console.error(err);
+    showToast('Fehler beim Erstellen', 'error');
+  }
+}
+
+async function toggleCouponStatus(id, newStatus) {
+  try {
+    const { error } = await db.from('coupons').update({ is_active: newStatus }).eq('id', id);
+    if (error) throw error;
+    showToast('Status aktualisiert', 'success');
+    loadCoupons();
+  } catch (err) {
+    console.error(err);
+    showToast('Fehler beim Update', 'error');
+  }
+}
+
+async function deleteCoupon(id) {
+  if (!confirm('Soll dieser Gutschein wirklich gelöscht werden?')) return;
+  try {
+    const { error } = await db.from('coupons').delete().eq('id', id);
+    if (error) throw error;
+    showToast('Gutschein gelöscht', 'success');
+    loadCoupons();
+  } catch (err) {
+    console.error(err);
+    showToast('Fehler beim Löschen', 'error');
+  }
+}
+
+// ── Routing ──
+document.addEventListener('DOMContentLoaded', () => {initAdmin();});
+</script>
+</body>
+</html>
+
+<!-- COUPON MODAL -->
+<div class="detail-modal-overlay" id="couponModalOverlay" onclick="if(event.target===this) closeCouponModal()">
+  <div class="detail-modal" style="max-width: 500px;">
+    <div class="detail-modal__header">
+      <h3 class="topbar-title">Neuer Gutschein</h3>
+      <button class="detail-modal__close" onclick="closeCouponModal()">×</button>
+    </div>
+    <form id="couponForm" onsubmit="handleCreateCoupon(event)" style="display:flex; flex-direction:column; gap:16px;">
+      <div>
+        <label style="font-size:12px; color:rgba(255,255,255,0.5); display:block; margin-bottom:4px;">Gutscheincode (z.B. SUMMER20)</label>
+        <input type="text" id="couponCode" class="input" style="width:100%;" required>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div>
+          <label style="font-size:12px; color:rgba(255,255,255,0.5); display:block; margin-bottom:4px;">Typ</label>
+          <select id="couponType" class="input" style="width:100%;" onchange="toggleMaxDiscount()">
+            <option value="percentage">Prozentual (%)</option>
+            <option value="fixed">Fester Betrag (€)</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:12px; color:rgba(255,255,255,0.5); display:block; margin-bottom:4px;">Wert</label>
+          <input type="number" step="0.01" id="couponValue" class="input" style="width:100%;" required>
+        </div>
+      </div>
+      <div id="maxDiscountContainer">
+        <label style="font-size:12px; color:rgba(255,255,255,0.5); display:block; margin-bottom:4px;">Maximaler Rabatt in € (optional)</label>
+        <input type="number" step="0.01" id="couponMaxDiscount" class="input" style="width:100%;">
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+        <div>
+          <label style="font-size:12px; color:rgba(255,255,255,0.5); display:block; margin-bottom:4px;">Nutzungslimit (optional)</label>
+          <input type="number" step="1" id="couponLimit" class="input" style="width:100%;">
+        </div>
+        <div>
+          <label style="font-size:12px; color:rgba(255,255,255,0.5); display:block; margin-bottom:4px;">Ablaufdatum (optional)</label>
+          <input type="datetime-local" id="couponExpiry" class="input" style="width:100%;">
+        </div>
+      </div>
+      <button type="submit" class="btn btn--primary" style="margin-top:16px;">Speichern</button>
+    </form>
+  </div>
+</div>

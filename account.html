@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mein Konto – Stickiverse</title>
+  <meta name="description" content="Verwalte dein Stickiverse-Konto: Bestellungen, Adressen, Designs und mehr.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .account-page {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+      background: var(--bg-primary);
+    }
+
+    .account-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .account-header__title {
+      font-size: clamp(28px, 3.5vw, 42px);
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    /* ── Account Layout ── */
+    .account-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 32px;
+      padding: 32px 0 96px;
+      align-items: start;
+    }
+
+    /* ── Sidebar ── */
+    .account-sidebar {
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+    }
+
+    .account-sidebar__profile {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+
+    .account-sidebar__avatar {
+      width: 64px; height: 64px;
+      border-radius: 50%;
+      background: var(--gradient-brand);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 28px; font-weight: 800; color: white;
+      margin: 0 auto 14px;
+      box-shadow: var(--shadow-brand);
+    }
+
+    .account-sidebar__name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px; font-weight: 800;
+      margin-bottom: 2px;
+    }
+
+    .account-sidebar__email {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .account-nav {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .account-nav__section {
+      padding: 12px 16px 6px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .account-nav__section:first-child { padding-top: 16px; }
+
+    .account-nav__item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 16px;
+      font-size: 14px; font-weight: 500;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      border: none; background: none; width: 100%;
+      text-align: left;
+      text-decoration: none;
+    }
+
+    .account-nav__item:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .account-nav__item.active {
+      background: rgba(139, 92, 246, 0.1);
+      color: var(--purple-light);
+      font-weight: 600;
+    }
+
+    .account-nav__item-icon { font-size: 16px; width: 22px; flex-shrink: 0; text-align: center; }
+
+    .account-nav__divider {
+      height: 1px;
+      background: var(--border);
+      margin: 4px 16px;
+    }
+
+    .account-nav__item--danger { color: #EF4444; }
+    .account-nav__item--danger:hover { background: rgba(239, 68, 68, 0.08); }
+
+    /* ── Content Sections ── */
+    .account-content {
+      min-width: 0;
+    }
+
+    .account-section {
+      display: none;
+    }
+
+    .account-section.active {
+      display: block;
+    }
+
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+    }
+
+    .section-card + .section-card {
+      margin-top: 20px;
+    }
+
+    .section-card__header {
+      padding: 20px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+    }
+
+    .section-card__title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px; font-weight: 800;
+    }
+
+    .section-card__body {
+      padding: 28px;
+    }
+
+    /* ── Form Styles ── */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group--full { grid-column: 1 / -1; }
+
+    .form-label {
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .form-input {
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+
+    .form-input:focus {
+      border-color: var(--purple);
+      background: rgba(255,255,255,0.07);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+    }
+
+    .form-input:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .form-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    select.form-input {
+      appearance: none;
+      background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.4)' stroke-width='2'%3e%3cpolyline points='6 9 12 15 18 9'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+      padding-right: 40px;
+    }
+
+    .form-actions {
+      margin-top: 24px;
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+    }
+
+    .form-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .form-success {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 8px 16px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: var(--radius-sm);
+      color: var(--green);
+      font-size: 13px; font-weight: 600;
+    }
+
+    /* ── Orders ── */
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .order-card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      background: rgba(255,255,255,0.02);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .order-card:hover { border-color: var(--border-brand); }
+
+    .order-card__header {
+      padding: 14px 20px;
+      background: rgba(255,255,255,0.02);
+      border-bottom: 1px solid var(--border);
+      display: flex; flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px; align-items: center;
+    }
+
+    .order-card__meta {
+      display: flex; gap: 20px; font-size: 13px;
+    }
+
+    .order-meta-item__label {
+      color: var(--text-muted); font-size: 10px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .order-meta-item__val { font-weight: 600; }
+
+    .order-card__body { padding: 20px; }
+
+    .order-card-items {
+      display: flex; flex-direction: column; gap: 14px;
+    }
+
+    .order-card-item {
+      display: grid;
+      grid-template-columns: 52px 1fr auto;
+      gap: 14px; align-items: center;
+    }
+
+    .order-card-item__preview {
+      width: 52px; height: 52px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+
+    .order-card-item__preview img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .order-card-item__name { font-weight: 700; font-size: 14px; margin-bottom: 3px; }
+    .order-card-item__meta { font-size: 12px; color: var(--text-muted); }
+
+    .order-card-item__price {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 800; font-size: 15px;
+    }
+
+    /* ── Status Badges ── */
+    .status-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--radius-full);
+      font-size: 12px; font-weight: 700;
+    }
+
+    .status-badge::before {
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: currentColor;
+    }
+
+    .status-badge--pending       { background: rgba(245,158,11,0.15); color: var(--yellow); }
+    .status-badge--confirmed     { background: rgba(6,182,212,0.15);   color: #06B6D4; }
+    .status-badge--in_production { background: rgba(139,92,246,0.15);  color: var(--purple-light); }
+    .status-badge--shipped       { background: rgba(16,185,129,0.15);  color: var(--green); }
+    .status-badge--delivered     { background: rgba(16,185,129,0.25);  color: #34D399; }
+    .status-badge--cancelled     { background: rgba(239,68,68,0.15);   color: #ef4444; }
+
+    /* ── Designs Grid ── */
+    .designs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .design-card {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      transition: var(--transition);
+    }
+
+    .design-card:hover { border-color: var(--border-brand); transform: translateY(-2px); }
+
+    .design-card__image {
+      width: 100%; aspect-ratio: 1;
+      background: var(--bg-secondary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      overflow: hidden;
+    }
+
+    .design-card__image img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .design-card__info {
+      padding: 14px;
+    }
+
+    .design-card__name {
+      font-weight: 700; font-size: 14px;
+      margin-bottom: 8px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    .design-card__toggle {
+      display: flex; align-items: center; gap: 8px;
+      font-size: 12px; color: var(--text-secondary);
+    }
+
+    /* ── Toggle Switch ── */
+    .toggle-switch {
+      position: relative;
+      width: 40px; height: 22px;
+      flex-shrink: 0;
+    }
+
+    .toggle-switch input {
+      opacity: 0; width: 0; height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.1);
+      border-radius: 22px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .toggle-slider::before {
+      content: '';
+      position: absolute;
+      width: 16px; height: 16px;
+      left: 3px; bottom: 3px;
+      background: white;
+      border-radius: 50%;
+      transition: var(--transition);
+    }
+
+    .toggle-switch input:checked + .toggle-slider {
+      background: var(--purple);
+    }
+
+    .toggle-switch input:checked + .toggle-slider::before {
+      transform: translateX(18px);
+    }
+
+    /* ── Address Cards ── */
+    .address-display {
+      padding: 20px;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      line-height: 1.7;
+      color: var(--text-secondary);
+      font-size: 14px;
+    }
+
+    .address-display strong {
+      color: var(--text-primary);
+    }
+
+    /* ── Empty State ── */
+    .empty-state {
+      text-align: center;
+      padding: 48px 24px;
+    }
+
+    .empty-state__icon { font-size: 48px; margin-bottom: 16px; }
+    .empty-state__title { font-weight: 700; font-size: 18px; margin-bottom: 8px; }
+    .empty-state__text { color: var(--text-muted); font-size: 14px; margin-bottom: 24px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 900px) {
+      .account-layout {
+        grid-template-columns: 1fr;
+      }
+      .account-sidebar {
+        position: static;
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .loading-spinner-sm {
+      width: 28px; height: 28px;
+      border: 2px solid rgba(139,92,246,0.2);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="account-page">
+    <div class="account-header">
+      <div class="container">
+        <h1 class="account-header__title">Mein Konto</h1>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="account-layout">
+
+        <!-- ══════════ SIDEBAR ══════════ -->
+        <aside class="account-sidebar">
+          <div class="account-sidebar__profile">
+            <div class="account-sidebar__avatar" id="avatarChar">?</div>
+            <div class="account-sidebar__name" id="profileName">Wird geladen...</div>
+            <div class="account-sidebar__email" id="profileEmail">...</div>
+          </div>
+
+          <nav class="account-nav">
+            <div class="account-nav__section">Bestellungen</div>
+            <button class="account-nav__item active" data-section="orders" onclick="showSection('orders')">
+              <span class="account-nav__item-icon">📦</span> Meine Bestellungen
+            </button>
+
+            <div class="account-nav__section">Persönliches</div>
+            <button class="account-nav__item" data-section="profile" onclick="showSection('profile')">
+              <span class="account-nav__item-icon">👤</span> Persönliche Daten
+            </button>
+            <button class="account-nav__item" data-section="delivery" onclick="showSection('delivery')">
+              <span class="account-nav__item-icon">🏠</span> Lieferadresse
+            </button>
+            <button class="account-nav__item" data-section="billing" onclick="showSection('billing')">
+              <span class="account-nav__item-icon">📝</span> Rechnungsadresse
+            </button>
+
+            <div class="account-nav__section">Community</div>
+            <button class="account-nav__item" data-section="designs" onclick="showSection('designs')">
+              <span class="account-nav__item-icon">🎨</span> Meine Designs
+            </button>
+
+            <div class="account-nav__section">Sicherheit</div>
+            <button class="account-nav__item" data-section="password" onclick="showSection('password')">
+              <span class="account-nav__item-icon">🔒</span> Passwort ändern
+            </button>
+
+            <div class="account-nav__divider"></div>
+
+            <button class="account-nav__item" id="adminLink" style="display:none;" onclick="window.location.href='admin/index.html'">
+              <span class="account-nav__item-icon">🛠️</span> Admin Dashboard
+            </button>
+
+            <button class="account-nav__item account-nav__item--danger" id="logoutBtn">
+              <span class="account-nav__item-icon">🚪</span> Ausloggen
+            </button>
+          </nav>
+        </aside>
+
+        <!-- ══════════ CONTENT ══════════ -->
+        <div class="account-content">
+
+          <!-- ── ORDERS SECTION ── -->
+          <div class="account-section active" id="section-orders">
+            <div class="section-card">
+              <div class="section-card__header">
+                <h2 class="section-card__title">Deine Bestellungen</h2>
+                <span style="font-size:13px;color:var(--text-muted);" id="ordersCount">0 Bestellungen</span>
+              </div>
+              <div class="section-card__body">
+                <div id="ordersLoading" style="text-align:center;padding:24px 0;">
+                  <div class="loading-spinner-sm" style="margin-bottom:12px;"></div>
+                  <div style="color:var(--text-muted);font-size:13px;">Lade Bestellungen...</div>
+                </div>
+
+                <div id="emptyOrders" style="display:none;">
+                  <div class="empty-state">
+                    <div class="empty-state__icon">📦</div>
+                    <div class="empty-state__title">Noch keine Bestellungen</div>
+                    <div class="empty-state__text">Gestalte jetzt deine Sticker und bringe sie in den Druck!</div>
+                    <a href="products.html" class="btn btn--primary btn--sm">Sticker gestalten</a>
+                  </div>
+                </div>
+
+                <div class="orders-list" id="ordersList" style="display:none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PROFILE SECTION ── -->
+          <div class="account-section" id="section-profile">
+            <div class="section-card">
+              <div class="section-card__header">
+                <h2 class="section-card__title">Persönliche Daten</h2>
+              </div>
+              <div class="section-card__body">
+                <form id="profileForm" onsubmit="saveProfile(event)">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Vorname</label>
+                      <input type="text" class="form-input" id="profileFirstName" placeholder="Max">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Nachname</label>
+                      <input type="text" class="form-input" id="profileLastName" placeholder="Mustermann">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">E-Mail</label>
+                      <input type="email" class="form-input" id="profileEmailField" disabled>
+                      <span class="form-hint">E-Mail kann nicht geändert werden</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Telefon</label>
+                      <input type="tel" class="form-input" id="profilePhone" placeholder="+49 123 456789">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Anzeigename (Community)</label>
+                      <input type="text" class="form-input" id="profileDisplayName" placeholder="Dein öffentlicher Name">
+                      <span class="form-hint">Wird bei freigegebenen Designs in der Community angezeigt</span>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Über mich</label>
+                      <input type="text" class="form-input" id="profileBio" placeholder="Kurze Beschreibung über dich...">
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <span id="profileSaveSuccess" class="form-success" style="display:none;">✓ Gespeichert!</span>
+                    <button type="submit" class="btn btn--primary btn--sm" id="profileSaveBtn">Änderungen speichern</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DELIVERY ADDRESS SECTION ── -->
+          <div class="account-section" id="section-delivery">
+            <div class="section-card">
+              <div class="section-card__header">
+                <h2 class="section-card__title">Lieferadresse</h2>
+              </div>
+              <div class="section-card__body">
+                <form id="deliveryForm" onsubmit="saveDeliveryAddress(event)">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Straße</label>
+                      <input type="text" class="form-input" id="deliveryStreet" placeholder="Musterstraße">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Hausnummer</label>
+                      <input type="text" class="form-input" id="deliveryStreetNr" placeholder="12a">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">PLZ</label>
+                      <input type="text" class="form-input" id="deliveryZip" placeholder="10115">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Stadt</label>
+                      <input type="text" class="form-input" id="deliveryCity" placeholder="Berlin">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Land</label>
+                      <select class="form-input" id="deliveryCountry">
+                        <option value="DE">Deutschland</option>
+                        <option value="AT">Österreich</option>
+                        <option value="CH">Schweiz</option>
+                        <option value="NL">Niederlande</option>
+                        <option value="BE">Belgien</option>
+                        <option value="FR">Frankreich</option>
+                        <option value="IT">Italien</option>
+                        <option value="ES">Spanien</option>
+                        <option value="PL">Polen</option>
+                        <option value="GB">Großbritannien</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <span id="deliverySaveSuccess" class="form-success" style="display:none;">✓ Gespeichert!</span>
+                    <button type="submit" class="btn btn--primary btn--sm" id="deliverySaveBtn">Adresse speichern</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── BILLING ADDRESS SECTION ── -->
+          <div class="account-section" id="section-billing">
+            <div class="section-card">
+              <div class="section-card__header">
+                <h2 class="section-card__title">Rechnungsadresse</h2>
+              </div>
+              <div class="section-card__body">
+                <div style="margin-bottom:20px;">
+                  <label class="design-card__toggle" style="font-size:14px;cursor:pointer;">
+                    <span class="toggle-switch">
+                      <input type="checkbox" id="billingSameAsDelivery" onchange="toggleBillingForm()">
+                      <span class="toggle-slider"></span>
+                    </span>
+                    <span>Entspricht der Lieferadresse</span>
+                  </label>
+                </div>
+
+                <form id="billingForm" onsubmit="saveBillingAddress(event)">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Vorname</label>
+                      <input type="text" class="form-input" id="billingFirstName" placeholder="Max">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Nachname</label>
+                      <input type="text" class="form-input" id="billingLastName" placeholder="Mustermann">
+                    </div>
+                    <div class="form-group form-group--full">
+                      <label class="form-label">Firma (optional)</label>
+                      <input type="text" class="form-input" id="billingCompany" placeholder="Firma GmbH">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Straße</label>
+                      <input type="text" class="form-input" id="billingStreet" placeholder="Musterstraße">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Hausnummer</label>
+                      <input type="text" class="form-input" id="billingStreetNr" placeholder="12a">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">PLZ</label>
+                      <input type="text" class="form-input" id="billingZip" placeholder="10115">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Stadt</label>
+                      <input type="text" class="form-input" id="billingCity" placeholder="Berlin">
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Land</label>
+                      <select class="form-input" id="billingCountry">
+                        <option value="DE">Deutschland</option>
+                        <option value="AT">Österreich</option>
+                        <option value="CH">Schweiz</option>
+                        <option value="NL">Niederlande</option>
+                        <option value="BE">Belgien</option>
+                        <option value="FR">Frankreich</option>
+                        <option value="IT">Italien</option>
+                        <option value="ES">Spanien</option>
+                        <option value="PL">Polen</option>
+                        <option value="GB">Großbritannien</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <span id="billingSaveSuccess" class="form-success" style="display:none;">✓ Gespeichert!</span>
+                    <button type="submit" class="btn btn--primary btn--sm" id="billingSaveBtn">Rechnungsadresse speichern</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── DESIGNS SECTION ── -->
+          <div class="account-section" id="section-designs">
+            <div class="section-card">
+              <div class="section-card__header">
+                <h2 class="section-card__title">Meine Designs</h2>
+                <a href="design-upload.html" class="btn btn--primary btn--sm">+ Design hochladen</a>
+              </div>
+              <div class="section-card__body">
+                <div style="margin-bottom:20px; padding:16px; background:rgba(139,92,246,0.06); border:1px solid rgba(139,92,246,0.15); border-radius:var(--radius-sm);">
+                  <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+                    <span style="font-size:16px;">💡</span>
+                    <strong style="font-size:14px;">Community-Freigabe</strong>
+                  </div>
+                  <p style="font-size:13px;color:var(--text-secondary);line-height:1.6;margin:0;">
+                    Aktiviere den Schalter bei einem Design, um es für die <strong>Stickiverse-Community</strong> freizugeben.
+                    Andere Nutzer können dein Design dann unter „Sticker entdecken" sehen und bestellen.
+                  </p>
+                </div>
+
+                <div id="designsLoading" style="text-align:center;padding:24px 0;">
+                  <div class="loading-spinner-sm" style="margin-bottom:12px;"></div>
+                  <div style="color:var(--text-muted);font-size:13px;">Lade Designs...</div>
+                </div>
+
+                <div id="emptyDesigns" style="display:none;">
+                  <div class="empty-state">
+                    <div class="empty-state__icon">🎨</div>
+                    <div class="empty-state__title">Noch keine Designs</div>
+                    <div class="empty-state__text">Lade dein erstes Design hoch und teile es mit der Community!</div>
+                    <a href="design-upload.html" class="btn btn--primary btn--sm">Design hochladen</a>
+                  </div>
+                </div>
+
+                <div class="designs-grid" id="designsGrid" style="display:none;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── PASSWORD SECTION ── -->
+          <div class="account-section" id="section-password">
+            <div class="section-card">
+              <div class="section-card__header">
+                <h2 class="section-card__title">Passwort ändern</h2>
+              </div>
+              <div class="section-card__body">
+                <form id="passwordForm" onsubmit="changePassword(event)">
+                  <div class="form-grid">
+                    <div class="form-group">
+                      <label class="form-label">Neues Passwort</label>
+                      <input type="password" class="form-input" id="newPassword" placeholder="Mindestens 8 Zeichen" minlength="8" required>
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label">Passwort bestätigen</label>
+                      <input type="password" class="form-input" id="confirmPassword" placeholder="Passwort wiederholen" minlength="8" required>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <span id="passwordSaveSuccess" class="form-success" style="display:none;">✓ Passwort geändert!</span>
+                    <button type="submit" class="btn btn--primary btn--sm" id="passwordSaveBtn">Passwort ändern</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with ❤️ in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Supabase & Auth -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/products.js?v=2"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script>
+    let currentProfile = null;
+
+    // ── Section Navigation ──
+    function showSection(sectionId) {
+      document.querySelectorAll('.account-section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.account-nav__item[data-section]').forEach(n => n.classList.remove('active'));
+
+      const section = document.getElementById('section-' + sectionId);
+      const navItem = document.querySelector(`.account-nav__item[data-section="${sectionId}"]`);
+
+      if (section) section.classList.add('active');
+      if (navItem) navItem.classList.add('active');
+
+      // Lazy load section data
+      if (sectionId === 'profile') loadProfileSection();
+      if (sectionId === 'delivery') loadDeliverySection();
+      if (sectionId === 'billing') loadBillingSection();
+      if (sectionId === 'designs') loadDesignsSection();
+    }
+
+    // ── Toast ──
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast--${type}`;
+      toast.innerHTML = `<span>${message}</span>`;
+      toast.style.cssText = 'padding:14px 20px;background:rgba(15,15,28,0.95);border:1px solid rgba(139,92,246,0.3);border-radius:12px;color:white;font-size:14px;font-weight:500;backdrop-filter:blur(12px);box-shadow:0 8px 32px rgba(0,0,0,0.4);animation:slideIn 0.3s ease;margin-bottom:8px;';
+      if (type === 'success') toast.style.borderColor = 'rgba(16,185,129,0.4)';
+      if (type === 'error') toast.style.borderColor = 'rgba(239,68,68,0.4)';
+      container.appendChild(toast);
+      setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 300); }, 3500);
+    }
+
+    // ── Init ──
+    async function loadAccountData() {
+      const { data: { session } } = await db.auth.getSession();
+
+      if (!session) {
+        window.location.href = 'index.html';
+        return;
+      }
+
+      currentUser = session.user;
+      currentProfile = await getProfile();
+
+      const name = currentProfile?.first_name
+        ? `${currentProfile.first_name} ${currentProfile.last_name || ''}`
+        : currentUser.email.split('@')[0];
+
+      document.getElementById('profileName').textContent = name;
+      document.getElementById('profileEmail').textContent = currentUser.email;
+      document.getElementById('avatarChar').textContent = name[0].toUpperCase();
+
+      if (currentProfile?.is_admin) {
+        document.getElementById('adminLink').style.display = 'flex';
+      }
+
+      // Load orders
+      await loadOrders();
+    }
+
+    // ── Orders ──
+    async function loadOrders() {
+      const orders = await getMyOrders();
+      document.getElementById('ordersLoading').style.display = 'none';
+      document.getElementById('ordersCount').textContent = `${orders.length} ${orders.length === 1 ? 'Bestellung' : 'Bestellungen'}`;
+
+      if (orders.length === 0) {
+        document.getElementById('emptyOrders').style.display = 'block';
+        return;
+      }
+
+      const listEl = document.getElementById('ordersList');
+      listEl.style.display = 'flex';
+
+      const statusLabels = {
+        pending: 'Ausstehend', confirmed: 'Bestätigt',
+        in_production: 'In Produktion', shipped: 'Versandt',
+        delivered: 'Geliefert', cancelled: 'Storniert'
+      };
+
+      listEl.innerHTML = orders.map(order => `
+        <div class="order-card">
+          <div class="order-card__header">
+            <div class="order-card__meta">
+              <div>
+                <div class="order-meta-item__label">BESTELLNUMMER</div>
+                <div class="order-meta-item__val">${order.order_number}</div>
+              </div>
+              <div>
+                <div class="order-meta-item__label">DATUM</div>
+                <div class="order-meta-item__val">${new Date(order.created_at).toLocaleDateString('de-DE')}</div>
+              </div>
+              <div>
+                <div class="order-meta-item__label">GESAMTBETRAG</div>
+                <div class="order-meta-item__val">${formatPrice(parseFloat(order.total))}</div>
+              </div>
+            </div>
+            <span class="status-badge status-badge--${order.status}">
+              ${statusLabels[order.status] || order.status}
+            </span>
+          </div>
+          <div class="order-card__body">
+            <div class="order-card-items">
+              ${(order.order_items || []).map(item => `
+                <div class="order-card-item">
+                  <div class="order-card-item__preview">
+                    ${item.preview_image ? `<img src="${item.preview_image}" alt="">` : '🎨'}
+                  </div>
+                  <div style="flex: 1;">
+                    <div class="order-card-item__name">${item.product_name}</div>
+                    <div class="order-card-item__meta">${item.size_label} · ${item.print_quantity} Stück · ×${item.cart_quantity}</div>
+                    ${!item.preview_image ? `
+                      <div style="margin-top: 8px;">
+                        <button class="btn btn--outline btn--sm" onclick="document.getElementById('accountFileInput-${item.id}').click()" style="display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; font-size: 12px;">
+                          <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                          Druckdaten jetzt hochladen
+                        </button>
+                        <input type="file" id="accountFileInput-${item.id}" style="display: none;" accept="image/png, image/jpeg, image/webp, application/pdf" onchange="showToast('Daten für Artikel hochgeladen!', 'success')">
+                      </div>
+                    ` : ''}
+                  </div>
+                  <div class="order-card-item__price">${formatPrice(parseFloat(item.total_price))}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ── Profile Section ──
+    let profileLoaded = false;
+    function loadProfileSection() {
+      if (profileLoaded) return;
+      profileLoaded = true;
+
+      document.getElementById('profileFirstName').value = currentProfile?.first_name || '';
+      document.getElementById('profileLastName').value = currentProfile?.last_name || '';
+      document.getElementById('profileEmailField').value = currentUser?.email || '';
+      document.getElementById('profilePhone').value = currentProfile?.phone || '';
+      document.getElementById('profileDisplayName').value = currentProfile?.display_name || '';
+      document.getElementById('profileBio').value = currentProfile?.bio || '';
+    }
+
+    async function saveProfile(e) {
+      e.preventDefault();
+      const btn = document.getElementById('profileSaveBtn');
+      btn.textContent = 'Speichert...';
+      btn.disabled = true;
+
+      try {
+        const updates = {
+          first_name: document.getElementById('profileFirstName').value.trim(),
+          last_name: document.getElementById('profileLastName').value.trim(),
+          phone: document.getElementById('profilePhone').value.trim(),
+          display_name: document.getElementById('profileDisplayName').value.trim(),
+          bio: document.getElementById('profileBio').value.trim(),
+        };
+
+        await updateProfile(updates);
+        currentProfile = { ...currentProfile, ...updates };
+
+        // Update sidebar name
+        const name = updates.first_name ? `${updates.first_name} ${updates.last_name}` : currentUser.email.split('@')[0];
+        document.getElementById('profileName').textContent = name;
+        document.getElementById('avatarChar').textContent = name[0].toUpperCase();
+
+        flashSuccess('profileSaveSuccess');
+        showToast('Profildaten gespeichert!', 'success');
+      } catch (err) {
+        showToast('Fehler beim Speichern: ' + err.message, 'error');
+      } finally {
+        btn.textContent = 'Änderungen speichern';
+        btn.disabled = false;
+      }
+    }
+
+    // ── Delivery Address ──
+    let deliveryLoaded = false;
+    function loadDeliverySection() {
+      if (deliveryLoaded) return;
+      deliveryLoaded = true;
+
+      document.getElementById('deliveryStreet').value = currentProfile?.street || '';
+      document.getElementById('deliveryStreetNr').value = currentProfile?.street_nr || '';
+      document.getElementById('deliveryZip').value = currentProfile?.zip || '';
+      document.getElementById('deliveryCity').value = currentProfile?.city || '';
+      document.getElementById('deliveryCountry').value = currentProfile?.country || 'DE';
+    }
+
+    async function saveDeliveryAddress(e) {
+      e.preventDefault();
+      const btn = document.getElementById('deliverySaveBtn');
+      btn.textContent = 'Speichert...';
+      btn.disabled = true;
+
+      try {
+        const updates = {
+          street: document.getElementById('deliveryStreet').value.trim(),
+          street_nr: document.getElementById('deliveryStreetNr').value.trim(),
+          zip: document.getElementById('deliveryZip').value.trim(),
+          city: document.getElementById('deliveryCity').value.trim(),
+          country: document.getElementById('deliveryCountry').value,
+        };
+
+        await updateProfile(updates);
+        currentProfile = { ...currentProfile, ...updates };
+
+        flashSuccess('deliverySaveSuccess');
+        showToast('Lieferadresse gespeichert!', 'success');
+      } catch (err) {
+        showToast('Fehler beim Speichern: ' + err.message, 'error');
+      } finally {
+        btn.textContent = 'Adresse speichern';
+        btn.disabled = false;
+      }
+    }
+
+    // ── Billing Address ──
+    let billingLoaded = false;
+    function loadBillingSection() {
+      if (billingLoaded) return;
+      billingLoaded = true;
+
+      document.getElementById('billingFirstName').value = currentProfile?.billing_first_name || '';
+      document.getElementById('billingLastName').value = currentProfile?.billing_last_name || '';
+      document.getElementById('billingCompany').value = currentProfile?.billing_company || '';
+      document.getElementById('billingStreet').value = currentProfile?.billing_street || '';
+      document.getElementById('billingStreetNr').value = currentProfile?.billing_street_nr || '';
+      document.getElementById('billingZip').value = currentProfile?.billing_zip || '';
+      document.getElementById('billingCity').value = currentProfile?.billing_city || '';
+      document.getElementById('billingCountry').value = currentProfile?.billing_country || 'DE';
+
+      // Check if billing equals delivery
+      const isSame = !currentProfile?.billing_street && !currentProfile?.billing_first_name;
+      document.getElementById('billingSameAsDelivery').checked = isSame;
+      toggleBillingForm();
+    }
+
+    function toggleBillingForm() {
+      const isSame = document.getElementById('billingSameAsDelivery').checked;
+      const form = document.getElementById('billingForm');
+      form.style.opacity = isSame ? '0.35' : '1';
+      form.style.pointerEvents = isSame ? 'none' : 'auto';
+    }
+
+    async function saveBillingAddress(e) {
+      e.preventDefault();
+      const btn = document.getElementById('billingSaveBtn');
+      btn.textContent = 'Speichert...';
+      btn.disabled = true;
+
+      try {
+        const updates = {
+          billing_first_name: document.getElementById('billingFirstName').value.trim(),
+          billing_last_name: document.getElementById('billingLastName').value.trim(),
+          billing_company: document.getElementById('billingCompany').value.trim(),
+          billing_street: document.getElementById('billingStreet').value.trim(),
+          billing_street_nr: document.getElementById('billingStreetNr').value.trim(),
+          billing_zip: document.getElementById('billingZip').value.trim(),
+          billing_city: document.getElementById('billingCity').value.trim(),
+          billing_country: document.getElementById('billingCountry').value,
+        };
+
+        await updateProfile(updates);
+        currentProfile = { ...currentProfile, ...updates };
+
+        flashSuccess('billingSaveSuccess');
+        showToast('Rechnungsadresse gespeichert!', 'success');
+      } catch (err) {
+        showToast('Fehler beim Speichern: ' + err.message, 'error');
+      } finally {
+        btn.textContent = 'Rechnungsadresse speichern';
+        btn.disabled = false;
+      }
+    }
+
+    // ── Designs Section ──
+    let designsLoaded = false;
+    async function loadDesignsSection() {
+      if (designsLoaded) return;
+      designsLoaded = true;
+
+      try {
+        const { data: designs, error } = await db
+          .from('designs')
+          .select('*')
+          .eq('creator_id', currentUser.id)
+          .order('created_at', { ascending: false });
+
+        document.getElementById('designsLoading').style.display = 'none';
+
+        if (error || !designs || designs.length === 0) {
+          document.getElementById('emptyDesigns').style.display = 'block';
+          return;
+        }
+
+        const grid = document.getElementById('designsGrid');
+        grid.style.display = 'grid';
+
+        grid.innerHTML = designs.map(d => `
+          <div class="design-card">
+            <div class="design-card__image">
+              ${d.preview_image_path
+                ? `<img src="${d.preview_image_path}" alt="${d.title}">`
+                : '🎨'}
+            </div>
+            <div class="design-card__info">
+              <div class="design-card__name">${d.title || 'Unbenannt'}</div>
+              <label class="design-card__toggle">
+                <span class="toggle-switch">
+                  <input type="checkbox" ${d.community_shared ? 'checked' : ''} onchange="toggleCommunityShare('${d.id}', this.checked)">
+                  <span class="toggle-slider"></span>
+                </span>
+                <span>${d.community_shared ? 'Freigegeben' : 'Privat'}</span>
+              </label>
+            </div>
+          </div>
+        `).join('');
+      } catch (err) {
+        console.error('Error loading designs:', err);
+        document.getElementById('designsLoading').style.display = 'none';
+        document.getElementById('emptyDesigns').style.display = 'block';
+      }
+    }
+
+    async function toggleCommunityShare(designId, isShared) {
+      try {
+        const { error } = await db
+          .from('designs')
+          .update({ community_shared: isShared })
+          .eq('id', designId)
+          .eq('creator_id', currentUser.id);
+
+        if (error) throw error;
+
+        // Update label text
+        const input = document.querySelector(`input[onchange*="${designId}"]`);
+        if (input) {
+          const label = input.closest('.design-card__toggle').querySelector('span:last-child');
+          if (label) label.textContent = isShared ? 'Freigegeben' : 'Privat';
+        }
+
+        showToast(isShared
+          ? '🌟 Design für die Community freigegeben!'
+          : 'Design auf privat gesetzt.', 'success');
+      } catch (err) {
+        showToast('Fehler: ' + err.message, 'error');
+      }
+    }
+
+    // ── Password Change ──
+    async function changePassword(e) {
+      e.preventDefault();
+      const newPw = document.getElementById('newPassword').value;
+      const confirmPw = document.getElementById('confirmPassword').value;
+
+      if (newPw !== confirmPw) {
+        showToast('Passwörter stimmen nicht überein!', 'error');
+        return;
+      }
+
+      if (newPw.length < 8) {
+        showToast('Passwort muss mindestens 8 Zeichen lang sein.', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('passwordSaveBtn');
+      btn.textContent = 'Wird geändert...';
+      btn.disabled = true;
+
+      try {
+        const { error } = await db.auth.updateUser({ password: newPw });
+        if (error) throw error;
+
+        document.getElementById('newPassword').value = '';
+        document.getElementById('confirmPassword').value = '';
+
+        flashSuccess('passwordSaveSuccess');
+        showToast('Passwort erfolgreich geändert!', 'success');
+      } catch (err) {
+        showToast('Fehler: ' + err.message, 'error');
+      } finally {
+        btn.textContent = 'Passwort ändern';
+        btn.disabled = false;
+      }
+    }
+
+    // ── Helpers ──
+    function flashSuccess(elementId) {
+      const el = document.getElementById(elementId);
+      el.style.display = 'inline-flex';
+      setTimeout(() => { el.style.display = 'none'; }, 3000);
+    }
+
+    // ── Logout ──
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      await signOut();
+      window.location.href = 'index.html';
+    });
+
+    document.addEventListener('DOMContentLoaded', loadAccountData);
+  </script>
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

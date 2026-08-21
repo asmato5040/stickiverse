@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Etiketten drucken lassen – Stickiverse</title>
+  <meta name="description" content="Individuelle Etiketten für Flaschen, Gläser, Kosmetik, Lebensmittel und mehr. Premium-Druck auf Vinyl, transparent oder Kraftpapier. Ab 9,90 € bei Stickiverse.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .page { padding-top: var(--nav-height); min-height: 100vh; }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb { padding: 16px 0; font-size: 13px; color: var(--text-muted); }
+    .breadcrumb a { color: var(--text-muted); transition: var(--transition); }
+    .breadcrumb a:hover { color: var(--text-primary); }
+    .breadcrumb span { margin: 0 8px; }
+
+    /* ── Hero ── */
+    .hero-section {
+      padding: 60px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 20% 50%, rgba(245,158,11,0.1) 0%, transparent 60%),
+                  radial-gradient(ellipse at 80% 20%, rgba(139,92,246,0.12) 0%, transparent 60%),
+                  radial-gradient(ellipse at 50% 100%, rgba(6,182,212,0.08) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px;
+      background: rgba(139, 92, 246, 0.12);
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 13px; font-weight: 600;
+      color: var(--purple-light);
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--yellow) 0%, #F97316 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-text {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      max-width: 520px;
+    }
+    .hero-image {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .hero-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Section Titles ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    /* ── Product Cards Grid ── */
+    .products-section { padding: 80px 0; }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition-slow);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-brand);
+      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.15);
+    }
+    .product-card__image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+    .product-card__image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-card__image img {
+      transform: scale(1.05);
+    }
+    .product-card__body {
+      padding: 20px 24px 24px;
+    }
+    .product-card__title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .product-card__text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .product-card__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple-light);
+      transition: var(--transition);
+    }
+    .product-card:hover .product-card__cta {
+      color: var(--yellow);
+      gap: 10px;
+    }
+
+    /* ── Benefits ── */
+    .benefits-section {
+      padding: 64px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    .benefit-item { text-align: center; }
+    .benefit-icon {
+      width: 56px; height: 56px;
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.2);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 16px;
+    }
+    .benefit-title { font-weight: 700; font-size: 15px; margin-bottom: 6px; }
+    .benefit-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+
+    /* ── Use-Case Cards ── */
+    .usecase-section { padding: 80px 0; }
+    .usecase-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .usecase-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 3/2;
+      display: block;
+      text-decoration: none;
+      color: white;
+    }
+    .usecase-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .usecase-card:hover img { transform: scale(1.08); }
+    .usecase-card__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+      transition: var(--transition);
+    }
+    .usecase-card:hover .usecase-card__overlay {
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+    }
+    .usecase-card__title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px; font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .usecase-card__text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.4;
+    }
+
+    /* ── FAQ ── */
+    .faq-section { padding: 80px 0; }
+    .faq-list { max-width: 800px; margin: 40px auto 0; }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .faq-item:hover { border-color: var(--border-hover); }
+    .faq-question {
+      width: 100%; padding: 18px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+      font-size: 15px; font-weight: 600;
+      color: var(--text-primary);
+      background: var(--bg-card);
+      border: none; cursor: pointer;
+      text-align: left; font-family: inherit;
+    }
+    .faq-question::after {
+      content: '+'; font-size: 22px;
+      color: var(--purple-light);
+      transition: var(--transition);
+      flex-shrink: 0; margin-left: 16px;
+    }
+    .faq-item.open .faq-question::after { content: '−'; }
+    .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.3s ease; }
+    .faq-item.open .faq-answer { max-height: 300px; }
+    .faq-answer__inner {
+      padding: 0 24px 20px;
+      font-size: 14px; color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── CTA ── */
+    .cta-section {
+      padding: 80px 0; text-align: center;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-text { margin: 0 auto 28px; }
+      .hero-image { max-width: 500px; margin: 0 auto; }
+      .product-grid, .usecase-grid { grid-template-columns: repeat(2, 1fr); }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .product-grid, .usecase-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ── Breadcrumb ── -->
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Start</a><span>›</span><strong style="color:var(--text-secondary);">Etiketten</strong>
+      </div>
+    </div>
+
+    <!-- ══════════ HERO ══════════ -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <div>
+            <div class="hero-badge">🏷️ Professionelle Etiketten</div>
+            <h1 class="hero-title">Individuelle <em>Etiketten</em> drucken lassen</h1>
+            <p class="hero-text">
+              Hochwertige Etiketten für Produkte, Flaschen, Gläser und Verpackungen. 
+              Auf Vinyl, transparent oder Kraftpapier – für den professionellen Auftritt 
+              deiner Marke.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <a href="products.html" class="btn btn--primary">Etiketten gestalten</a>
+              <a href="#produktarten" class="btn btn--secondary">Alle Produkte ansehen</a>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="assets/etiketten/flasche.jpg" alt="Individuelle Etiketten von Stickiverse">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ ETIKETTEN NACH PRODUKTART ══════════ -->
+    <section class="products-section" id="produktarten">
+      <div class="container">
+        <div class="section-label">🏷️ Etiketten nach Produktart</div>
+        <h2 class="section-title">Alle unsere Etikettenprodukte</h2>
+        <p class="section-subtitle">Vom Flaschenetikett bis zum Versandlabel – finde das perfekte Etikett für deinen Einsatzzweck.</p>
+
+        <div class="product-grid">
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/etiketten/rollen.jpg" alt="Etiketten auf Rollen" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Etiketten auf Rollen</div>
+              <div class="product-card__text">Effizient für große Stückzahlen. Perfekt für automatische Applikatoren und Handspender.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/etiketten/flasche.jpg" alt="Flaschenetiketten" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Flaschenetiketten</div>
+              <div class="product-card__text">Für Wein, Bier, Spirituosen, Säfte und Öle. Wasserfest und elegant bedruckt.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/etiketten/glas.jpg" alt="Glasetiketten" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Glasetiketten</div>
+              <div class="product-card__text">Transparente oder weiße Etiketten für Gläser, Marmeladen, Honig und Eingemachtes.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/etiketten/produkt.jpg" alt="Produktetiketten" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Produktetiketten</div>
+              <div class="product-card__text">Professionelle Labels für alle Arten von Konsumprodukten und Verpackungen.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/etiketten/kosmetik.jpg" alt="Kosmetiketiketten" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Kosmetiketiketten</div>
+              <div class="product-card__text">Elegante Labels für Skincare, Seifen, Cremes und Beauty-Produkte.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/etiketten/versand.jpg" alt="Versand- & Paketetiketten" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Versand- & Paketetiketten</div>
+              <div class="product-card__text">Gebrandete Versandetiketten für einen professionellen Unboxing-Moment.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ VORTEILE ══════════ -->
+    <section class="benefits-section">
+      <div class="container">
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <div class="benefit-icon">🎯</div>
+            <div class="benefit-title">Passgenaue Größen</div>
+            <div class="benefit-text">Individuelle Maße für jedes Produkt – von der Lippenstifthülse bis zur Weinflasche.</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">💧</div>
+            <div class="benefit-title">Wasserfest</div>
+            <div class="benefit-text">Vinyl-Material hält Feuchtigkeit, Kälte und Wärme stand – ideal für Getränke und Kosmetik.</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">🖨️</div>
+            <div class="benefit-title">Brillanter Druck</div>
+            <div class="benefit-text">CMYK-Vollfarbdruck in Profi-Qualität. Auch Metallic- und Mattoptik möglich.</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">📐</div>
+            <div class="benefit-title">Jede Form möglich</div>
+            <div class="benefit-text">Rund, oval, rechteckig oder als individueller Freiform-Schnitt.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ ETIKETTEN PASSEND ZU DEINEM PRODUKT ══════════ -->
+    <section class="usecase-section">
+      <div class="container">
+        <div class="section-label">🎯 Passend zu deinem Produkt</div>
+        <h2 class="section-title">Etiketten für jede Branche</h2>
+        <p class="section-subtitle">Egal ob Lebensmittel, Getränke, Kosmetik oder Handmade-Produkte – wir haben die passende Lösung.</p>
+
+        <div class="usecase-grid">
+          <a href="products.html" class="usecase-card">
+            <img src="assets/etiketten/flasche.jpg" alt="Etiketten für Getränke" loading="lazy">
+            <div class="usecase-card__overlay">
+              <div class="usecase-card__title">Getränke & Spirituosen</div>
+              <div class="usecase-card__text">Wasserfeste Etiketten für Flaschen, Craft Beer und Limonaden.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="usecase-card">
+            <img src="assets/etiketten/kosmetik.jpg" alt="Etiketten für Kosmetik" loading="lazy">
+            <div class="usecase-card__overlay">
+              <div class="usecase-card__title">Kosmetik & Beauty</div>
+              <div class="usecase-card__text">Minimalistisch elegante Labels für Skincare, Seifen und Parfum.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="usecase-card">
+            <img src="assets/etiketten/glas.jpg" alt="Etiketten für Selbstgemachtes" loading="lazy">
+            <div class="usecase-card__overlay">
+              <div class="usecase-card__title">Selbstgemachte Produkte</div>
+              <div class="usecase-card__text">Handmade-Marmeladen, Honig, Kerzen und mehr professionell labeln.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="usecase-card">
+            <img src="assets/aufkleber/anlass_firmen.jpg" alt="Etiketten für Onlineshops" loading="lazy">
+            <div class="usecase-card__overlay">
+              <div class="usecase-card__title">Onlineshops & E-Commerce</div>
+              <div class="usecase-card__text">Gebrandete Versandetiketten und Paketsiegel für den professionellen Auftritt.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="usecase-card">
+            <img src="assets/aufkleber/anlass_hochzeit.jpg" alt="Etiketten für Hochzeiten" loading="lazy">
+            <div class="usecase-card__overlay">
+              <div class="usecase-card__title">Hochzeiten & Events</div>
+              <div class="usecase-card__text">Personalisierte Etiketten für Weinflaschen, Gastgeschenke und Deko.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="usecase-card">
+            <img src="assets/etiketten/produkt.jpg" alt="Etiketten für kleine Unternehmen" loading="lazy">
+            <div class="usecase-card__overlay">
+              <div class="usecase-card__title">Kleine Unternehmen</div>
+              <div class="usecase-card__text">Von der Manufaktur bis zum Startup – professionelle Labels ab kleinen Auflagen.</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ FAQ ══════════ -->
+    <section class="faq-section">
+      <div class="container">
+        <div style="text-align:center;">
+          <div class="section-label">❓ Häufige Fragen</div>
+          <h2 class="section-title">FAQ zu Etiketten</h2>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Welche Materialien stehen für Etiketten zur Verfügung?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Wir bieten Vinyl (weiß und transparent), Kraftpapier und Premium-Folie an. Alle Materialien sind wasserbeständig und lassen sich rückstandsfrei entfernen. Die Wahl des Materials hängt von deinem Einsatzzweck ab.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Kann ich individuelle Größen bestellen?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Ja! Du kannst Breite und Höhe frei wählen. Ideal, wenn du Etiketten für spezielle Flaschengrößen, Tiegel oder Verpackungen brauchst. Im Konfigurator gibst du einfach deine Wunschmaße ein.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Sind die Etiketten spülmaschinenfest?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Unsere Vinyl-Etiketten sind wasserfest und halten Feuchtigkeit gut stand. Für Spülmaschinen empfehlen wir die Premium-Vinyl-Variante, die auch heißem Wasser widersteht.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Wie erstelle ich ein lebensmittelkonformes Etikett?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Unsere Etiketten werden mit lebensmittelechten Farben gedruckt. Für das Design und die rechtlichen Pflichtangaben (Zutatenliste, Nährwerte, etc.) bist du jedoch selbst verantwortlich. Unser Editor bietet passende Vorlagen als Ausgangspunkt.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              In welcher Mindestmenge kann ich bestellen?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Du kannst ab 25 Stück bestellen – perfekt für Prototypen, Testläufe oder kleine Manufakturen. Bei größeren Auflagen profitierst du von attraktiven Staffelpreisen.
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CTA ══════════ -->
+    <section class="cta-section">
+      <div class="container">
+        <h2 class="section-title">Suchst du noch etwas anderes?</h2>
+        <p class="section-subtitle" style="margin:0 auto 28px;">Entdecke auch unsere Aufkleber-Kollektion oder gestalte direkt im Editor.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="aufkleber.html" class="btn btn--primary btn--lg">Aufkleber ansehen</a>
+          <a href="editor.html" class="btn btn--secondary btn--lg">Online-Editor starten</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with ❤️ in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

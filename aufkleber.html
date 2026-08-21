@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aufkleber drucken lassen – Stickiverse</title>
+  <meta name="description" content="Individuelle Aufkleber in allen Formen und Größen drucken lassen. Rund, quadratisch, rechteckig, oval, freigestanzt oder transparent. Ab 9,90 € bei Stickiverse.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .page { padding-top: var(--nav-height); min-height: 100vh; }
+
+    /* ── Breadcrumb ── */
+    .breadcrumb { padding: 16px 0; font-size: 13px; color: var(--text-muted); }
+    .breadcrumb a { color: var(--text-muted); transition: var(--transition); }
+    .breadcrumb a:hover { color: var(--text-primary); }
+    .breadcrumb span { margin: 0 8px; }
+
+    /* ── Hero ── */
+    .hero-section {
+      padding: 60px 0 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: var(--gradient-hero);
+      pointer-events: none;
+    }
+    .hero-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 48px;
+      align-items: center;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 6px 16px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      border-radius: var(--radius-full);
+      font-size: 13px; font-weight: 600;
+      color: var(--yellow);
+      margin-bottom: 20px;
+    }
+    .hero-title {
+      font-size: clamp(32px, 4.5vw, 52px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+    }
+    .hero-title em {
+      font-style: normal;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-text {
+      font-size: 17px;
+      line-height: 1.7;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      max-width: 520px;
+    }
+    .hero-image {
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+    }
+    .hero-image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* ── Section Titles ── */
+    .section-label {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 12px; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+    .section-title {
+      font-size: clamp(26px, 3.5vw, 40px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+    .section-subtitle {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      max-width: 640px;
+    }
+
+    /* ── Product Cards Grid ── */
+    .products-section { padding: 80px 0; }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition-slow);
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+    .product-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-brand);
+      box-shadow: 0 20px 60px rgba(139, 92, 246, 0.15);
+    }
+    .product-card__image {
+      width: 100%;
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: var(--bg-secondary);
+    }
+    .product-card__image img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-card__image img {
+      transform: scale(1.05);
+    }
+    .product-card__body {
+      padding: 20px 24px 24px;
+    }
+    .product-card__title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+    .product-card__text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .product-card__cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--purple-light);
+      transition: var(--transition);
+    }
+    .product-card:hover .product-card__cta {
+      color: var(--yellow);
+      gap: 10px;
+    }
+
+    /* ── Benefits ── */
+    .benefits-section {
+      padding: 64px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+    .benefits-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 32px;
+    }
+    .benefit-item {
+      text-align: center;
+    }
+    .benefit-icon {
+      width: 56px; height: 56px;
+      background: rgba(139, 92, 246, 0.1);
+      border: 1px solid rgba(139, 92, 246, 0.2);
+      border-radius: var(--radius-md);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px;
+      margin: 0 auto 16px;
+    }
+    .benefit-title {
+      font-weight: 700;
+      font-size: 15px;
+      margin-bottom: 6px;
+    }
+    .benefit-text {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* ── Occasion Cards (Emotional) ── */
+    .occasions-section { padding: 80px 0; }
+    .occasion-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 40px;
+    }
+    .occasion-card {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      aspect-ratio: 3/2;
+      display: block;
+      text-decoration: none;
+      color: white;
+    }
+    .occasion-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .occasion-card:hover img {
+      transform: scale(1.08);
+    }
+    .occasion-card__overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 24px;
+      transition: var(--transition);
+    }
+    .occasion-card:hover .occasion-card__overlay {
+      background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.3) 60%, transparent 100%);
+    }
+    .occasion-card__title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .occasion-card__text {
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+      line-height: 1.4;
+    }
+
+    /* ── FAQ ── */
+    .faq-section { padding: 80px 0; }
+    .faq-list {
+      max-width: 800px;
+      margin: 40px auto 0;
+    }
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: var(--transition);
+    }
+    .faq-item:hover { border-color: var(--border-hover); }
+    .faq-question {
+      width: 100%;
+      padding: 18px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-primary);
+      background: var(--bg-card);
+      border: none;
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+    }
+    .faq-question::after {
+      content: '+';
+      font-size: 22px;
+      color: var(--purple-light);
+      transition: var(--transition);
+      flex-shrink: 0;
+      margin-left: 16px;
+    }
+    .faq-item.open .faq-question::after {
+      content: '−';
+    }
+    .faq-answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease;
+    }
+    .faq-item.open .faq-answer {
+      max-height: 300px;
+    }
+    .faq-answer__inner {
+      padding: 0 24px 20px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+    }
+
+    /* ── CTA Banner ── */
+    .cta-section {
+      padding: 80px 0;
+      text-align: center;
+      background: var(--bg-secondary);
+      border-top: 1px solid var(--border);
+    }
+    .cta-section .section-title { margin-bottom: 16px; }
+
+    /* ── Responsive ── */
+    @media (max-width: 1024px) {
+      .hero-content { grid-template-columns: 1fr; text-align: center; }
+      .hero-text { margin: 0 auto 28px; }
+      .hero-image { max-width: 500px; margin: 0 auto; }
+      .product-grid, .occasion-grid { grid-template-columns: repeat(2, 1fr); }
+      .benefits-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .product-grid, .occasion-grid { grid-template-columns: 1fr; }
+      .benefits-grid { grid-template-columns: 1fr; gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ── Breadcrumb ── -->
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="index.html">Start</a><span>›</span><strong style="color:var(--text-secondary);">Aufkleber</strong>
+      </div>
+    </div>
+
+    <!-- ══════════ HERO ══════════ -->
+    <section class="hero-section">
+      <div class="container">
+        <div class="hero-content">
+          <div>
+            <div class="hero-badge">⭐ Premium-Qualität</div>
+            <h1 class="hero-title">Individuelle <em>Aufkleber</em> drucken lassen</h1>
+            <p class="hero-text">
+              Gestalte deine eigenen Aufkleber – in jeder Form, Größe und Menge. 
+              Premium-Vinylfolie, wetterfest und kratzfest. Ideal für Branding, Events, 
+              Verpackungen und kreative Projekte.
+            </p>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+              <a href="products.html" class="btn btn--primary">Jetzt gestalten</a>
+              <a href="#formen" class="btn btn--secondary">Alle Formen ansehen</a>
+            </div>
+          </div>
+          <div class="hero-image">
+            <img src="assets/aufkleber/freigestanzt.jpg" alt="Individuelle Aufkleber von Stickiverse">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ AUFKLEBER NACH FORM ══════════ -->
+    <section class="products-section" id="formen">
+      <div class="container">
+        <div class="section-label">📐 Aufkleber nach Form</div>
+        <h2 class="section-title">Wähle deine perfekte Form</h2>
+        <p class="section-subtitle">Ob rund, eckig oder individuell freigestanzt – wir drucken deinen Aufkleber genau so, wie du ihn brauchst.</p>
+
+        <div class="product-grid">
+          <a href="product-detail.html?product=sticker-rund" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/rund.jpg" alt="Runde Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Runde Aufkleber</div>
+              <div class="product-card__text">Der Klassiker: Perfekt für Logos, Siegel und Markenzeichen. Verfügbar in 4 Größen.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="product-detail.html?product=sticker-quadrat" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/quadrat.jpg" alt="Quadratische Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Quadratische Aufkleber</div>
+              <div class="product-card__text">Modern und vielseitig einsetzbar. Ideal für Social-Media-Handles und QR-Codes.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="product-detail.html?product=sticker-rechteck" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/rechteck.jpg" alt="Rechteckige Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Rechteckige Aufkleber</div>
+              <div class="product-card__text">Mehr Platz für deine Message. Perfekt für Produktetiketten und Adressen.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="product-detail.html?product=sticker-oval" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/oval.jpg" alt="Ovale Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Ovale Aufkleber</div>
+              <div class="product-card__text">Elegante Form für Premium-Produkte, Weinflaschen und Geschenkverpackungen.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="product-detail.html?product=sticker-freigestanzt" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/freigestanzt.jpg" alt="Freigestanzte Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Freigestanzte Aufkleber</div>
+              <div class="product-card__text">Konturschnitt entlang deines Designs. Maximaler Wow-Effekt garantiert.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="product-detail.html?product=sticker-transparent" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/transparent.jpg" alt="Transparente Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Transparente Aufkleber</div>
+              <div class="product-card__text">Durchsichtige Folie – dein Design scheint ohne weißen Rand auf jeder Oberfläche.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/logo.jpg" alt="Logo-Aufkleber" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Logo-Aufkleber</div>
+              <div class="product-card__text">Dein Firmenlogo als hochwertiger Aufkleber. Perfekt für Branding und Merchandising.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+
+          <a href="products.html" class="product-card">
+            <div class="product-card__image"><img src="assets/aufkleber/rolle.jpg" alt="Aufkleber auf Rolle" loading="lazy"></div>
+            <div class="product-card__body">
+              <div class="product-card__title">Aufkleber auf Rolle</div>
+              <div class="product-card__text">Ideal für Massenversand und Verpackungslinien. Schnell und effizient aufzukleben.</div>
+              <span class="product-card__cta">Jetzt gestalten →</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ VORTEILE ══════════ -->
+    <section class="benefits-section">
+      <div class="container">
+        <div class="benefits-grid">
+          <div class="benefit-item">
+            <div class="benefit-icon">🚀</div>
+            <div class="benefit-title">Schnelle Lieferung</div>
+            <div class="benefit-text">Versand innerhalb von 3–5 Werktagen nach Druckfreigabe.</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">💎</div>
+            <div class="benefit-title">Premium-Qualität</div>
+            <div class="benefit-text">Wetterfeste Vinyl-Folie, kratzfest und UV-beständig.</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">🎨</div>
+            <div class="benefit-title">Online-Editor</div>
+            <div class="benefit-text">Gestalte deine Sticker direkt im Browser – ohne Software.</div>
+          </div>
+          <div class="benefit-item">
+            <div class="benefit-icon">📦</div>
+            <div class="benefit-title">Kleine Auflagen</div>
+            <div class="benefit-text">Schon ab 25 Stück bestellbar. Perfekt für Tests und Events.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ AUFKLEBER FÜR JEDEN ANLASS ══════════ -->
+    <section class="occasions-section">
+      <div class="container">
+        <div class="section-label">🎉 Für jeden Anlass</div>
+        <h2 class="section-title">Aufkleber für jeden Anlass</h2>
+        <p class="section-subtitle">Ob JGA, Hochzeit oder Firmen-Event – mit individuellen Aufklebern machst du jeden Anlass unvergesslich.</p>
+
+        <div class="occasion-grid">
+          <a href="products.html" class="occasion-card">
+            <img src="assets/aufkleber/anlass_jga.jpg" alt="JGA-Aufkleber" loading="lazy">
+            <div class="occasion-card__overlay">
+              <div class="occasion-card__title">JGA-Aufkleber</div>
+              <div class="occasion-card__text">Individuelle Sticker für das gesamte Team Braut oder Team Bräutigam.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="occasion-card">
+            <img src="assets/aufkleber/anlass_hochzeit.jpg" alt="Hochzeitsaufkleber" loading="lazy">
+            <div class="occasion-card__overlay">
+              <div class="occasion-card__title">Hochzeitsaufkleber</div>
+              <div class="occasion-card__text">Personalisierte Sticker für Einladungen, Gastgeschenke und Dekoration.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="occasion-card">
+            <img src="assets/aufkleber/anlass_babyparty.jpg" alt="Babyparty-Aufkleber" loading="lazy">
+            <div class="occasion-card__overlay">
+              <div class="occasion-card__title">Babyparty-Aufkleber</div>
+              <div class="occasion-card__text">Persönliche Sticker für Einladungen, Geschenke und Gastgeschenke.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="occasion-card">
+            <img src="assets/aufkleber/anlass_gender_reveal.jpg" alt="Gender-Reveal-Aufkleber" loading="lazy">
+            <div class="occasion-card__overlay">
+              <div class="occasion-card__title">Gender-Reveal-Aufkleber</div>
+              <div class="occasion-card__text">Boy or Girl? Individuelle Sticker für die große Enthüllung.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="occasion-card">
+            <img src="assets/aufkleber/anlass_geburtstag.jpg" alt="Geburtstagsaufkleber" loading="lazy">
+            <div class="occasion-card__overlay">
+              <div class="occasion-card__title">Geburtstagsaufkleber</div>
+              <div class="occasion-card__text">Macht jede Feier besonders – als Deko, auf Geschenken oder als Give-Away.</div>
+            </div>
+          </a>
+
+          <a href="products.html" class="occasion-card">
+            <img src="assets/aufkleber/anlass_firmen.jpg" alt="Firmen- und Logo-Aufkleber" loading="lazy">
+            <div class="occasion-card__overlay">
+              <div class="occasion-card__title">Firmen- & Logo-Aufkleber</div>
+              <div class="occasion-card__text">Professionelles Branding für Verpackungen, Versand und Merchandising.</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ FAQ ══════════ -->
+    <section class="faq-section">
+      <div class="container">
+        <div style="text-align:center;">
+          <div class="section-label">❓ Häufige Fragen</div>
+          <h2 class="section-title">FAQ zu Aufklebern</h2>
+        </div>
+
+        <div class="faq-list">
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Welche Materialien stehen zur Auswahl?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Wir drucken auf hochwertiger Vinyl-Folie, die wetterfest, kratzfest und UV-beständig ist. Zusätzlich bieten wir transparente Folie für durchsichtige Aufkleber an. Alle Materialien sind für den Innen- und Außeneinsatz geeignet.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Wie schnell werden meine Aufkleber geliefert?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Nach Druckfreigabe beträgt die Produktionszeit 2–3 Werktage. Der Standardversand dauert weitere 1–2 Werktage. Insgesamt sind deine Aufkleber also in 3–5 Werktagen bei dir. Expressversand ist ebenfalls verfügbar.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Was ist die Mindestbestellmenge?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Du kannst bereits ab 25 Stück bestellen. Für größere Mengen bieten wir attraktive Staffelpreise an. Ideal für Tests, kleine Events oder professionelle Großaufträge.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Kann ich eigene Designs hochladen?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Ja! Du kannst dein eigenes Design als PNG, JPG oder SVG-Datei hochladen. Alternativ kannst du unseren kostenlosen Online-Editor nutzen, um dein Design direkt im Browser zu gestalten.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Sind die Aufkleber wasserfest?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Ja, alle unsere Aufkleber werden auf wasserfester Vinyl-Folie gedruckt und sind somit für den Außenbereich geeignet. Sie halten Regen, Sonne und Kratzer stand.
+            </div></div>
+          </div>
+
+          <div class="faq-item">
+            <button class="faq-question" onclick="this.parentElement.classList.toggle('open')">
+              Was kostet der Versand?
+            </button>
+            <div class="faq-answer"><div class="faq-answer__inner">
+              Der Standardversand kostet 4,90 €. Expressversand für 9,90 € ist ebenfalls verfügbar. Ab einem Bestellwert von 50 € liefern wir versandkostenfrei.
+            </div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ══════════ CTA ══════════ -->
+    <section class="cta-section">
+      <div class="container">
+        <h2 class="section-title">Bereit für deine eigenen Aufkleber?</h2>
+        <p class="section-subtitle" style="margin:0 auto 28px;">Gestalte jetzt deine individuellen Sticker in wenigen Minuten – direkt im Browser.</p>
+        <a href="products.html" class="btn btn--primary btn--lg">Jetzt Aufkleber gestalten</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with ❤️ in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

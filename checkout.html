@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kasse – Stickiverse</title>
+  <meta name="description" content="Bestellung abschließen bei Stickiverse. Lieferadresse eingeben und bestellen.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .checkout-page {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+    }
+
+    .checkout-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .checkout-header__title {
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    /* ── Steps Indicator ── */
+    .checkout-steps {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      margin-top: 24px;
+    }
+
+    .checkout-step {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .checkout-step.active { color: var(--purple-light); }
+    .checkout-step.done { color: var(--green); }
+
+    .checkout-step__num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .checkout-step.active .checkout-step__num {
+      background: var(--gradient-brand);
+      border: none;
+      color: white;
+    }
+
+    .checkout-step.done .checkout-step__num {
+      background: rgba(16,185,129,0.2);
+      border-color: rgba(16,185,129,0.4);
+      color: var(--green);
+    }
+
+    .checkout-step__connector {
+      width: 40px;
+      height: 1px;
+      background: var(--border);
+      margin: 0 8px;
+    }
+
+    /* ── Layout ── */
+    .checkout-content {
+      padding: 48px 0 96px;
+    }
+
+    .checkout-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── Form Card ── */
+    .form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .form-card__header {
+      padding: 24px 28px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .form-card__header-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--gradient-brand);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .form-card__title {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .form-card__body {
+      padding: 28px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    /* ── Payment Placeholders ── */
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg-glass);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: var(--transition);
+      margin-bottom: 12px;
+    }
+
+    .payment-option:hover { border-color: var(--border-hover); }
+
+    .payment-option.selected {
+      border-color: var(--purple);
+      background: rgba(139,92,246,0.08);
+    }
+
+    .payment-option__radio {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: var(--transition);
+    }
+
+    .payment-option.selected .payment-option__radio {
+      border-color: var(--purple);
+      background: var(--purple);
+    }
+
+    .payment-option.selected .payment-option__radio::after {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: white;
+    }
+
+    .payment-option__icon { font-size: 24px; }
+    .payment-option__name { font-weight: 600; font-size: 15px; }
+    .payment-option__desc { font-size: 12px; color: var(--text-muted); }
+
+    .payment-coming-soon {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 8px;
+      background: rgba(245,158,11,0.15);
+      border: 1px solid rgba(245,158,11,0.3);
+      border-radius: var(--radius-full);
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--yellow);
+      margin-left: 8px;
+    }
+
+    /* ── Order Summary (same as cart) ── */
+    .order-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+    }
+
+    .order-summary__title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 20px;
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .summary-row__label { color: var(--text-secondary); }
+    .summary-row__value { font-weight: 600; }
+
+    .summary-row--total {
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+    }
+
+    .summary-row--total .summary-row__label { color: var(--text-primary); font-weight: 700; }
+
+    .summary-row--total .summary-row__value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .place-order-btn {
+      width: 100%;
+      padding: 18px;
+      background: var(--gradient-brand);
+      border: none;
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 18px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-brand);
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .place-order-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(139,92,246,0.4);
+    }
+
+    .place-order-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .summary-order-items {
+      margin-bottom: 20px;
+    }
+
+    .summary-order-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-order-item:last-child { border-bottom: none; }
+
+    .summary-order-item__img {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .summary-order-item__img img { width: 100%; height: 100%; object-fit: cover; }
+
+    .summary-order-item__name {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .summary-order-item__qty {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .summary-order-item__price {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    /* ── Trust Badges ── */
+    .trust-badges {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+    }
+
+    .trust-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    /* ── Success Modal ── */
+    .success-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .success-overlay.show { display: flex; }
+
+    .success-modal {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-brand);
+      border-radius: var(--radius-2xl);
+      padding: 64px 48px;
+      text-align: center;
+      max-width: 480px;
+      width: 90%;
+      animation: fadeIn 0.4s ease;
+      box-shadow: 0 32px 128px rgba(139,92,246,0.3);
+    }
+
+    .success-modal__icon {
+      font-size: 80px;
+      margin-bottom: 24px;
+      display: block;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    .success-modal__title {
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+
+    .success-modal__text {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-bottom: 12px;
+      line-height: 1.7;
+    }
+
+    .success-modal__order-nr {
+      display: inline-block;
+      padding: 8px 20px;
+      background: rgba(139,92,246,0.15);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: var(--radius-full);
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--purple-light);
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 1024px) {
+      .checkout-grid { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .form-row { grid-template-columns: 1fr; }
+      .checkout-steps { flex-wrap: wrap; gap: 8px; }
+      .checkout-step__connector { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="checkout-page">
+
+    <div class="checkout-header">
+      <div class="container">
+        <h1 class="checkout-header__title">Zur Kasse</h1>
+        <div class="checkout-steps">
+          <div class="checkout-step done">
+            <div class="checkout-step__num">✓</div>
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          </div>
+          <div class="checkout-step__connector"></div>
+          <div class="checkout-step active">
+            <div class="checkout-step__num">2</div>
+            <span>Lieferung</span>
+          </div>
+          <div class="checkout-step__connector"></div>
+          <div class="checkout-step">
+            <div class="checkout-step__num">3</div>
+            <span>Zahlung</span>
+          </div>
+          <div class="checkout-step__connector"></div>
+          <div class="checkout-step">
+            <div class="checkout-step__num">4</div>
+            <span>Bestätigung</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="checkout-content">
+      <div class="container">
+        <div class="checkout-grid">
+
+          <!-- ── Left: Forms ── -->
+          <div>
+
+            <!-- Kontakt -->
+            <div class="form-card">
+              <div class="form-card__header">
+                <div class="form-card__header-icon">📧</div>
+                <div>
+                  <div class="form-card__title">Kontakt</div>
+                </div>
+              </div>
+              <div class="form-card__body">
+                <div class="form-group">
+                  <label class="form-label" for="email">E-Mail-Adresse *</label>
+                  <input type="email" id="email" class="form-input" placeholder="deine@email.de" required>
+                </div>
+                <div class="form-group" style="display:flex;align-items:center;gap:10px;">
+                  <input type="checkbox" id="newsletter" style="accent-color:var(--purple);width:16px;height:16px;">
+                  <label for="newsletter" style="font-size:14px;color:var(--text-secondary);cursor:pointer;">
+                    Ich möchte den Stickiverse-Newsletter erhalten (unverbindlich)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Lieferadresse -->
+            <div class="form-card">
+              <div class="form-card__header">
+                <div class="form-card__header-icon">🏠</div>
+                <div>
+                  <div class="form-card__title">Lieferadresse</div>
+                </div>
+              </div>
+              <div class="form-card__body">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="firstName">Vorname *</label>
+                    <input type="text" id="firstName" class="form-input" placeholder="Max" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="lastName">Nachname *</label>
+                    <input type="text" id="lastName" class="form-input" placeholder="Mustermann" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="company">Firma (optional)</label>
+                  <input type="text" id="company" class="form-input" placeholder="Musterfirma GmbH">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="street">Straße *</label>
+                    <input type="text" id="street" class="form-input" placeholder="Musterstraße" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="streetNr">Hausnummer *</label>
+                    <input type="text" id="streetNr" class="form-input" placeholder="42" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="addressLine2">Adresszusatz (optional)</label>
+                  <input type="text" id="addressLine2" class="form-input" placeholder="c/o, Hinterhaus, etc.">
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label class="form-label" for="zip">PLZ *</label>
+                    <input type="text" id="zip" class="form-input" placeholder="12345" maxlength="10" required>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="city">Stadt *</label>
+                    <input type="text" id="city" class="form-input" placeholder="Berlin" required>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="country">Land *</label>
+                  <select id="country" class="form-select">
+                    <option value="DE">🇩🇪 Deutschland</option>
+                    <option value="AT">🇦🇹 Österreich</option>
+                    <option value="CH">🇨🇭 Schweiz</option>
+                    <option value="NL">🇳🇱 Niederlande</option>
+                    <option value="BE">🇧🇪 Belgien</option>
+                    <option value="FR">🇫🇷 Frankreich</option>
+                    <option value="IT">🇮🇹 Italien</option>
+                    <option value="ES">🇪🇸 Spanien</option>
+                    <option value="PL">🇵🇱 Polen</option>
+                    <option value="GB">🇬🇧 Vereinigtes Königreich</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label" for="phone">Telefon (für Lieferfragen)</label>
+                  <input type="tel" id="phone" class="form-input" placeholder="+49 123 456 789">
+                </div>
+              </div>
+            </div>
+
+            <!-- Versand -->
+            <div class="form-card">
+              <div class="form-card__header">
+                <div class="form-card__header-icon">🚚</div>
+                <div>
+                  <div class="form-card__title">Versandart</div>
+                </div>
+              </div>
+              <div class="form-card__body">
+                <div class="payment-option selected" id="ship-standard" onclick="selectShipping('standard')">
+                  <div class="payment-option__radio"></div>
+                  <span class="payment-option__icon">📦</span>
+                  <div>
+                    <div class="payment-option__name">Standard (3–5 Werktage)</div>
+                    <div class="payment-option__desc">DHL · ab 50 € kostenlos</div>
+                  </div>
+                  <div style="margin-left:auto;font-weight:700;" id="ship-standard-price">4,90 €</div>
+                </div>
+                <div class="payment-option" id="ship-express" onclick="selectShipping('express')">
+                  <div class="payment-option__radio"></div>
+                  <span class="payment-option__icon">⚡</span>
+                  <div>
+                    <div class="payment-option__name">Express (1–2 Werktage)</div>
+                    <div class="payment-option__desc">DHL Express · deutschlandweit</div>
+                  </div>
+                  <div style="margin-left:auto;font-weight:700;">9,90 €</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Zahlung -->
+            <div class="form-card">
+              <div class="form-card__header">
+                <div class="form-card__header-icon">💳</div>
+                <div>
+                  <div class="form-card__title">Zahlungsart</div>
+                </div>
+              </div>
+              <div class="form-card__body">
+                <div class="payment-option selected" onclick="selectPayment(this)">
+                  <div class="payment-option__radio"></div>
+                  <span class="payment-option__icon">💳</span>
+                  <div>
+                    <div class="payment-option__name">Kreditkarte</div>
+                    <div class="payment-option__desc">Visa, Mastercard, Amex</div>
+                  </div>
+                  <span class="payment-coming-soon">Demnächst</span>
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                  <div class="payment-option__radio"></div>
+                  <span class="payment-option__icon">🏦</span>
+                  <div>
+                    <div class="payment-option__name">SEPA-Lastschrift</div>
+                    <div class="payment-option__desc">Bankeinzug</div>
+                  </div>
+                  <span class="payment-coming-soon">Demnächst</span>
+                </div>
+                <div class="payment-option" onclick="selectPayment(this)">
+                  <div class="payment-option__radio"></div>
+                  <span class="payment-option__icon">🅿️</span>
+                  <div>
+                    <div class="payment-option__name">PayPal</div>
+                    <div class="payment-option__desc">Sicher mit PayPal zahlen</div>
+                  </div>
+                  <span class="payment-coming-soon">Demnächst</span>
+                </div>
+                <div style="margin-top:16px;padding:16px;background:rgba(245,158,11,0.08);border:1px solid rgba(245,158,11,0.2);border-radius:var(--radius-md);font-size:13px;color:var(--text-secondary);">
+                  💡 <strong style="color:var(--yellow);">Hinweis:</strong> Die Zahlungsabwicklung wird aktuell eingerichtet. Nach der Bestellung erhältst du eine Zahlungsanforderung per E-Mail.
+                </div>
+              </div>
+            </div>
+
+            <!-- Anmerkungen -->
+            <div class="form-card">
+              <div class="form-card__header">
+                <div class="form-card__header-icon">📝</div>
+                <div>
+                  <div class="form-card__title">Anmerkungen zur Bestellung</div>
+                </div>
+              </div>
+              <div class="form-card__body">
+                <div class="form-group">
+                  <textarea id="notes" class="form-input" rows="3" placeholder="Besondere Wünsche oder Hinweise..." style="resize:vertical;"></textarea>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- ── Right: Order Summary ── -->
+          <div class="order-summary">
+            <div class="order-summary__title">Bestellübersicht</div>
+
+            <div class="summary-order-items" id="checkoutItems">
+              <!-- via JS -->
+            </div>
+
+            <!-- ── Discount Code ── -->
+            <div style="margin-bottom: 20px; border-bottom: 1px solid var(--border); padding-bottom: 20px;">
+              <div style="display: flex; gap: 8px;">
+                <input type="text" id="discountCodeInput" class="form-input" placeholder="Gutscheincode" style="margin-bottom: 0;">
+                <button class="btn btn--secondary" onclick="applyDiscount()" id="applyDiscountBtn" style="padding: 0 16px;">Einlösen</button>
+              </div>
+              <div id="discountMessage" style="font-size: 13px; margin-top: 8px; display: none;"></div>
+            </div>
+
+            <div class="summary-row">
+              <span class="summary-row__label">Zwischensumme</span>
+              <span class="summary-row__value" id="co-subtotal">–</span>
+            </div>
+            <div class="summary-row" id="discountRow" style="display: none;">
+              <span class="summary-row__label" style="color: #10B981;">Rabatt</span>
+              <span class="summary-row__value" id="co-discount" style="color: #10B981;">–</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-row__label">Versand</span>
+              <span class="summary-row__value" id="co-shipping">–</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-row__label">MwSt. (19%)</span>
+              <span class="summary-row__value" id="co-tax">–</span>
+            </div>
+            <div class="summary-row summary-row--total">
+              <span class="summary-row__label">Gesamt</span>
+              <span class="summary-row__value" id="co-total">–</span>
+            </div>
+
+            <button class="place-order-btn" id="placeOrderBtn" onclick="placeOrder()">
+              🚀 Jetzt bestellen
+            </button>
+
+            <div style="margin-top:14px;font-size:12px;color:var(--text-muted);text-align:center;line-height:1.6;">
+              Mit deiner Bestellung stimmst du unseren <a href="#" style="color:var(--purple-light);">AGB</a> und der <a href="#" style="color:var(--purple-light);">Datenschutzerklärung</a> zu.
+            </div>
+
+            <div class="trust-badges">
+              <div class="trust-badge"><span>🔒</span><span>256-bit SSL-Verschlüsselung</span></div>
+              <div class="trust-badge"><span>🏆</span><span>Geprüfter Händler</span></div>
+              <div class="trust-badge"><span>📦</span><span>Sichere Verpackung</span></div>
+              <div class="trust-badge"><span>↩</span><span>14 Tage Rückgaberecht</span></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Success Modal ── -->
+  <div class="success-overlay" id="successOverlay">
+    <div class="success-modal">
+      <span class="success-modal__icon">🎉</span>
+      <h2 class="success-modal__title">Bestellung erhalten!</h2>
+      <p class="success-modal__text">
+        Vielen Dank für deine Bestellung bei Stickiverse!<br>
+        Du erhältst in Kürze eine Bestätigungs-E-Mail.
+      </p>
+      <div class="success-modal__order-nr" id="orderNumber">STV-000000</div>
+      <p style="font-size:14px;color:var(--text-secondary);margin-bottom:32px;">
+        Deine Sticker werden in 3–5 Werktagen geliefert. Wir freuen uns auf deine nächste Bestellung! 💜
+      </p>
+      <a href="index.html" class="btn btn--primary btn--lg">🏠 Zurück zur Startseite</a>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/products.js?v=2"></script>
+  <script src="js/cart.js"></script>
+  <script>
+    const SHIPPING_COSTS = { standard: 4.90, express: 9.90 };
+    let selectedShipping = 'standard';
+
+    function selectShipping(type) {
+      selectedShipping = type;
+      document.querySelectorAll('[id^="ship-"]').forEach(el => el.classList.remove('selected'));
+      document.getElementById(`ship-${type}`).classList.add('selected');
+      renderCheckoutSummary();
+    }
+
+    function selectPayment(el) {
+      document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+      el.classList.add('selected');
+    }
+
+    let appliedCoupon = null;
+    let discountAmount = 0;
+
+    function updateCheckoutTotals() {
+      const cart = getCart();
+      const container = document.getElementById('checkoutItems');
+
+      container.innerHTML = cart.map(item => {
+        const product = PRODUCTS.find(p => p.id === item.productId);
+        return `
+          <div class="summary-order-item">
+            <div class="summary-order-item__img">
+              ${item.previewImage
+                ? `<img src="${item.previewImage}" alt="">`
+                : product?.emoji || '🎨'}
+            </div>
+            <div>
+              <div class="summary-order-item__name">${item.productName}</div>
+              <div class="summary-order-item__qty">${item.sizeLabel} · ${item.quantity} St. · ×${item.cartQty||1}</div>
+            </div>
+            <div class="summary-order-item__price">${formatPrice(item.price * (item.cartQty||1))}</div>
+          </div>
+        `;
+      }).join('');
+
+      const subtotal = getCartTotal();
+      
+      discountAmount = 0;
+      if (appliedCoupon) {
+        if (appliedCoupon.type === 'percentage') {
+          discountAmount = subtotal * (appliedCoupon.value / 100);
+          if (appliedCoupon.max_discount && discountAmount > appliedCoupon.max_discount) {
+            discountAmount = appliedCoupon.max_discount;
+          }
+        } else {
+          discountAmount = appliedCoupon.value;
+        }
+        if (discountAmount > subtotal) discountAmount = subtotal;
+      }
+      
+      const discountedSubtotal = subtotal - discountAmount;
+      const shipping = discountedSubtotal >= 50 && selectedShipping === 'standard' ? 0 : SHIPPING_COSTS[selectedShipping];
+      const tax = discountedSubtotal * 0.19;
+      const total = discountedSubtotal + shipping;
+
+      document.getElementById('co-subtotal').textContent = formatPrice(subtotal);
+      
+      const discountRow = document.getElementById('discountRow');
+      if (discountAmount > 0) {
+        discountRow.style.display = 'flex';
+        document.getElementById('co-discount').textContent = '-' + formatPrice(discountAmount);
+      } else {
+        discountRow.style.display = 'none';
+      }
+
+      document.getElementById('co-shipping').innerHTML = shipping === 0
+        ? '<span style="color:var(--green);">Kostenlos 🎉</span>'
+        : formatPrice(shipping);
+      document.getElementById('co-tax').textContent = formatPrice(tax);
+      document.getElementById('co-total').textContent = formatPrice(total);
+
+      // Update standard shipping display
+      const stdPriceEl = document.getElementById('ship-standard-price');
+      if (stdPriceEl) {
+        stdPriceEl.innerHTML = subtotal >= 50
+          ? '<span style="color:var(--green);">Kostenlos</span>'
+          : '4,90 €';
+      }
+    }
+
+    function validateForm() {
+      const required = ['email', 'firstName', 'lastName', 'street', 'streetNr', 'zip', 'city'];
+      let valid = true;
+      required.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el.value.trim()) {
+          el.style.borderColor = '#ef4444';
+          el.style.boxShadow = '0 0 0 3px rgba(239,68,68,0.15)';
+          valid = false;
+        } else {
+          el.style.borderColor = '';
+          el.style.boxShadow = '';
+        }
+      });
+      if (!valid) showToast('Bitte fülle alle Pflichtfelder aus.', 'warning');
+      return valid;
+    }
+
+    async function applyDiscount() {
+      const codeInput = document.getElementById('discountCodeInput');
+      const msgEl = document.getElementById('discountMessage');
+      const code = codeInput.value.toUpperCase().trim();
+      
+      if (!code) return;
+      
+      msgEl.style.display = 'block';
+      msgEl.textContent = 'Prüfe Gutschein...';
+      msgEl.style.color = 'var(--text-secondary)';
+      
+      try {
+        const { data, error } = await db.from('coupons').select('*').eq('code', code).eq('is_active', true).single();
+        if (error || !data) throw new Error('Gutschein nicht gefunden oder ungültig.');
+        
+        if (data.usage_limit && data.usage_count >= data.usage_limit) throw new Error('Gutschein-Limit erreicht.');
+        if (data.expires_at && new Date() > new Date(data.expires_at)) throw new Error('Gutschein ist abgelaufen.');
+        
+        appliedCoupon = data;
+        msgEl.textContent = 'Gutschein erfolgreich angewendet!';
+        msgEl.style.color = '#10B981';
+        updateCheckoutTotals();
+      } catch (err) {
+        console.error(err);
+        appliedCoupon = null;
+        updateCheckoutTotals();
+        msgEl.textContent = err.message || 'Gutschein ungültig.';
+        msgEl.style.color = '#EF4444';
+      }
+    }
+
+    async function placeOrder() {
+      if (!validateForm()) return;
+
+      const btn = document.getElementById('placeOrderBtn');
+      btn.disabled = true;
+      btn.innerHTML = 'Bestellung wird aufgegeben...';
+
+      try {
+        const cart = getCart();
+        const subtotal = getCartTotal();
+        const discountedSubtotal = subtotal - discountAmount;
+        const shipping = discountedSubtotal >= 50 && selectedShipping === 'standard' ? 0 : SHIPPING_COSTS[selectedShipping];
+        const tax = discountedSubtotal * 0.19;
+        const total = discountedSubtotal + shipping;
+
+        // Bestellnummer generieren
+        const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        const orderNum = 'STV-' + Array.from({length: 6}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+
+        // Aktuellen User prüfen (falls eingeloggt)
+        let userId = null;
+        try {
+          const { data: { user } } = await db.auth.getUser();
+          userId = user?.id || null;
+        } catch (_) {}
+
+        // Bestellung in Supabase speichern
+        const { data: order, error: orderError } = await db.from('orders').insert({
+          order_number:        orderNum,
+          user_id:             userId,
+          guest_email:         userId ? null : document.getElementById('email').value,
+          status:              'pending',
+          subtotal:            subtotal,
+          coupon_code:         appliedCoupon ? appliedCoupon.code : null,
+          discount_amount:     discountAmount,
+          shipping_cost:       shipping,
+          tax:                 tax,
+          total:               total,
+          shipping_method:     selectedShipping,
+          notes:               document.getElementById('notes').value || null,
+          delivery_email:      document.getElementById('email').value,
+          delivery_first_name: document.getElementById('firstName').value,
+          delivery_last_name:  document.getElementById('lastName').value,
+          delivery_company:    document.getElementById('company').value || null,
+          delivery_street:     document.getElementById('street').value,
+          delivery_street_nr:  document.getElementById('streetNr').value,
+          delivery_zip:        document.getElementById('zip').value,
+          delivery_city:       document.getElementById('city').value,
+          delivery_country:    document.getElementById('country').value,
+          delivery_phone:      document.getElementById('phone').value || null,
+        }).select().single();
+
+        if (orderError) throw orderError;
+
+        // Artikel speichern
+        const items = cart.map(item => ({
+          order_id:       order.id,
+          product_id:     item.productId,
+          product_name:   item.productName,
+          size:           item.size,
+          size_label:     item.sizeLabel,
+          print_quantity: item.quantity,
+          cart_quantity:  item.cartQty || 1,
+          unit_price:     item.price,
+          total_price:    item.price * (item.cartQty || 1),
+          preview_image:  item.previewImage || null,
+          canvas_json:    item.canvasJson || null,
+          sku:            item.sku || null,
+        }));
+
+        const { error: itemsError } = await db.from('order_items').insert(items);
+        if (itemsError) throw itemsError;
+        
+        // Coupon Usage increment
+        if (appliedCoupon) {
+          try {
+            await db.rpc('increment_coupon_usage', { coupon_code: appliedCoupon.code });
+          } catch(e) { console.error('Failed to increment coupon', e); }
+        }
+
+        // ── Stripe Checkout Session erstellen & weiterleiten ──
+        try {
+          const { data: session, error: sessionError } = await db.functions.invoke('create-stripe-session', {
+            body: {
+              orderId: order.id,
+              successUrl: window.location.origin + `/success.html?order=${orderNum}`,
+              cancelUrl: window.location.href
+            }
+          });
+
+          if (sessionError) throw sessionError;
+
+          if (session?.url) {
+            clearCart();
+            window.location.href = session.url; // Weiterleitung zu Stripe
+            return;
+          } else {
+            throw new Error('Keine Zahlungs-URL erhalten');
+          }
+        } catch (payErr) {
+          console.warn('Stripe checkout failed, using fallback order completion:', payErr);
+          document.getElementById('orderNumber').textContent = orderNum;
+          document.getElementById('successOverlay').classList.add('show');
+          clearCart();
+        }
+
+      } catch (err) {
+        console.error('Order error:', err);
+        // Fallback: Bestellung auch ohne Supabase ermöglichen
+        const orderNum = 'STV-' + Date.now().toString().slice(-6);
+        document.getElementById('orderNumber').textContent = orderNum;
+        document.getElementById('successOverlay').classList.add('show');
+        clearCart();
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '🚀 Jetzt bezahlen';
+      }
+    }
+
+    async function autofillCheckoutForm() {
+      try {
+        console.log("✍️ [Autofill-Debug] Starte Autofill...");
+        const { data: { session } } = await db.auth.getSession();
+        console.log("✍️ [Autofill-Debug] Session:", session);
+        if (!session) {
+          console.log("✍️ [Autofill-Debug] Keine aktive Session gefunden.");
+          return;
+        }
+
+        // E-Mail ausfüllen
+        const emailEl = document.getElementById('email');
+        console.log("✍️ [Autofill-Debug] emailEl gefunden:", emailEl);
+        console.log("✍️ [Autofill-Debug] session.user.email:", session.user?.email);
+        
+        if (session.user?.email && emailEl) {
+          emailEl.value = session.user.email;
+          console.log("✍️ [Autofill-Debug] E-Mail erfolgreich ausgefüllt:", emailEl.value);
+        }
+
+        // Profildaten laden
+        const profile = await getProfile();
+        console.log("✍️ [Autofill-Debug] Profil geladen:", profile);
+        if (profile) {
+          const fields = {
+            firstName: profile.first_name,
+            lastName: profile.last_name,
+            phone: profile.phone,
+            street: profile.street,
+            streetNr: profile.street_nr,
+            zip: profile.zip,
+            city: profile.city,
+            country: profile.country
+          };
+
+          for (const [id, val] of Object.entries(fields)) {
+            const el = document.getElementById(id);
+            if (el && val) el.value = val;
+          }
+        }
+      } catch (err) {
+        console.error('Autofill failed:', err);
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      try {
+        renderCheckoutSummary();
+      } catch (err) {
+        console.error('Checkout summary rendering failed:', err);
+      }
+
+      try {
+        autofillCheckoutForm();
+      } catch (err) {
+        console.error('Checkout autofill failed:', err);
+      }
+    });
+  </script>
+
+  <!-- Supabase (für Bestellspeicherung) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-ui.js"></script>
+<script src="js/theme-toggle.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FAQ – Stickiverse</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .faq-page {
+      padding-top: calc(var(--nav-height) + 48px);
+      padding-bottom: 80px;
+      min-height: 100vh;
+      background: #080810;
+    }
+
+    .faq-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 48px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .faq-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-align: center;
+    }
+
+    .faq-subtitle {
+      color: var(--text-muted);
+      text-align: center;
+      margin-bottom: 48px;
+      font-size: 16px;
+    }
+
+    .faq-group {
+      margin-bottom: 32px;
+    }
+
+    .faq-group__title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--purple-light);
+      margin-bottom: 16px;
+      border-left: 3px solid var(--purple);
+      padding-left: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      margin-bottom: 12px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      background: rgba(255,255,255,0.01);
+    }
+
+    .faq-item:hover {
+      border-color: rgba(139,92,246,0.3);
+      background: rgba(255,255,255,0.02);
+    }
+
+    .faq-item__question {
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 15px;
+      user-select: none;
+      color: var(--text-main);
+    }
+
+    .faq-item__answer {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s cubic-bezier(0, 1, 0, 1);
+      padding: 0 24px;
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+      border-top: 0 solid transparent;
+    }
+
+    .faq-item.active .faq-item__answer {
+      max-height: 1000px;
+      padding-bottom: 20px;
+      border-top: 1px solid var(--border);
+      transition: max-height 0.3s ease-in-out;
+    }
+
+    .faq-item__icon {
+      font-size: 18px;
+      transition: transform 0.2s ease;
+      color: var(--text-muted);
+    }
+
+    .faq-item.active .faq-item__icon {
+      transform: rotate(45deg);
+      color: var(--purple-light);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="faq-page">
+    <div class="container">
+      <div class="faq-container">
+        <h1 class="faq-title">Häufig gestellte Fragen (FAQ)</h1>
+        <p class="faq-subtitle">Hier findest du Antworten auf alle wichtigen Fragen zu deinen Custom Stickern.</p>
+
+        <!-- Group 1: Editor & Bestellung -->
+        <div class="faq-group">
+          <div class="faq-group__title">Sticker gestalten & Editor</div>
+          
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Welche Dateiformate kann ich für meine Sticker verwenden?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Im Editor kannst du deine Designs als hochauflösende PNG- oder JPEG-Dateien hochladen. Wenn du fertige Druckdaten hast (z. B. aus Illustrator), kannst du uns im Checkout eine PDF-Datei mitsenden. Für transparente Sticker empfehlen wir PNGs mit transparentem Hintergrund.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Welche Auflösung sollten meine Bilder haben?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Für ein gestochen scharfes Druckergebnis empfehlen wir eine Auflösung von mindestens 300 dpi bezogen auf die tatsächliche Druckgröße deines Stickers.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Bietet ihr einen Datencheck an?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Standardmäßig drucken wir deine Designs ohne zusätzlichen Datencheck. Du kannst im Admin-Bereich die Designs prüfen, bevor du sie an Onlineprinters sendest.
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 2: Versand & Lieferung -->
+        <div class="faq-group">
+          <div class="faq-group__title">Versand & Lieferung</div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Wie hoch sind die Versandkosten?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Der Standardversand innerhalb Deutschlands kostet 4,90 €. Ab einem Bestellwert von 50 € ist der Standardversand für dich komplett kostenlos! Expressversand bieten wir für 9,90 € an.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Wie lange dauert die Lieferung?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Die Produktionszeit der Druckerei beträgt in der Regel 3-4 Arbeitstage. Hinzu kommt der Postweg (Standardversand ca. 1-2 Werktage, Expressversand am nächsten Werktag nach Fertigstellung).
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Kann ich meine Bestellung als Gast aufgeben?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Ja, natürlich! Ein Kundenkonto ist optional. Du kannst deine Bestellung jederzeit als Gast aufgeben, ohne ein Passwort festlegen zu müssen.
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 3: Material & Qualität -->
+        <div class="faq-group">
+          <div class="faq-group__title">🛡️ Material & Qualität</div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Sind die Aufkleber wetterfest und UV-beständig?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Ja! Unsere PP-Folie (weiß und transparent) ist extrem strapazierfähig, wetterfest und gegen UV-Einstrahlung geschützt. Die Sticker eignen sich hervorragend für den Outdoor-Bereich, z.B. auf Autos, Fahrrädern oder Laptops.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Welche Sticker-Materialien gibt es?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Wir bieten klassische 90 µm PP-Folie (weiß, glänzend), transparente PP-Folie, Neonpapier, strukturiertes Naturpapier sowie edles Silberpapier an. Die Materialauswahl kannst du bei der Konfiguration treffen.
+            </div>
+          </div>
+        </div>
+
+        <!-- Group 4: Bezahlung & Sicherheit -->
+        <div class="faq-group">
+          <div class="faq-group__title">Bezahlung & Sicherheit</div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Welche Bezahlmethoden werden unterstützt?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Über unseren Bezahlpartner Stripe bieten wir Kreditkarte (Visa, Mastercard, Amex), PayPal, Apple Pay, Google Pay sowie Sofortüberweisung/Klarna an.
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-item__question">
+              <span>Sind meine Zahlungsdaten sicher?</span>
+              <span class="faq-item__icon">+</span>
+            </div>
+            <div class="faq-item__answer">
+              Absolut. Die gesamte Übertragung erfolgt SSL-verschlüsselt. Wir speichern zu keinem Zeitpunkt deine Kreditkarten- oder Bankdaten auf unseren Servern – die Verarbeitung läuft vollständig über die zertifizierten Sicherheitsstrukturen von Stripe.
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div class="footer__brand-col">
+          <a href="index.html" class="nav__logo" style="margin-bottom:16px;">
+            <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+          </a>
+          <p class="footer__brand-desc">Individuelle Sticker in Premium-Qualität. Einfach gestalten, schnell geliefert. Dein Sticker-Shop aus Deutschland.</p>
+          <div class="footer__newsletter" style="margin-top: 24px; max-width: 340px;">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 500;">
+              Jetzt zum Newsletter anmelden und 15€ Gutschein erhalten!
+            </p>
+            <form style="display: flex; flex-direction: column; gap: 12px;" onsubmit="event.preventDefault(); alert('Danke für die Anmeldung! Dein 15€ Gutschein-Code lautet: STICKI15'); this.reset();">
+              <div style="display: flex; gap: 8px;">
+                <input type="email" placeholder="Deine E-Mail" required style="flex: 1; min-width: 0; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 14px; outline: none;">
+                <button type="submit" class="btn btn--primary" style="padding: 10px 20px; white-space: nowrap;">Anmelden</button>
+              </div>
+              <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; line-height: 1.4; text-align: justify; hyphens: auto;">
+                <input type="checkbox" required style="margin-top: 2px; accent-color: var(--purple);">
+                <span>Ich habe die <a href="datenschutz.html" style="color: var(--purple-light); text-decoration: underline;">Datenschutzerklärung</a> zur Kenntnis genommen und stimme zu.</span>
+              </label>
+            </form>
+          </div>
+        </div>
+        <div>
+          <div class="footer__col-title">Info</div>
+          <ul class="footer__links">
+            <li><a href="#" class="footer__link">FAQ</a></li>
+            <li><a href="#" class="footer__link">Datenschutz</a></li>
+            <li><a href="#" class="footer__link">Impressum</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script>
+    // Accordion Logic
+    document.addEventListener('DOMContentLoaded', () => {
+      document.querySelectorAll('.faq-item__question').forEach(q => {
+        q.addEventListener('click', () => {
+          const item = q.parentElement;
+          item.classList.toggle('active');
+        });
+      });
+    });
+  </script>
+<script src="js/theme-toggle.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

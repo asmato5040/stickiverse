@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Impressum – Stickiverse</title>
+  <meta name="description" content="Impressum von Stickiverse.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .legal-content {
+      padding-top: calc(var(--nav-height) + 60px);
+      padding-bottom: 100px;
+      background: var(--bg-primary);
+      min-height: 100vh;
+    }
+    .legal-card {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 60px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    }
+    .legal-card h1 {
+      font-size: 40px;
+      font-weight: 900;
+      margin-bottom: 40px;
+      text-align: center;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .legal-card h2 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-top: 40px;
+      margin-bottom: 16px;
+      color: var(--text-primary);
+    }
+    .legal-card p, .legal-card ul {
+      font-size: 16px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .legal-card ul {
+      padding-left: 20px;
+    }
+    .legal-card strong {
+      color: var(--text-primary);
+    }
+    .legal-card a {
+      color: var(--purple-light);
+      text-decoration: none;
+    }
+    .legal-card a:hover {
+      text-decoration: underline;
+    }
+    @media (max-width: 768px) {
+      .legal-card {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+        <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="legal-content">
+    <div class="container">
+      <div class="legal-card">
+        <h1>IMPRESSUM</h1>
+        
+        <h2>Angaben gemäß § 5 Digitale-Dienste-Gesetz (DDG)</h2>
+        <p>
+          <strong>Anbieter</strong><br>
+          Stickiverse<br>
+          Einzelunternehmen<br><br>
+          Alfred-Mehl-Straße 60<br>
+          91058 Erlangen<br>
+          Deutschland
+        </p>
+
+        <p>
+          <strong>Inhaber:</strong><br>
+          [Vor- und Nachname]
+        </p>
+
+        <h2>Kontakt</h2>
+        <p>
+          Telefon: [Telefonnummer]<br>
+          E-Mail: [E-Mail-Adresse]<br>
+          Internet: <a href="https://www.stickiverse.de" target="_blank">www.stickiverse.de</a>
+        </p>
+
+        <h2>Umsatzsteuer</h2>
+        <p>
+          Umsatzsteuer-Identifikationsnummer gemäß § 27a Umsatzsteuergesetz:<br>
+          [USt-IdNr., falls vorhanden]<br><br>
+          Falls keine USt-IdNr. vorhanden ist:<br>
+          Es wird keine Umsatzsteuer-Identifikationsnummer geführt.
+        </p>
+
+        <h2>Verantwortlich für den Inhalt gemäß § 18 Abs. 2 MStV</h2>
+        <p>
+          [Vor- und Nachname]<br>
+          Alfred-Mehl-Straße 60<br>
+          91058 Erlangen<br>
+          Deutschland
+        </p>
+
+        <h2>Verbraucherstreitbeilegung</h2>
+        <p>
+          Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit:<br>
+          <a href="https://ec.europa.eu/consumers/odr" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr</a>
+        </p>
+        <p>
+          Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+        </p>
+
+        <h2>Haftung für Inhalte</h2>
+        <p>
+          Die Inhalte unserer Website wurden mit größter Sorgfalt erstellt. Dennoch übernehmen wir keine Gewähr für die Richtigkeit, Vollständigkeit oder Aktualität der bereitgestellten Inhalte.
+        </p>
+        <p>
+          Als Diensteanbieter sind wir gemäß den gesetzlichen Vorschriften für eigene Inhalte auf diesen Seiten verantwortlich. Eine Verpflichtung zur Überwachung übermittelter oder gespeicherter fremder Informationen besteht jedoch erst ab dem Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung. Bei Bekanntwerden entsprechender Rechtsverletzungen werden wir diese Inhalte unverzüglich entfernen.
+        </p>
+
+        <h2>Haftung für Links</h2>
+        <p>
+          Unsere Website enthält Links zu externen Webseiten Dritter. Auf deren Inhalte haben wir keinen Einfluss. Deshalb können wir für diese fremden Inhalte keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist ausschließlich der jeweilige Anbieter oder Betreiber verantwortlich.
+        </p>
+        <p>
+          Zum Zeitpunkt der Verlinkung wurden die Seiten auf mögliche Rechtsverstöße überprüft. Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine dauerhafte inhaltliche Kontrolle der verlinkten Seiten ist ohne konkrete Anhaltspunkte einer Rechtsverletzung nicht zumutbar.
+        </p>
+
+        <h2>Urheberrecht</h2>
+        <p>
+          Alle auf dieser Website veröffentlichten Inhalte, Texte, Bilder, Grafiken, Logos, Designs, Produktabbildungen, Icons, Illustrationen sowie sonstige Werke unterliegen dem deutschen Urheberrecht sowie weiteren gesetzlichen Schutzrechten.
+        </p>
+        <p>
+          Jede Vervielfältigung, Bearbeitung, Verbreitung oder sonstige Verwendung außerhalb der gesetzlichen Grenzen des Urheberrechts bedarf unserer vorherigen schriftlichen Zustimmung. Downloads und Kopien dieser Website sind ausschließlich für den privaten und nicht kommerziellen Gebrauch gestattet.
+        </p>
+
+        <h2>Markenrechte</h2>
+        <p>
+          Die Bezeichnung Stickiverse sowie sämtliche Logos, Kennzeichen, Slogans und grafischen Elemente sind Eigentum des Unternehmens oder der jeweiligen Rechteinhaber. Eine Nutzung ohne ausdrückliche schriftliche Zustimmung ist nicht gestattet.
+        </p>
+
+        <h2>Produktbilder und Druckmotive</h2>
+        <p>
+          Sämtliche Produktbilder dienen ausschließlich der Veranschaulichung. Je nach Material, Druckverfahren, Bildschirmdarstellung oder Produktion können Farbabweichungen auftreten. Dies stellt keinen Mangel dar, sofern die Abweichungen branchenüblich sind.
+        </p>
+
+        <h2>Nutzerinhalte</h2>
+        <p>
+          Soweit Kunden eigene Druckdaten, Logos, Fotos oder sonstige Inhalte hochladen, verbleiben die Urheberrechte grundsätzlich beim jeweiligen Rechteinhaber. Der Kunde versichert, sämtliche erforderlichen Nutzungsrechte an den hochgeladenen Dateien zu besitzen. Für Rechtsverletzungen haftet ausschließlich der jeweilige Nutzer.
+        </p>
+
+        <h2>KI-generierte Inhalte</h2>
+        <p>
+          Einzelne Grafiken, Illustrationen oder Gestaltungselemente können unter Einsatz künstlicher Intelligenz erstellt oder unterstützt worden sein. Die urheberrechtliche Verantwortung für veröffentlichte Inhalte verbleibt beim Betreiber dieser Website.
+        </p>
+
+        <h2>Bildquellen</h2>
+        <ul>
+          <li>Eigene Fotografien</li>
+          <li>Eigene Grafiken</li>
+          <li>Eigene Illustrationen</li>
+          <li>Produktabbildungen des Unternehmens</li>
+          <li>KI-generierte Grafiken</li>
+          <li>Lizenzierte Stockbilder (sofern verwendet)</li>
+        </ul>
+
+        <h2>Verfügbarkeit der Website</h2>
+        <p>
+          Wir bemühen uns um eine möglichst unterbrechungsfreie Verfügbarkeit unserer Website. Kurzfristige Wartungsarbeiten, technische Störungen oder höhere Gewalt können jedoch zu vorübergehenden Einschränkungen führen. Ein Anspruch auf permanente Verfügbarkeit besteht nicht.
+        </p>
+
+        <h2>Hinweis zur Kommunikation</h2>
+        <p>
+          Die Kommunikation per E-Mail kann Sicherheitslücken aufweisen. Ein lückenloser Schutz der Daten vor dem Zugriff Dritter ist bei der elektronischen Übertragung nicht möglich.
+        </p>
+
+        <h2>Social-Media-Auftritte</h2>
+        <p>
+          Dieses Impressum gilt ebenfalls für sämtliche offiziellen Social-Media-Präsenzen von Stickiverse, soweit dort auf dieses Impressum verwiesen wird.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <div style="display: flex; gap: 16px;">
+          <a href="impressum.html" style="color: var(--text-muted); text-decoration: none;">Impressum</a>
+        </div>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stickiverse – Dein Sticker-Shop für individuelle Aufkleber</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="description" content="Gestalte und bestelle individuelle Sticker online. Rund, eckig, freigestanzt – wetterfest und in bester Druckqualität. Jetzt selbst designen!">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    /* ── Hero Slider ──────────────────────── */
+    .hero-slider {
+      position: relative;
+      padding-top: var(--nav-height);
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .hero-slide {
+      width: 100%;
+      min-width: 100%;
+      flex: 0 0 100%;
+      overflow: hidden;
+      position: absolute;
+      inset: 0;
+      top: var(--nav-height);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-slide.active {
+      position: relative;
+      opacity: 1;
+      pointer-events: auto;
+      top: auto;
+    }
+
+    .hero-container {
+      width: 100%;
+      max-width: 1280px;
+      height: 820px;
+      margin: 0 auto;
+      padding: 70px 64px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: center;
+      position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      width: 100%;
+      max-width: 590px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(139,92,246,0.12);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple-light);
+      letter-spacing: 0.5px;
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin: 0 0 28px;
+      min-height: 215px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .hero-title span {
+      display: block;
+    }
+
+    .hero-description {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin: 0 0 34px;
+      min-height: 105px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      min-height: 68px;
+    }
+
+    .hero-bottom-content {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      width: 100%;
+    }
+
+    .hero-stat {
+      text-align: center;
+    }
+
+    .hero-stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Visuals ──────────────────────── */
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    /* Slide 1 Floating Items */
+    .hero-canvas-bg {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    .sticker-float {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: float linear infinite;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .sf-1 { width: 150px; height: 150px; background-image: url('assets/hero_transparent/hero_robot_1784152930155.png'); top: 10%; left: 0%; animation-duration: 6s; animation-delay: 0s; }
+    .sf-2 { width: 130px; height: 130px; background-image: url('assets/hero_transparent/hero_chameleon_1784152949506.png'); top: 15%; right: 0%; animation-duration: 7s; animation-delay: -2s; }
+    .sf-3 { width: 180px; height: 180px; background-image: url('assets/hero_transparent/hero_mushroom_1784152964218.png'); bottom: 20%; left: 0%; animation-duration: 8s; animation-delay: -4s; }
+    .sf-4 { width: 140px; height: 140px; background-image: url('assets/hero_transparent/hero_boombox_1784152956731.png'); bottom: 20%; right: 5%; animation-duration: 5.5s; animation-delay: -1s; }
+    .sf-5 { width: 180px; height: 180px; background-image: url('assets/hero_transparent/hero_tiger_1784152972666.png'); top: 50%; left: 50%; margin-top: -90px; margin-left: -90px; animation-duration: 9s; animation-delay: -3s; }
+    .sf-6 { width: 120px; height: 120px; background-image: url('assets/hero_transparent/hero_ufo_1784152980353.png'); top: 50%; right: 0%; animation-duration: 6.5s; animation-delay: -5s; }
+
+    /* Slide 2 Redesign */
+    .slide-2 .hero-visual {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/hero_slider_2.png');
+      background-position: right center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .slide-2::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(7, 6, 15, 0.98) 0%,
+        rgba(12, 7, 20, 0.92) 35%,
+        rgba(12, 7, 20, 0.35) 68%,
+        rgba(12, 7, 20, 0.08) 100%
+      );
+      z-index: 2;
+    }
+
+    .slide-2 .hero-content {
+      position: relative;
+      z-index: 3;
+    }
+
+    /* Slide 3 Specific Image */
+    .slide-3 .hero-visual img {
+      width: 100%;
+      height: 100%;
+      max-height: 600px;
+      object-fit: contain;
+      object-position: center right;
+      transform: translateY(-40px); /* Moves the image up visually */
+    }
+
+    /* ── Slider Dots ─────────────────────── */
+    .hero-dots {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .hero-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .hero-dot:hover {
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .hero-dot.active {
+      background: var(--gradient-brand);
+      border-color: transparent;
+      width: 28px;
+      border-radius: 5px;
+    }
+
+
+    /* ── Categories Preview ──────────────── */
+    .categories {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .categories__grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .cat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: var(--transition-slow);
+      display: flex;
+      flex-direction: column;
+      height: 210px;
+      overflow: hidden;
+      text-decoration: none;
+    }
+
+    .cat-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-brand);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(139,92,246,0.15);
+    }
+
+    .cat-card__shape {
+      width: 100%;
+      height: 135px;
+      margin: 0;
+      position: relative;
+      background: #000000;
+      overflow: hidden;
+      border-radius: 0;
+    }
+
+    .cat-card__shape img {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .cat-card:hover .cat-card__shape img {
+      transform: scale(1.08);
+    }
+
+    .cat-card__name {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 2px;
+      color: var(--text);
+    }
+
+    .cat-card__count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── How It Works ────────────────────── */
+    .steps {
+      padding: 96px 0;
+    }
+
+    .steps__grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+      position: relative;
+    }
+
+    .steps__grid::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: calc(12.5% + 24px);
+      right: calc(12.5% + 24px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-brand), transparent);
+    }
+
+    .step-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      padding: 36px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: relative;
+      transition: var(--transition-slow);
+    }
+
+    .step-card:hover {
+      border-color: var(--border-brand);
+      transform: translateY(-4px);
+    }
+
+    .step-card__number {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient-brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 auto 20px;
+      box-shadow: var(--shadow-brand);
+    }
+
+    .step-card__icon { font-size: 32px; margin-bottom: 16px; }
+    .step-card__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .step-card__text { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ── Products Section ────────────────── */
+    .products-preview {
+      padding: 96px 0;
+      background: var(--bg-secondary);
+    }
+
+    .products-preview__header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .product-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      transition: var(--transition-slow);
+      cursor: pointer;
+    }
+
+    .product-card:hover {
+      border-color: var(--border-brand);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(139,92,246,0.15);
+    }
+
+    .product-card__visual {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .product-card-image {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .product-card:hover .product-card-image {
+      transform: scale(1.08);
+    }
+
+    .product-card__body {
+      padding: 24px;
+    }
+
+    .product-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .product-card__badge--popular {
+      background: rgba(245,158,11,0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(245,158,11,0.3);
+    }
+
+    .product-card__badge--new {
+      background: rgba(16,185,129,0.15);
+      color: var(--green);
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+
+    .product-card__name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .product-card__desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .product-card__price {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .product-card__price-from {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .product-card__price-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── USP Section ─────────────────────── */
+    .usps {
+      padding: 96px 0;
+    }
+
+    .usp-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .usp-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      padding: 32px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: var(--transition-slow);
+    }
+
+    .usp-card:hover {
+      border-color: var(--border-brand);
+      background: var(--bg-card-hover);
+    }
+
+    .usp-card__icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .usp-card__title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .usp-card__text {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    /* ── CTA Banner ──────────────────────── */
+    .cta-banner {
+      margin: 0 0 96px;
+    }
+
+    .cta-banner__inner {
+      background: var(--gradient-brand);
+      border-radius: var(--radius-2xl);
+      padding: 80px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner__inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .cta-banner__title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .cta-banner__text {
+      font-size: 18px;
+      opacity: 0.85;
+      margin-bottom: 40px;
+    }
+
+    .cta-banner__btn {
+      background: white;
+      color: var(--purple-dark);
+      font-size: 17px;
+      font-weight: 800;
+      padding: 16px 40px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      transition: var(--transition);
+    }
+
+    .cta-banner__btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+
+    /* ── Testimonials ────────────────────── */
+    .testimonials {
+      padding: 96px 0;
+      background: var(--bg-secondary);
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    .testimonial-card__stars {
+      color: var(--yellow);
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-card__text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-card__author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-card__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .testimonial-card__name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .testimonial-card__meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Responsive ──────────────────────── */
+
+    /* ── Tablet (max 1024px) ── */
+    @media (max-width: 1024px) {
+      .hero-container {
+        grid-template-columns: 1fr;
+        height: auto;
+        max-width: 100%;
+        padding: 48px 24px 40px;
+        text-align: center;
+        gap: 32px;
+      }
+      .hero-content {
+        align-items: center;
+        max-width: 100%;
+      }
+      .hero-title { min-height: auto; font-size: clamp(36px, 7vw, 56px); }
+      .hero-description { min-height: auto; max-width: 100%; }
+      .hero-actions { justify-content: center; }
+      .hero-bottom-content { justify-content: center; flex-wrap: wrap; }
+      .hero-visual { height: 400px; overflow: hidden; }
+      .hero-dots { bottom: 16px; }
+
+      /* Slide 2: keep background but adjust overlay */
+      .slide-2 .hero-visual { position: absolute; inset: 0; height: auto; }
+      .slide-2 .hero-container { position: relative; z-index: 3; }
+
+      /* Slide 3 image */
+      .slide-3 .hero-visual img { transform: none; max-height: 400px; }
+
+      .categories__grid { grid-template-columns: repeat(3, 1fr); }
+      .steps__grid { grid-template-columns: repeat(2, 1fr); }
+      .usp-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps__grid::before { display: none; }
+
+      /* Theme toggle bar */
+      .theme-toggle-bar { left: 8px; padding: 4px; }
+      .theme-toggle-btn { width: 30px; height: 30px; }
+    }
+
+    /* ── Small Tablet / Large Phone (max 768px) ── */
+    @media (max-width: 768px) {
+      .hero-container {
+        padding: 24px 16px 24px;
+        gap: 24px;
+      }
+      .hero-title { font-size: clamp(28px, 8vw, 44px); letter-spacing: -1px; }
+      .hero-badge { font-size: 11px; padding: 5px 12px; margin-bottom: 16px; }
+      .hero-description { font-size: 14px; margin: 0 0 20px; line-height: 1.65; }
+      .hero-actions { gap: 10px; }
+      .hero-actions .btn--lg { padding: 13px 24px; font-size: 14px; }
+      .hero-bottom-content {
+        gap: 16px;
+        margin-top: 24px;
+        padding-top: 20px;
+        flex-wrap: wrap;
+      }
+      .hero-stat-value { font-size: 20px; }
+      .hero-stat-label { font-size: 11px; }
+      .hero-visual { height: 260px; }
+      .hero-dots { bottom: 12px; }
+
+      /* Floating stickers – scale down */
+      .sticker-float { transform: scale(0.6); }
+      .hero-canvas-bg { width: 250px; height: 250px; }
+
+      /* Slide 3 image */
+      .slide-3 .hero-visual img { max-height: 260px; }
+
+      .products-preview__header { flex-direction: column; gap: 20px; align-items: flex-start; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .cta-banner__inner { padding: 40px 20px; }
+
+      /* Theme toggle bar */
+      .theme-toggle-bar {
+        left: auto;
+        right: 8px;
+        top: auto;
+        bottom: 16px;
+        transform: none;
+        flex-direction: row;
+      }
+    }
+
+    /* ── Mobile (max 480px) ── */
+    @media (max-width: 480px) {
+      .hero-container {
+        padding: 20px 14px 20px;
+      }
+      .hero-title { font-size: clamp(26px, 9vw, 36px); }
+      .hero-description { font-size: 13px; }
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-actions .btn--lg {
+        width: 100%;
+        padding: 13px 20px;
+        font-size: 14px;
+      }
+      .hero-bottom-content { gap: 12px; }
+      .hero-stat-value { font-size: 18px; }
+      .hero-stat-label { font-size: 10px; }
+      .hero-visual { height: 200px; }
+
+      /* Floating stickers – even smaller */
+      .sticker-float { transform: scale(0.45); }
+      .hero-canvas-bg { width: 180px; height: 180px; }
+
+      /* Slide 3 image */
+      .slide-3 .hero-visual img { max-height: 200px; }
+
+      .categories__grid { grid-template-columns: repeat(2, 1fr); }
+      .steps__grid { grid-template-columns: 1fr; }
+      .usp-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="site-wrapper" style="overflow-x: hidden; width: 100%; position: relative;">
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── Hero Slider ── -->
+  <section class="hero-slider" id="heroSlider">
+
+    <!-- Slide 1: Individuelle Sticker -->
+    <div class="hero-slide slide-1 active" data-slide="0">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            Dein Sticker-Shop – Made in Germany
+          </div>
+          <h1 class="hero-title">
+            <span>Sticker die</span>
+            <span class="gradient-text">auffallen.</span>
+            <span>Garantiert.</span>
+          </h1>
+          <p class="hero-description">
+            Designe individuelle Aufkleber direkt im Browser. Wähle Form, Größe und Menge – wir drucken und liefern in höchster Qualität.
+          </p>
+          <div class="hero-actions">
+            <a href="products.html" class="btn btn--primary btn--lg">Sticker auswählen</a>
+            <a href="products.html" class="btn btn--secondary btn--lg">Produkte ansehen</a>
+          </div>
+          <div class="hero-bottom-content">
+            <div class="hero-stat">
+              <div class="hero-stat-value">50+</div>
+              <div class="hero-stat-label">Sticker-Varianten</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">ab 9,90€</div>
+              <div class="hero-stat-label">Günstige Preise</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">5★</div>
+              <div class="hero-stat-label">Kundenbewertung</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="hero-canvas-bg"></div>
+          <div class="sticker-float sf-1"></div>
+          <div class="sticker-float sf-2"></div>
+          <div class="sticker-float sf-3"></div>
+          <div class="sticker-float sf-4"></div>
+          <div class="sticker-float sf-5"></div>
+          <div class="sticker-float sf-6"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 2: Produktsticker & Branding -->
+    <div class="hero-slide slide-2" data-slide="1">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            Für Marken, Events & Produkte
+          </div>
+          <h1 class="hero-title">
+            <span>Deine Marke.</span>
+            <span class="gradient-text">Überall.</span>
+          </h1>
+          <p class="hero-description">
+            Ob Produktlabels, Verpackungssiegel oder Branding-Sticker – wir drucken dein Logo auf jedes Format. Perfekt für Unternehmen, Shops und Startups.
+          </p>
+          <div class="hero-actions">
+            <a href="editor.html" class="btn btn--primary btn--lg">Jetzt gestalten</a>
+            <a href="discover.html" class="btn btn--secondary btn--lg">Inspirationen</a>
+          </div>
+          <div class="hero-bottom-content" style="visibility: hidden; pointer-events: none;">
+            <div class="hero-stat">
+              <div class="hero-stat-value">50+</div>
+              <div class="hero-stat-label">Sticker-Varianten</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">ab 9,90€</div>
+              <div class="hero-stat-label">Günstige Preise</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">5★</div>
+              <div class="hero-stat-label">Kundenbewertung</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual"></div>
+      </div>
+    </div>
+
+    <!-- Slide 3: Events & Anlässe -->
+    <div class="hero-slide slide-3" data-slide="2">
+      <div class="hero-container">
+        <div class="hero-content">
+          <div class="hero-badge">
+            JGA · Babyparty · Kindergeburtstag & mehr
+          </div>
+          <h1 class="hero-title">
+            <span>Sticker für</span>
+            <span class="gradient-text">jeden Anlass.</span>
+          </h1>
+          <p class="hero-description">
+            JGA-Sticker für die Braut, Foto-Aufkleber für die Babyparty, Paketaufkleber für dein Business – mach jeden Moment unvergesslich mit individuellen Stickern.
+          </p>
+          <div class="hero-actions">
+            <a href="editor.html" class="btn btn--primary btn--lg">Sticker gestalten</a>
+            <a href="products.html" class="btn btn--secondary btn--lg">Alle Produkte</a>
+          </div>
+          <div class="hero-bottom-content" style="visibility: hidden; pointer-events: none;">
+            <div class="hero-stat">
+              <div class="hero-stat-value">50+</div>
+              <div class="hero-stat-label">Sticker-Varianten</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">ab 9,90€</div>
+              <div class="hero-stat-label">Günstige Preise</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hero-stat-value">5★</div>
+              <div class="hero-stat-label">Kundenbewertung</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <img src="assets/hero_slider_3.png" alt="Event-Sticker">
+        </div>
+      </div>
+    </div>
+
+    <!-- Slider Dots -->
+    <div class="hero-dots">
+      <button class="hero-dot active" data-goto="0" aria-label="Slide 1"></button>
+      <button class="hero-dot" data-goto="1" aria-label="Slide 2"></button>
+      <button class="hero-dot" data-goto="2" aria-label="Slide 3"></button>
+    </div>
+
+  </section>
+
+  <!-- ── Kategorien ── -->
+  <section class="categories">
+    <div class="container">
+      <div class="categories__grid">
+        <a href="products.html?cat=rund" class="cat-card">
+          <div class="cat-card__shape">
+            <img src="images/Runde Sticker.webp?v=1" alt="Rund" style="width:100%;height:100%;object-fit:contain;">
+          </div>
+          <div class="cat-card__name">Rund</div>
+          <div class="cat-card__count">4 Größen</div>
+        </a>
+        <a href="products.html?cat=eckig" class="cat-card">
+          <div class="cat-card__shape">
+            <img src="images/Quadratische Sticker.webp?v=1" alt="Quadratisch" style="width:100%;height:100%;object-fit:contain;">
+          </div>
+          <div class="cat-card__name">Quadratisch</div>
+          <div class="cat-card__count">4 Größen</div>
+        </a>
+        <a href="products.html?cat=eckig" class="cat-card">
+          <div class="cat-card__shape">
+            <img src="images/Rechteck Sticker.webp?v=1" alt="Rechteckig" style="width:100%;height:100%;object-fit:contain;">
+          </div>
+          <div class="cat-card__name">Rechteckig</div>
+          <div class="cat-card__count">4 Größen</div>
+        </a>
+        <a href="products.html?cat=rund" class="cat-card">
+          <div class="cat-card__shape">
+            <img src="images/Oval Sticker.webp?v=1" alt="Oval" style="width:100%;height:100%;object-fit:contain;">
+          </div>
+          <div class="cat-card__name">Oval</div>
+          <div class="cat-card__count">3 Größen</div>
+        </a>
+        <a href="products.html?cat=freigestanzt" class="cat-card">
+          <div class="cat-card__shape">
+            <img src="images/Freigestanzte Sticker.webp?v=1" alt="Freigestanzt" style="width:100%;height:100%;object-fit:contain;">
+          </div>
+          <div class="cat-card__name">Freigestanzt</div>
+          <div class="cat-card__count">3 Größen</div>
+        </a>
+        <a href="products.html?cat=transparent" class="cat-card">
+          <div class="cat-card__shape">
+            <img src="images/Transparente Sticker.webp?v=1" alt="Transparent" style="width:100%;height:100%;object-fit:contain;">
+          </div>
+          <div class="cat-card__name">Transparent</div>
+          <div class="cat-card__count">3 Größen</div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── So funktioniert's ── -->
+  <section class="steps">
+    <div class="container">
+      <div style="text-align:center;">
+        <span class="section__label">Der Prozess</span>
+        <h2 class="section__title">In 4 Schritten<br><span class="gradient-text">zu deinen Stickern</span></h2>
+        <p class="section__subtitle" style="margin: 0 auto;">So einfach war Sticker-Bestellen noch nie. Von der Idee bis zur Lieferung in wenigen Minuten.</p>
+      </div>
+
+      <div class="steps__grid">
+        <div class="step-card">
+          <div class="step-card__number">1</div>
+          <div class="step-card__title">Produkt wählen</div>
+          <div class="step-card__text">Wähle Form, Material und Größe deines Stickers aus unserer Kollektion.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">2</div>
+          <div class="step-card__title">Design erstellen</div>
+          <div class="step-card__text">Gestalte deinen Sticker mit unserem Editor. Text, Logo, Farben – alles möglich.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">3</div>
+          <div class="step-card__title">Bestellen</div>
+          <div class="step-card__text">Menge wählen, Lieferadresse eingeben und fertig. Zahlung folgt sicher.</div>
+        </div>
+        <div class="step-card">
+          <div class="step-card__number">4</div>
+          <div class="step-card__title">Geliefert!</div>
+          <div class="step-card__text">In wenigen Werktagen landen deine Sticker in bester Qualität in deinem Briefkasten.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Produkte Preview ── -->
+  <section class="products-preview">
+    <div class="container">
+      <div class="products-preview__header">
+        <div>
+          <span class="section__label">Bestseller</span>
+          <h2 class="section__title" style="margin-bottom:0;">Beliebte<br><span class="gradient-text">Sticker-Typen</span></h2>
+        </div>
+        <a href="products.html" class="btn btn--ghost">Alle ansehen →</a>
+      </div>
+
+      <div class="grid grid--3" id="featuredProducts">
+        <!-- via JS befüllt -->
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ── Anlässe ── -->
+  <section style="padding: 120px 0; background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="container">
+      <div style="text-align: center; margin-bottom: 60px;">
+        <span class="section__label">Sticker für dein Event</span>
+        <h2 style="font-size: clamp(32px, 4vw, 48px); font-weight: 800; margin-bottom: 16px;">Perfekt für <span class="gradient-text">jeden Anlass</span></h2>
+        <p style="color: var(--text-secondary); font-size: 18px; max-width: 600px; margin: 0 auto;">Ob wilde Partys oder süße Überraschungen – mit individuellen Stickern machst du dein Event unvergesslich. Entdecke unsere Ideen für deine Feier!</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 32px;">
+        
+        <!-- JGA -->
+        <div class="product-card" style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--bg-body); transition: var(--transition);">
+          <div style="aspect-ratio: 4/3; overflow: hidden;">
+            <img src="assets/occasion_jga_1784191722935.jpg" alt="JGA Sticker" style="width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid var(--border);">
+          </div>
+          <div style="padding: 24px;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">JGA & Polterabend</h3>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Lustige "Team Bride" oder "Team Groom" Sticker, freche Sprüche oder euer Gruppenfoto – perfekt für T-Shirts, Becher und als Erinnerung für den wilden Abend.</p>
+            <a href="discover.html" class="btn btn--secondary" style="width: 100%; display: block; text-align: center;">JGA Sticker entdecken</a>
+          </div>
+        </div>
+
+        <!-- Gender Reveal -->
+        <div class="product-card" style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--bg-body); transition: var(--transition);">
+          <div style="aspect-ratio: 4/3; overflow: hidden;">
+            <img src="assets/occasion_gender_reveal_1784191737843.jpg" alt="Gender Reveal Sticker" style="width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid var(--border);">
+          </div>
+          <div style="padding: 24px;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Gender Reveal Party</h3>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Boy or Girl? Lasst eure Gäste tippen! Teilt niedliche "Team Boy" und "Team Girl" Sticker aus, bevor das große Geheimnis endlich gelüftet wird.</p>
+            <a href="discover.html" class="btn btn--secondary" style="width: 100%; display: block; text-align: center;">Gender Reveal Ideen</a>
+          </div>
+        </div>
+
+        <!-- Baby Party -->
+        <div class="product-card" style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--bg-body); transition: var(--transition);">
+          <div style="aspect-ratio: 4/3; overflow: hidden;">
+            <img src="assets/occasion_baby_party_1784191754327.jpg" alt="Baby Party Sticker" style="width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid var(--border);">
+          </div>
+          <div style="padding: 24px;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Baby Shower</h3>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Personalisiere Gastgeschenke, Muffin-Topper oder Deko-Elemente mit zarten, wunderschönen Stickern für die werdende Mama und die Gäste.</p>
+            <a href="discover.html" class="btn btn--secondary" style="width: 100%; display: block; text-align: center;">Baby Party Sticker</a>
+          </div>
+        </div>
+
+        <!-- Kindergeburtstag -->
+        <div class="product-card" style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden; background: var(--bg-body); transition: var(--transition);">
+          <div style="aspect-ratio: 4/3; overflow: hidden;">
+            <img src="assets/occasion_kindergeburtstag_1784191763793.jpg" alt="Kindergeburtstag Sticker" style="width: 100%; height: 100%; object-fit: cover; border-bottom: 1px solid var(--border);">
+          </div>
+          <div style="padding: 24px;">
+            <h3 style="font-size: 20px; font-weight: 700; margin-bottom: 8px;">Kindergeburtstage</h3>
+            <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px; line-height: 1.6;">Raketen, Einhörner, Dinosaurier: Mach die Mitgebsel-Tüten zum Highlight! Robuste Vinyl-Sticker, die garantiert jedes Kind strahlen lassen.</p>
+            <a href="discover.html" class="btn btn--secondary" style="width: 100%; display: block; text-align: center;">Kindergeburtstag Sticker</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── USPs ── -->
+  <section class="usps">
+    <div class="container">
+      <div style="text-align:center;">
+        <span class="section__label">Warum Stickiverse</span>
+        <h2 class="section__title">Das macht uns<br><span class="gradient-text">besonders</span></h2>
+      </div>
+
+      <div class="usp-grid">
+        <div class="usp-card">
+          <div class="usp-card__title">Einfacher Editor</div>
+          <div class="usp-card__text">Unser Browser-Editor macht das Gestalten zum Kinderspiel. Kein Download, keine Software – einfach loslegen.</div>
+        </div>
+        <div class="usp-card">
+          <div class="usp-card__title">Premium-Qualität</div>
+          <div class="usp-card__text">Wetterfeste Folien, UV-Schutz und satte Farben. Unsere Sticker halten, was sie versprechen – jahrelang.</div>
+        </div>
+        <div class="usp-card">
+          <div class="usp-card__title">Schnelle Lieferung</div>
+          <div class="usp-card__text">Von der Bestellung bis zur Lieferung in 3–5 Werktagen. Express-Optionen auf Anfrage verfügbar.</div>
+        </div>
+        <div class="usp-card">
+          <div class="usp-card__title">Faire Preise</div>
+          <div class="usp-card__text">Schon ab 9,90 € für 50 Sticker. Je mehr du bestellst, desto günstiger wird's. Transparent und ohne Überraschungen.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Testimonials ── -->
+  <section class="testimonials">
+    <div class="container">
+      <div style="text-align:center;">
+        <span class="section__label">Kundenstimmen</span>
+        <h2 class="section__title">Was unsere Kunden<br><span class="gradient-text">sagen</span></h2>
+      </div>
+
+      <div class="testimonial-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">★★★★★</div>
+          <p class="testimonial-card__text">„Die Sticker sehen aus wie aus dem Laden gekauft – absolute Topqualität! Der Editor ist super einfach zu bedienen und die Lieferung kam schneller als erwartet."</p>
+          <div class="testimonial-card__author">
+            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);">👩</div>
+            <div>
+              <div class="testimonial-card__name">Sarah K.</div>
+              <div class="testimonial-card__meta">Marketingdesignerin, Berlin</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">★★★★★</div>
+          <p class="testimonial-card__text">„Habe 500 runde Sticker für mein Café bestellt. Die Qualität ist sensationell – die Farben leuchten und die Sticker halten perfekt auf Gläsern."</p>
+          <div class="testimonial-card__author">
+            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6);">👨</div>
+            <div>
+              <div class="testimonial-card__name">Marco L.</div>
+              <div class="testimonial-card__meta">Gastronom, München</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-card__stars">★★★★★</div>
+          <p class="testimonial-card__text">„Als kleine Etsy-Verkäuferin brauche ich günstige, aber hochwertige Sticker. Stickiverse ist genau das! Immer wieder gerne."</p>
+          <div class="testimonial-card__author">
+            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#EC4899,#F59E0B);">👩</div>
+            <div>
+              <div class="testimonial-card__name">Jana M.</div>
+              <div class="testimonial-card__meta">Etsy-Verkäuferin, Hamburg</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section class="cta-banner">
+    <div class="container">
+      <div class="cta-banner__inner">
+        <h2 class="cta-banner__title">Bereit für deine eigenen Sticker?</h2>
+        <p class="cta-banner__text">Lade dein eigenes Design hoch oder gestalte direkt online.</p>
+        <a href="products.html" class="btn cta-banner__btn">Sticker auswählen</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Pre-Footer Image ── -->
+  <section class="footer-image-section" style="width: 100%; margin-top: 60px; line-height: 0; font-size: 0; overflow: visible; position: relative; z-index: 10; margin-bottom: -1px;">
+    <img src="assets/footer_image_transparent.png" alt="Stickiverse Footer" style="width: 100%; height: auto; display: block; filter: drop-shadow(0 -10px 30px rgba(0,0,0,0.5));">
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer class="footer" style="padding-top: 40px; padding-bottom: 80px; margin-top: 0; border-top: none;">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="nav__logo" style="margin-bottom:16px;">
+            <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+          </div>
+          <p class="footer__brand-desc">Individuelle Sticker in Premium-Qualität. Einfach gestalten, schnell geliefert. Dein Sticker-Shop aus Deutschland.</p>
+          <div class="footer__newsletter" style="margin-top: 24px; max-width: 340px;">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 500;">
+              Jetzt zum Newsletter anmelden und 15€ Gutschein erhalten!
+            </p>
+            <form style="display: flex; flex-direction: column; gap: 12px;" onsubmit="event.preventDefault(); alert('Danke für die Anmeldung! Dein 15€ Gutschein-Code lautet: STICKI15'); this.reset();">
+              <div style="display: flex; gap: 8px;">
+                <input type="email" placeholder="Deine E-Mail" required style="flex: 1; min-width: 0; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 14px; outline: none;">
+                <button type="submit" class="btn btn--primary" style="padding: 10px 20px; white-space: nowrap;">Anmelden</button>
+              </div>
+              <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; line-height: 1.4; text-align: justify; hyphens: auto;">
+                <input type="checkbox" required style="margin-top: 2px; accent-color: var(--purple);">
+                <span>Ich habe die <a href="datenschutz.html" style="color: var(--purple-light); text-decoration: underline;">Datenschutzerklärung</a> zur Kenntnis genommen und stimme zu.</span>
+              </label>
+            </form>
+          </div>
+        </div>
+        <div>
+          <div class="footer__col-title">Produkte</div>
+          <ul class="footer__links">
+            <li><a href="products.html?cat=rund" class="footer__link">Runde Sticker</a></li>
+            <li><a href="products.html?cat=eckig" class="footer__link">Eckige Sticker</a></li>
+            <li><a href="products.html?cat=freigestanzt" class="footer__link">Freigestanzt</a></li>
+            <li><a href="products.html?cat=transparent" class="footer__link">Transparent</a></li>
+            <li><a href="discover.html" class="footer__link">Sticker entdecken</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer__col-title">Shop</div>
+          <ul class="footer__links">
+            <li><a href="editor.html" class="footer__link">Sticker-Editor</a></li>
+            <li><a href="cart.html" class="footer__link">Warenkorb</a></li>
+            <li><a href="#" class="footer__link">Bestellung verfolgen</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer__col-title">Info</div>
+          <ul class="footer__links">
+            <li><a href="versand.html" class="footer__link">Versand & Zahlung</a></li>
+            <li><a href="widerruf.html" class="footer__link">Widerrufsbelehrung</a></li>
+            <li><a href="datenschutz.html" class="footer__link">Datenschutz</a></li>
+            <li><a href="cookies.html" class="footer__link">Cookie-Richtlinie</a></li>
+            <li><a href="impressum.html" class="footer__link">Impressum</a></li>
+            <li><a href="agb.html" class="footer__link">AGB</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/products.js?v=2"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script>
+    // ── Hero Slider ──────────────────────
+    (function() {
+      let currentSlide = 0;
+      const slides = document.querySelectorAll('.hero-slide');
+      const dots = document.querySelectorAll('.hero-dot');
+      const totalSlides = slides.length;
+      let autoPlayTimer;
+
+      function goToSlide(index) {
+        slides.forEach(s => s.classList.remove('active'));
+        dots.forEach(d => d.classList.remove('active'));
+        currentSlide = index;
+        slides[currentSlide].classList.add('active');
+        dots[currentSlide].classList.add('active');
+      }
+
+      function nextSlide() {
+        goToSlide((currentSlide + 1) % totalSlides);
+      }
+
+      function startAutoPlay() {
+        autoPlayTimer = setInterval(nextSlide, 6000);
+      }
+
+      function resetAutoPlay() {
+        clearInterval(autoPlayTimer);
+        startAutoPlay();
+      }
+
+      // Dot clicks
+      dots.forEach(dot => {
+        dot.addEventListener('click', () => {
+          goToSlide(parseInt(dot.dataset.goto));
+          resetAutoPlay();
+        });
+      });
+
+      // Start auto-play
+      startAutoPlay();
+    })();
+
+    
+
+    // Featured Products auf Startseite anzeigen
+    document.addEventListener('DOMContentLoaded', () => {
+      const featured = PRODUCTS.filter(p => p.popular).slice(0, 3);
+      const all = [...PRODUCTS].slice(0, 3);
+      const toShow = featured.length >= 2 ? featured : all;
+
+      const container = document.getElementById('featuredProducts');
+      container.innerHTML = toShow.map(p => {
+        const minPrice = Math.min(...Object.values(p.prices[p.sizes[0].value]));
+        return `
+          <div class="product-card" onclick="window.location='product-detail.html?product=${p.id}'">
+            <div class="product-card__visual" style="height: 260px; overflow: hidden; position: relative; background: #000000; display: flex; align-items: center; justify-content: center;">
+              <img src="${p.image}?v=1" alt="${p.name}" class="product-card-image" style="width:100%;height:100%;object-fit:contain;z-index:2;position:relative;">
+            </div>
+            <div class="product-card__body">
+              ${p.popular ? '<span class="product-card__badge product-card__badge--popular">Bestseller</span>' : ''}
+              <div class="product-card__name">${p.name}</div>
+              <div class="product-card__desc">${p.description.slice(0, 90)}...</div>
+              <div class="product-card__price">
+                <div>
+                  <div class="product-card__price-from">ab</div>
+                  <div class="product-card__price-value">${formatPrice(minPrice)}</div>
+                </div>
+                <div class="btn btn--primary btn--sm" onclick="event.stopPropagation(); window.location='product-detail.html?product=${p.id}'">
+                  Ansehen →
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  </script>
+<script src="js/theme-toggle.js"></script>
+</div>
+<script src="js/nav.js"></script>
+</body>
+</html>

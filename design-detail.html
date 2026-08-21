@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Detail – Stickiverse</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="description" content="Konfiguriere deinen Sticker: Wähle Material, Größe und Menge. Lade dein eigenes Design hoch oder gestalte es online.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .detail-page {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+      padding-bottom: 96px;
+    }
+
+    .detail-container {
+      margin-top: 40px;
+    }
+
+    .back-link {
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 32px;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .back-link:hover {
+      color: var(--text-primary);
+      transform: translateX(-4px);
+    }
+
+    .detail-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.2fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* Left column */
+    .detail-visual {
+      background: #000000;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 480px;
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.4);
+    }
+
+    .detail-visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    /* Right column */
+    .detail-options {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .option-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .option-label {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--purple-light);
+    }
+
+    /* Material Radio Selector */
+    .material-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .material-card {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: var(--radius-md);
+      padding: 14px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+      user-select: none;
+    }
+
+    .material-card:hover {
+      border-color: rgba(139,92,246,0.5);
+    }
+
+    .material-card.active {
+      border-color: var(--border-brand);
+      background: rgba(139,92,246,0.1);
+      box-shadow: 0 0 20px rgba(139,92,246,0.15);
+    }
+
+    .material-name {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .material-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Size / Quantity Selection Chips */
+    .chips-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .selection-chip {
+      background: var(--bg-card);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: rgba(255, 255, 255, 0.8);
+      padding: 12px 20px;
+      border-radius: var(--radius-lg);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition);
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .selection-chip:hover {
+      border-color: var(--border-brand);
+      color: var(--text-primary);
+    }
+
+    .selection-chip.active {
+      background: var(--gradient-brand);
+      border-color: transparent;
+      color: white;
+      box-shadow: var(--shadow-brand);
+    }
+
+    /* Price Panel */
+    .price-panel {
+      background: rgba(139,92,246,0.03);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: var(--radius-xl);
+      padding: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 12px;
+    }
+
+    .price-label {
+      font-size: 14px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .price-value-container {
+      text-align: right;
+    }
+
+    .price-total {
+      font-size: 38px;
+      font-weight: 900;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .price-unit {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* Action Buttons */
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 10px;
+    }
+
+    @media (max-width: 868px) {
+      .detail-grid {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+      .detail-visual {
+        height: 350px;
+        position: relative;
+        top: 0;
+      }
+      .action-buttons {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+  
+    @media(max-width: 900px) { .product-detail-layout { grid-template-columns: 1fr !important; gap: 40px !important; } }
+
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="detail-page">
+    <div class="container detail-container">
+      
+      <a href="products.html" class="back-link">
+        <span>←</span> Zurück zu allen Produkten
+      </a>
+
+      <div class="detail-grid">
+        
+        <!-- Left Visual Spalte -->
+        <div class="detail-visual">
+          <img id="productImage" src="" alt="Sticker Vorschau">
+        </div>
+
+        <!-- Right Options Spalte -->
+        <div class="detail-options">
+          
+          <div>
+            <h1 id="productName" class="gradient-text" style="font-size: clamp(32px, 4vw, 44px); font-weight: 900; letter-spacing: -1px; margin-bottom: 8px;"></h1>
+            <p id="productTagline" style="font-size: 16px; color: var(--purple-light); font-weight: 600; margin-bottom: 14px;"></p>
+            <p id="productDesc" style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;"></p>
+          </div>
+
+          <!-- Option: Material -->
+          <div class="option-group">
+            <span class="option-label">1. Material wählen</span>
+            <div class="material-grid" id="materialGrid">
+              <div class="material-card active" data-material="Hochglanz-Folie">
+                <div class="material-name">Hochglanz</div>
+                <div class="material-desc">Glänzend & farbstark</div>
+              </div>
+              <div class="material-card" data-material="Matte Folie">
+                <div class="material-name">Matt</div>
+                <div class="material-desc">Edel & spiegelfrei</div>
+              </div>
+              <div class="material-card" data-material="Holografisch">
+                <div class="material-name">Holografisch</div>
+                <div class="material-desc">Regenbogen-Effekt</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Option: Größe -->
+          <div class="option-group">
+            <span class="option-label">2. Größe wählen</span>
+            <div class="chips-grid" id="sizeGrid">
+              <!-- via JS -->
+            </div>
+          </div>
+
+          <!-- Option: Menge -->
+          <div class="option-group">
+            <span class="option-label">3. Menge wählen</span>
+            <div class="chips-grid" id="qtyGrid">
+              <!-- via JS -->
+            </div>
+          </div>
+
+          <!-- Preis Panel -->
+          <div class="price-panel">
+            <div class="price-label">Gesamtpreis inkl. MwSt.</div>
+            <div class="price-value-container">
+              <div class="price-total" id="priceTotal">0,00 €</div>
+              <div class="price-unit" id="priceUnit">0,00 € / Stück</div>
+            </div>
+          </div>
+
+          <!-- Aktionen -->
+            <button id="addToCartBtn" class="btn btn--primary btn--lg" style="display: flex; align-items: center; justify-content: center;">
+              In den Warenkorb
+            </button>
+
+        </div>
+
+      </div>
+
+      <!-- ── Inspirationen-Galerie / Bestellhistorie ── -->
+      <div style="margin-top: 80px; padding-top: 60px; border-top: 1px solid var(--border); overflow: hidden; position: relative;">
+        <h2 style="font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px;">Kunden-Inspiration & Bestellhistorie</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 32px;">Ein Auszug der Sticker, die unsere Kunden entworfen und bestellt haben:</p>
+        
+        <style>
+          @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(calc(-50% - 20px)); } /* 50% width plus half the gap */
+          }
+          .carousel-track {
+            display: inline-flex;
+            gap: 40px;
+            animation: scroll-left 30s linear infinite;
+            padding-bottom: 12px;
+          }
+          .carousel-track:hover {
+            animation-play-state: paused;
+          }
+          .carousel-item {
+            flex: 0 0 280px;
+            height: 280px;
+            border-radius: var(--radius-xl);
+            background: var(--bg-card);
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.4s;
+          }
+          .carousel-item:hover {
+            transform: scale(1.05) translateY(-5px);
+            border-color: var(--border-brand);
+          }
+          .carousel-item img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+          }
+        
+    @media(max-width: 900px) { .product-detail-layout { grid-template-columns: 1fr !important; gap: 40px !important; } }
+
+  </style>
+
+        <!-- Container für unendlichen Loop -->
+        <div style="width: 100%; overflow: hidden; white-space: nowrap; position: relative; padding: 10px 0 30px;">
+          <!-- Fade-Effekte am Rand -->
+          <div style="position: absolute; top: 0; bottom: 0; left: 0; width: 100px; background: linear-gradient(to right, var(--bg-body), transparent); z-index: 2;"></div>
+          <div style="position: absolute; top: 0; bottom: 0; right: 0; width: 100px; background: linear-gradient(to left, var(--bg-body), transparent); z-index: 2;"></div>
+          
+          <div class="carousel-track">
+            <!-- SET 1 -->
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_robot_1784152930155.png" alt="Robot Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_chameleon_1784152949506.png" alt="Chameleon Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_mushroom_1784152964218.png" alt="Mushroom Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_boombox_1784152956731.png" alt="Boombox Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_tiger_1784152972666.png" alt="Tiger Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_ufo_1784152980353.png" alt="UFO Sticker"></div>
+            
+            <!-- SET 2 (Clone für Endlos-Loop) -->
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_robot_1784152930155.png" alt="Robot Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_chameleon_1784152949506.png" alt="Chameleon Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_mushroom_1784152964218.png" alt="Mushroom Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_boombox_1784152956731.png" alt="Boombox Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_tiger_1784152972666.png" alt="Tiger Sticker"></div>
+            <div class="carousel-item"><img src="assets/hero_transparent/hero_ufo_1784152980353.png" alt="UFO Sticker"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Das könnte dir auch gefallen (Vorschläge) ── -->
+      <div style="margin-top: 80px; padding-top: 60px; border-top: 1px solid var(--border);">
+        <h2 style="font-size: 28px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 8px;">Das könnte dir auch gefallen</h2>
+        <p style="color: var(--text-secondary); font-size: 15px; margin-bottom: 32px;">Entdecke weitere beliebte Sticker-Varianten aus unserem Sortiment:</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;" id="suggestionsGrid">
+          <!-- Dynamisch befüllt via JS -->
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js"></script>
+  <script src="js/products.js?v=2"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth-ui.js"></script>
+
+  <script src="js/designs.js"></script>
+  <script>
+    let design = null;
+    let baseProduct = null;
+    let selectedMaterial = MATERIALS[0];
+    let selectedSize = '';
+    let selectedQty = 0;
+    let basePrice = 0;
+    let totalPrice = 0;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const designId = urlParams.get('id') || 'design-robot';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      design = MOCK_DESIGNS.find(d => d.id === designId);
+      if (!design) {
+        window.location.href = 'discover.html';
+        return;
+      }
+
+      baseProduct = getProductById('sticker-freigestanzt');
+
+      // Populate UI
+      document.getElementById('productImage').src = design.image;
+      document.getElementById('productImage').alt = design.title;
+      document.getElementById('productName').textContent = design.title;
+      document.getElementById('productTagline').textContent = "Design by " + design.creator;
+      document.getElementById('productDesc').textContent = "Hol dir dieses einzigartige Design als hochwertigen Freiform-Aufkleber. Wähle deine gewünschte Größe und Material aus.";
+
+      selectedSize = baseProduct.sizes[0].value;
+      selectedQty = baseProduct.quantities[0];
+
+      renderSizes();
+      renderQuantities();
+      renderMaterials();
+      calculatePrice();
+      renderSuggestions();
+
+      document.getElementById('addToCartBtn').addEventListener('click', () => {
+        const sizeObj = baseProduct.sizes.find(s => s.value === selectedSize);
+        addToCart({
+          productId: baseProduct.id,
+          productName: design.title,
+          size: selectedSize,
+          sizeLabel: sizeObj?.label || selectedSize,
+          quantity: selectedQty,
+          price: totalPrice,
+          previewImage: design.image,
+          material: selectedMaterial.label,
+          customDesign: true
+        });
+        
+        setTimeout(() => {
+          window.location.href = 'cart.html';
+        }, 800);
+      });
+    });
+
+    function renderSizes() {
+      const grid = document.getElementById('sizeGrid');
+      grid.innerHTML = baseProduct.sizes.map(s => `
+        <button class="selection-chip ${s.value === selectedSize ? 'active' : ''}" onclick="setSize('${s.value}')">
+          ${s.label}
+        </button>
+      `).join('');
+    }
+
+    function renderQuantities() {
+      const grid = document.getElementById('qtyGrid');
+      grid.innerHTML = baseProduct.quantities.map(q => `
+        <button class="selection-chip ${q === selectedQty ? 'active' : ''}" onclick="setQty(${q})">
+          ${q} Stück
+        </button>
+      `).join('');
+    }
+
+    function renderMaterials() {
+      const grid = document.getElementById('materialGrid');
+      grid.innerHTML = MATERIALS.map(m => `
+        <div class="material-card ${m.id === selectedMaterial.id ? 'active' : ''}" onclick="setMaterial('${m.id}')">
+          <div class="material-name">${m.label}</div>
+          <div class="material-desc">${m.desc}</div>
+        </div>
+      `).join('');
+    }
+
+    function setSize(val) {
+      selectedSize = val;
+      renderSizes();
+      calculatePrice();
+    }
+
+    function setQty(val) {
+      selectedQty = val;
+      renderQuantities();
+      calculatePrice();
+    }
+
+    function setMaterial(id) {
+      selectedMaterial = MATERIALS.find(m => m.id === id);
+      renderMaterials();
+      calculatePrice();
+    }
+
+    async function calculatePrice() {
+      if (!baseProduct) return;
+      const addToCartBtn = document.getElementById('addToCartBtn');
+      document.getElementById('priceTotal').innerHTML = '<span class="loading-spinner" style="width:16px;height:16px;display:inline-block;border-width:2px;margin-right:8px;vertical-align:middle;"></span>...';
+      document.getElementById('priceUnit').textContent = 'Berechne Preis...';
+      if (addToCartBtn) addToCartBtn.disabled = true;
+
+      // Preis aus js/products.js holen (LIVE von API)
+      let priceInfo = await getLivePriceDetails(baseProduct.id, selectedSize, selectedQty, selectedMaterial.code);
+      let price = priceInfo.price;
+
+      if (selectedMaterial.id === 'holographic') {
+        price = price * 1.15;
+      }
+
+      totalPrice = price;
+      basePrice = price / selectedQty;
+
+      document.getElementById('priceTotal').textContent = formatPrice(totalPrice);
+      document.getElementById('priceUnit').textContent = formatPrice(basePrice) + ' / Stück';
+      if (addToCartBtn) addToCartBtn.disabled = false;
+    }
+
+    function renderSuggestions() {
+      const grid = document.getElementById('suggestionsGrid');
+      const suggestions = MOCK_DESIGNS.filter(d => d.id !== design.id).slice(0, 3);
+      
+      grid.innerHTML = suggestions.map(d => `
+        <div style="background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-xl); overflow: hidden; cursor: pointer; transition: transform 0.2s;" onclick="window.location.href='design-detail.html?id=${d.id}'">
+          <div style="height: 200px; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px;">
+            <img src="${d.image}" alt="${d.title}" style="max-height: 100%; max-width: 100%; object-fit: contain;">
+          </div>
+          <div style="padding: 20px;">
+            <div style="font-weight: 800; font-size: 18px; margin-bottom: 4px;">${d.title}</div>
+            <div style="color: var(--text-secondary); font-size: 13px;">Design by ${d.creator}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function toggleFav(e) {
+      e.currentTarget.style.color = '#f43f5e';
+      showToast('Zu Favoriten hinzugefügt! ❤️', 'success');
+    }
+  </script>
+
+<script src="js/theme-toggle.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

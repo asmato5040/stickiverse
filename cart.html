@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Warenkorb – Stickiverse</title>
+  <meta name="description" content="Dein Warenkorb bei Stickiverse – überprüfe deine Bestellung und gehe zur Kasse.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .cart-page {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+    }
+
+    .cart-header {
+      padding: 48px 0 32px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .cart-header__title {
+      font-size: 40px;
+      font-weight: 900;
+      letter-spacing: -1px;
+    }
+
+    .cart-header__count {
+      font-size: 16px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+    }
+
+    /* ── Cart Layout ── */
+    .cart-content {
+      padding: 48px 0 96px;
+    }
+
+    .cart-grid {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 32px;
+      align-items: start;
+    }
+
+    /* ── Cart Items ── */
+    .cart-items {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .cart-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 100px 1fr auto;
+      gap: 20px;
+      align-items: center;
+      transition: var(--transition-slow);
+      animation: fadeIn 0.3s ease forwards;
+    }
+
+    .cart-item:hover {
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+    }
+
+    .cart-item__preview {
+      width: 100px;
+      height: 100px;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--bg-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+
+    .cart-item__preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cart-item__preview-placeholder {
+      font-size: 36px;
+    }
+
+    .cart-item__info {
+      min-width: 0;
+    }
+
+    .cart-item__name {
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .cart-item__meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .cart-item__tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      background: rgba(139,92,246,0.1);
+      border: 1px solid rgba(139,92,246,0.2);
+      border-radius: var(--radius-full);
+      font-size: 12px;
+      color: var(--purple-light);
+    }
+
+    .cart-item__actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .qty-control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+
+    .qty-control__btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 18px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .qty-control__btn:hover {
+      background: var(--bg-card-hover);
+      color: var(--text-primary);
+    }
+
+    .qty-control__value {
+      min-width: 28px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .item-remove-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: var(--radius-sm);
+      color: rgba(239,68,68,0.6);
+      font-size: 14px;
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .item-remove-btn:hover {
+      background: rgba(239,68,68,0.1);
+      color: #ef4444;
+      border-color: rgba(239,68,68,0.4);
+    }
+
+    .cart-item__price-col {
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    .cart-item__price {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .cart-item__per-unit {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ── Order Summary ── */
+    .order-summary {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-xl);
+      padding: 28px;
+      position: sticky;
+      top: calc(var(--nav-height) + 24px);
+    }
+
+    .order-summary__title {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 15px;
+    }
+
+    .summary-row__label { color: var(--text-secondary); }
+    .summary-row__value { font-weight: 600; }
+
+    .summary-row--total {
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      margin-top: 8px;
+      font-size: 18px;
+    }
+
+    .summary-row--total .summary-row__label { color: var(--text-primary); font-weight: 700; }
+
+    .summary-row--total .summary-row__value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 26px;
+      font-weight: 900;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .checkout-btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gradient-brand);
+      border: none;
+      border-radius: var(--radius-md);
+      color: white;
+      font-size: 17px;
+      font-weight: 800;
+      font-family: 'Outfit', sans-serif;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: var(--shadow-brand);
+      margin-top: 24px;
+      display: block;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .checkout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 48px rgba(139,92,246,0.4);
+    }
+
+    .continue-shopping {
+      display: block;
+      text-align: center;
+      margin-top: 16px;
+      font-size: 14px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+
+    .continue-shopping:hover { color: var(--purple-light); }
+
+    .summary-trust {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      color: var(--text-secondary);
+    }
+
+    .trust-item span:first-child { font-size: 16px; }
+
+    /* ── Promo Code ── */
+    .promo-row {
+      display: flex;
+      gap: 8px;
+      margin: 16px 0;
+    }
+
+    .promo-input {
+      flex: 1;
+      padding: 10px 14px;
+      background: var(--bg-glass);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      color: var(--text-primary);
+      font-size: 14px;
+      outline: none;
+    }
+    .promo-input:focus { border-color: var(--purple); }
+    .promo-input::placeholder { color: var(--text-muted); }
+
+    @media (max-width: 1024px) {
+      .cart-grid { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+
+    @media (max-width: 640px) {
+      .cart-item {
+        grid-template-columns: 80px 1fr;
+        grid-template-rows: auto auto;
+      }
+      .cart-item__price-col { grid-column: 2; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+                <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="cart-page">
+
+    <div class="cart-header">
+      <div class="container">
+        <h1 class="cart-header__title">Warenkorb</h1>
+        <div class="cart-header__count" id="cartHeaderCount">Wird geladen...</div>
+      </div>
+    </div>
+
+    <div class="cart-content">
+      <div class="container">
+        <div id="emptyCart" style="display:none;">
+          <div class="empty-state">
+            <div class="empty-state__icon"></div>
+            <div class="empty-state__title">Dein Warenkorb ist leer</div>
+            <div class="empty-state__text">Gestalte deinen ersten Sticker und füge ihn zum Warenkorb hinzu.</div>
+            <a href="products.html" class="btn btn--primary btn--lg">Sticker gestalten</a>
+          </div>
+        </div>
+
+        <div class="cart-grid" id="cartContent" style="display:none;">
+          <!-- Items -->
+          <div>
+            <div class="cart-items" id="cartItems"></div>
+
+            <div style="margin-top:24px;display:flex;justify-content:space-between;align-items:center;">
+              <a href="products.html" class="btn btn--ghost btn--sm">← Weiter einkaufen</a>
+              <button class="btn btn--ghost btn--sm" id="clearCartBtn" style="color:rgba(239,68,68,0.7);border-color:rgba(239,68,68,0.2);">
+                🗑 Warenkorb leeren
+              </button>
+            </div>
+          </div>
+
+          <!-- Summary -->
+          <div class="order-summary">
+            <div class="order-summary__title">Bestellübersicht</div>
+
+            <div id="summaryItems"></div>
+
+            <div class="promo-row">
+              <input type="text" class="promo-input" placeholder="Gutscheincode" id="promoInput">
+              <button class="btn btn--secondary btn--sm" id="promoBtn">Einlösen</button>
+            </div>
+
+            <div class="summary-row">
+              <span class="summary-row__label">Zwischensumme</span>
+              <span class="summary-row__value" id="subtotalDisplay">–</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-row__label">Versand</span>
+              <span class="summary-row__value" id="shippingDisplay">wird berechnet</span>
+            </div>
+            <div class="summary-row">
+              <span class="summary-row__label">MwSt. (19%)</span>
+              <span class="summary-row__value" id="taxDisplay">–</span>
+            </div>
+            <div class="summary-row summary-row--total">
+              <span class="summary-row__label">Gesamtbetrag</span>
+              <span class="summary-row__value" id="totalDisplay">–</span>
+            </div>
+
+            <a href="checkout.html" class="checkout-btn">Zur Kasse →</a>
+            <a href="products.html" class="continue-shopping">Weiter einkaufen</a>
+
+            <div class="summary-trust">
+              <div class="trust-item"><span>🔒</span><span>Sichere SSL-Verschlüsselung</span></div>
+              <div class="trust-item"><span>🚚</span><span>Versand in 3–5 Werktagen</span></div>
+              <div class="trust-item"><span>↩</span><span>14 Tage Rückgaberecht</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/products.js?v=2"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script>
+    const SHIPPING_THRESHOLD = 50;
+    const SHIPPING_COST = 4.90;
+
+    function renderCart() {
+      const cart = getCart();
+      const emptyEl = document.getElementById('emptyCart');
+      const contentEl = document.getElementById('cartContent');
+      const countEl = document.getElementById('cartHeaderCount');
+
+      const totalItems = getCartCount();
+      countEl.textContent = totalItems === 0 ? 'Kein Artikel' : `${totalItems} Artikel`;
+
+      if (cart.length === 0) {
+        emptyEl.style.display = 'block';
+        contentEl.style.display = 'none';
+        return;
+      }
+
+      emptyEl.style.display = 'none';
+      contentEl.style.display = 'grid';
+
+      // Render items
+      const itemsEl = document.getElementById('cartItems');
+      itemsEl.innerHTML = cart.map(item => {
+        const product = getProductById(item.productId);
+        const itemPrice = item.price * (item.cartQty || 1);
+        const perUnit = item.price / item.quantity;
+
+        return `
+          <div class="cart-item" id="cartItem-${item.cartId}">
+            <div class="cart-item__preview">
+              ${item.previewImage
+                ? `<img src="${item.previewImage}" alt="Sticker Vorschau">`
+                : `<div class="cart-item__preview-placeholder">${product?.emoji || '🎨'}</div>`
+              }
+            </div>
+            <div class="cart-item__info">
+              <div class="cart-item__name">${item.productName}</div>
+              <div class="cart-item__meta">
+                <span class="cart-item__tag">📐 ${item.sizeLabel}</span>
+                <span class="cart-item__tag">🔢 ${item.quantity} Stück</span>
+                ${item.material ? `<span class="cart-item__tag">${item.material}</span>` : ''}
+              </div>
+              <div class="cart-item__actions">
+                <div class="qty-control">
+                  <button class="qty-control__btn" onclick="changeCartQty('${item.cartId}', ${(item.cartQty||1) - 1})">−</button>
+                  <span class="qty-control__value">${item.cartQty || 1}</span>
+                  <button class="qty-control__btn" onclick="changeCartQty('${item.cartId}', ${(item.cartQty||1) + 1})">+</button>
+                </div>
+                <button class="item-remove-btn" onclick="removeItem('${item.cartId}')">✕</button>
+              </div>
+              
+              ${!item.hasDesign ? `
+              <div style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <button class="btn btn--outline btn--sm" onclick="triggerCartUpload('${item.cartId}')" style="display: flex; align-items: center; gap: 6px; padding: 6px 12px; font-size: 13px;">
+                  <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                  Druckdaten hochladen
+                </button>
+                <span style="font-size: 12px; color: var(--text-muted);">oder gestalten</span>
+                <input type="file" id="cartFileInput-${item.cartId}" style="display: none;" accept="image/png, image/jpeg, image/webp, application/pdf" onchange="handleCartUpload(event, '${item.cartId}')">
+              </div>
+              ` : ''}
+            </div>
+            <div class="cart-item__price-col">
+              <div class="cart-item__price">${formatPrice(itemPrice)}</div>
+              <div class="cart-item__per-unit">${formatPrice(perUnit)} / St.</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Summary
+      const subtotal = getCartTotal();
+      const shipping = subtotal >= SHIPPING_THRESHOLD ? 0 : SHIPPING_COST;
+      const tax = subtotal * 0.19;
+      const total = subtotal + shipping;
+
+      document.getElementById('subtotalDisplay').textContent = formatPrice(subtotal);
+      document.getElementById('shippingDisplay').textContent = shipping === 0
+        ? '<span style="color:var(--green);">Kostenlos 🎉</span>'
+        : formatPrice(shipping);
+      document.getElementById('shippingDisplay').innerHTML = shipping === 0
+        ? '<span style="color:var(--green);">Kostenlos 🎉</span>'
+        : formatPrice(shipping);
+      document.getElementById('taxDisplay').textContent = formatPrice(tax);
+      document.getElementById('totalDisplay').textContent = formatPrice(total);
+
+      // Summary items
+      const summaryEl = document.getElementById('summaryItems');
+      summaryEl.innerHTML = cart.map(item => `
+        <div class="summary-row">
+          <span class="summary-row__label">${item.productName} ×${item.cartQty || 1}</span>
+          <span class="summary-row__value">${formatPrice(item.price * (item.cartQty||1))}</span>
+        </div>
+      `).join('');
+    }
+
+    function triggerCartUpload(cartId) {
+      document.getElementById(`cartFileInput-${cartId}`).click();
+    }
+
+    function handleCartUpload(event, cartId) {
+      const file = event.target.files[0];
+      if (file) {
+        const url = URL.createObjectURL(file);
+        const cart = getCart();
+        const idx = cart.findIndex(c => c.cartId === cartId);
+        if (idx >= 0) {
+          cart[idx].hasDesign = true;
+          cart[idx].previewImage = url;
+          saveCart(cart);
+          renderCart();
+          showToast('Druckdaten erfolgreich hochgeladen!', 'success');
+        }
+      }
+    }
+
+    function changeCartQty(cartId, newQty) {
+      updateCartItemQty(cartId, newQty);
+      renderCart();
+    }
+
+    function removeItem(cartId) {
+      const el = document.getElementById(`cartItem-${cartId}`);
+      if (el) {
+        el.style.opacity = '0';
+        el.style.transform = 'translateX(20px)';
+        el.style.transition = 'all 0.3s ease';
+        setTimeout(() => {
+          removeFromCart(cartId);
+          renderCart();
+        }, 300);
+      } else {
+        removeFromCart(cartId);
+        renderCart();
+      }
+    }
+
+    document.getElementById('clearCartBtn').addEventListener('click', () => {
+      if (confirm('Möchtest du den gesamten Warenkorb leeren?')) {
+        clearCart();
+        renderCart();
+      }
+    });
+
+    document.getElementById('promoBtn').addEventListener('click', () => {
+      const code = document.getElementById('promoInput').value.trim().toUpperCase();
+      if (code === 'STICKI10') {
+        showToast('Gutschein eingelöst! 10% Rabatt 🎉', 'success');
+      } else {
+        showToast('Ungültiger Gutscheincode.', 'warning');
+      }
+    });
+
+    document.addEventListener('DOMContentLoaded', renderCart);
+  </script>
+<script src="js/theme-toggle.js"></script>
+<script src="js/nav.js"></script>
+</body>
+</html>

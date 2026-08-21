@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Produkte – Stickiverse</title>
+  <meta name="description" content="Entdecke unsere große Auswahl an Aufklebern und Etiketten.">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    .products-overview {
+      padding-top: var(--nav-height);
+      min-height: 100vh;
+      background: var(--bg-primary);
+    }
+
+    .overview-header {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .overview-breadcrumb {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      font-weight: 500;
+    }
+
+    .overview-breadcrumb a {
+      color: var(--purple-light);
+      text-decoration: none;
+    }
+
+    .overview-breadcrumb a:hover {
+      text-decoration: underline;
+    }
+
+    .overview-title {
+      font-size: clamp(36px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+    }
+
+    .overview-subtitle {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    .overview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      padding-bottom: 100px;
+    }
+
+    .category-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      text-decoration: none;
+      transition: var(--transition-slow);
+      position: relative;
+    }
+
+    .category-card:hover {
+      border-color: var(--border-brand);
+      transform: translateY(-8px);
+      box-shadow: 0 32px 64px rgba(139,92,246,0.15);
+    }
+
+    .category-card__visual {
+      height: 350px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+      background: #151520;
+    }
+
+    .category-card__visual img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .category-card:hover .category-card__visual img {
+      transform: scale(1.05);
+    }
+
+    .category-card__body {
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .category-card__title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 16px;
+    }
+
+    .category-card__desc {
+      font-size: 16px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 32px;
+      flex: 1;
+    }
+
+    .category-card__btn {
+      align-self: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .overview-grid {
+        grid-template-columns: 1fr;
+      }
+      .category-card__visual {
+        height: 250px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation ── -->
+  <nav class="nav" id="mainNav">
+    <div class="container">
+      <div class="nav__inner">
+        <a href="index.html" class="nav__logo">
+          <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+        </a>
+        <div class="nav__links" id="navLinks">
+          <a href="index.html" class="nav__link" data-nav="index">Start</a>
+          <div class="nav__item--has-dropdown">
+            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
+            <div class="nav__dropdown">
+              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
+                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
+                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
+              </a>
+              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
+                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
+                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
+                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
+              </a>
+            </div>
+          </div>
+          <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
+        </div>
+        <div class="nav__actions">
+          <a href="discover.html" class="btn btn--ghost btn--sm nav__discover-btn">Sticker entdecken</a>
+          <a href="cart.html" class="nav__cart-btn" id="cartBtn">
+            <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="nav__cart-count" id="cartCount">0</span>
+          </a>
+          <button class="nav__hamburger" id="navHamburger" aria-label="Menü öffnen">
+            <span></span><span></span><span></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="products-overview">
+    <div class="container">
+      <div class="overview-header">
+        <div class="overview-breadcrumb">
+          <a href="index.html">Home</a> <span style="margin: 0 8px;">/</span> Produkte
+        </div>
+        <h1 class="overview-title">Was möchtest du <span class="gradient-text">gestalten?</span></h1>
+        <p class="overview-subtitle">
+          Wähle eine Kategorie, um unsere hochwertigen und individuellen Druckprodukte zu entdecken.
+        </p>
+      </div>
+
+      <div class="overview-grid">
+        <!-- Aufkleber -->
+        <a href="aufkleber.html" class="category-card">
+          <div class="category-card__visual">
+            <img src="assets/aufkleber/rund.jpg" alt="Aufkleber Kategorie">
+          </div>
+          <div class="category-card__body">
+            <h2 class="category-card__title">Aufkleber</h2>
+            <p class="category-card__desc">
+              Individuelle Aufkleber in verschiedenen Formen, Größen und Materialien. Perfekt als Giveaways, fürs Branding oder einfach nur zum Spaß.
+            </p>
+            <div class="btn btn--primary category-card__btn">Aufkleber entdecken</div>
+          </div>
+        </a>
+
+        <!-- Etiketten -->
+        <a href="etiketten.html" class="category-card">
+          <div class="category-card__visual">
+            <img src="assets/etiketten/flasche.jpg" alt="Etiketten Kategorie">
+          </div>
+          <div class="category-card__body">
+            <h2 class="category-card__title">Etiketten</h2>
+            <p class="category-card__desc">
+              Professionelle Etiketten für Produkte, Verpackungen, Flaschen und Marken. Hochwertig gedruckt auf Rolle oder Bogen.
+            </p>
+            <div class="btn btn--primary category-card__btn">Etiketten entdecken</div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Footer ── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__bottom">
+        <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
+        <span>Made with in Deutschland</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/theme-toggle.js"></script>
+  <script src="js/nav.js"></script>
+</body>
+</html>
