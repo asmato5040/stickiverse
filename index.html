@@ -764,6 +764,60 @@
       .steps__grid { grid-template-columns: 1fr; }
       .usp-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── Kompakter Kopf ──────────────────────── */
+    .mini-hero { padding: calc(var(--nav-height) + 36px) 0 8px; text-align: center; }
+    .mini-hero__title { font-size: clamp(30px, 4.4vw, 52px); font-weight: 900; letter-spacing: -1.5px; line-height: 1.1; margin: 0 0 16px; }
+    .mini-hero__trust { list-style: none; display: flex; flex-wrap: wrap; gap: 8px 22px; justify-content: center; padding: 0; margin: 0; font-size: 14px; color: var(--text-secondary); }
+
+    /* ── Schnellbestellung ───────────────────── */
+    .shop { padding: 28px 0 72px; }
+    .shop__tabs { display: flex; gap: 10px; overflow-x: auto; padding: 4px 0 18px; position: sticky; top: var(--nav-height); z-index: 20; background: linear-gradient(var(--bg-primary) 75%, transparent); scrollbar-width: none; }
+    .shop__tabs::-webkit-scrollbar { display: none; }
+    .shop__tab { flex: 0 0 auto; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font: inherit; font-weight: 600; font-size: 14px; padding: 9px 18px; border-radius: var(--radius-full); cursor: pointer; transition: var(--transition, all .2s); }
+    .shop__tab:hover { border-color: var(--border-brand); color: var(--text-primary); }
+    .shop__tab.active { background: var(--gradient-brand); border-color: transparent; color: #fff; }
+    .shop__group { margin-bottom: 40px; }
+    .shop__group-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+    .shop__group-title { font-size: 24px; font-weight: 800; margin: 0; }
+    .shop__group-sub { font-size: 14px; color: var(--text-muted); }
+    .shop__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 18px; }
+
+    .oc { background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; transition: border-color .2s, transform .2s; }
+    .oc:hover { border-color: var(--border-brand); transform: translateY(-3px); }
+    .oc__img { aspect-ratio: 5 / 4; background: #000; display: flex; align-items: center; justify-content: center; position: relative; }
+    .oc__img img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .oc__badge { z-index: 2; position: absolute; top: 10px; left: 10px; background: var(--gradient-brand); color: #fff; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: var(--radius-full); }
+    .oc__body { padding: 14px 14px 16px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+    .oc__name { font-size: 16px; font-weight: 700; margin: 0; }
+    .oc__tag { font-size: 13px; color: var(--text-muted); margin-top: -6px; }
+    .oc__row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .oc__field { display: flex; flex-direction: column; gap: 3px; font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: .4px; }
+    .oc__field select { background: var(--bg-secondary); color: var(--text-primary); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 8px; font: inherit; font-size: 14px; text-transform: none; letter-spacing: 0; }
+    .oc__foot { margin-top: auto; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .oc__price { font-size: 21px; font-weight: 800; line-height: 1.1; }
+    .oc__unit { font-size: 12px; color: var(--text-muted); font-weight: 400; display: block; }
+    .oc__btn.added { background: var(--green); }
+    .oc__more { font-size: 12px; color: var(--text-muted); text-align: center; text-decoration: underline; }
+
+    .shop__custom { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; background: var(--gradient-card); border: 1px solid var(--border-brand); border-radius: var(--radius-md); padding: 20px 24px; }
+    .shop__custom span { display: block; font-size: 14px; color: var(--text-secondary); margin-top: 2px; }
+
+    .cart-bar { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 90; display: flex; align-items: center; gap: 18px; background: var(--bg-tertiary); border: 1px solid var(--border-brand); box-shadow: var(--shadow-brand); border-radius: var(--radius-full); padding: 10px 10px 10px 22px; }
+    .cart-bar[hidden] { display: none; }
+    .cart-bar__info { display: flex; flex-direction: column; line-height: 1.2; font-size: 13px; }
+    .cart-bar__info span { color: var(--text-secondary); }
+    @media (max-width: 600px) {
+      .mini-hero__trust { font-size: 12px; gap: 4px 14px; }
+      .mini-hero__trust li:nth-child(n+4) { display: none; }
+      .shop__group-sub { display: none; }
+      .shop__grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .oc__body { padding: 10px; }
+      .oc__row { grid-template-columns: 1fr; }
+      .oc__foot { flex-direction: column; align-items: stretch; }
+      .oc__foot .btn { width: 100%; }
+      .cart-bar { left: 12px; right: 12px; transform: none; justify-content: space-between; }
+    }
   </style>
 </head>
 <body>
@@ -809,189 +863,39 @@
     </div>
   </nav>
 
-  <!-- ── Hero Slider ── -->
-  <section class="hero-slider" id="heroSlider">
-
-    <!-- Slide 1: Individuelle Sticker -->
-    <div class="hero-slide slide-1 active" data-slide="0">
-      <div class="hero-container">
-        <div class="hero-content">
-          <div class="hero-badge">
-            Dein Sticker-Shop – Made in Germany
-          </div>
-          <h1 class="hero-title">
-            <span>Sticker die</span>
-            <span class="gradient-text">auffallen.</span>
-            <span>Garantiert.</span>
-          </h1>
-          <p class="hero-description">
-            Designe individuelle Aufkleber direkt im Browser. Wähle Form, Größe und Menge – wir drucken und liefern in höchster Qualität.
-          </p>
-          <div class="hero-actions">
-            <a href="products.html" class="btn btn--primary btn--lg">Sticker auswählen</a>
-            <a href="products.html" class="btn btn--secondary btn--lg">Produkte ansehen</a>
-          </div>
-          <div class="hero-bottom-content">
-            <div class="hero-stat">
-              <div class="hero-stat-value">50+</div>
-              <div class="hero-stat-label">Sticker-Varianten</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">ab 9,90€</div>
-              <div class="hero-stat-label">Günstige Preise</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">5★</div>
-              <div class="hero-stat-label">Kundenbewertung</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <div class="hero-canvas-bg"></div>
-          <div class="sticker-float sf-1"></div>
-          <div class="sticker-float sf-2"></div>
-          <div class="sticker-float sf-3"></div>
-          <div class="sticker-float sf-4"></div>
-          <div class="sticker-float sf-5"></div>
-          <div class="sticker-float sf-6"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Slide 2: Produktsticker & Branding -->
-    <div class="hero-slide slide-2" data-slide="1">
-      <div class="hero-container">
-        <div class="hero-content">
-          <div class="hero-badge">
-            Für Marken, Events & Produkte
-          </div>
-          <h1 class="hero-title">
-            <span>Deine Marke.</span>
-            <span class="gradient-text">Überall.</span>
-          </h1>
-          <p class="hero-description">
-            Ob Produktlabels, Verpackungssiegel oder Branding-Sticker – wir drucken dein Logo auf jedes Format. Perfekt für Unternehmen, Shops und Startups.
-          </p>
-          <div class="hero-actions">
-            <a href="editor.html" class="btn btn--primary btn--lg">Jetzt gestalten</a>
-            <a href="discover.html" class="btn btn--secondary btn--lg">Inspirationen</a>
-          </div>
-          <div class="hero-bottom-content" style="visibility: hidden; pointer-events: none;">
-            <div class="hero-stat">
-              <div class="hero-stat-value">50+</div>
-              <div class="hero-stat-label">Sticker-Varianten</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">ab 9,90€</div>
-              <div class="hero-stat-label">Günstige Preise</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">5★</div>
-              <div class="hero-stat-label">Kundenbewertung</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-visual"></div>
-      </div>
-    </div>
-
-    <!-- Slide 3: Events & Anlässe -->
-    <div class="hero-slide slide-3" data-slide="2">
-      <div class="hero-container">
-        <div class="hero-content">
-          <div class="hero-badge">
-            JGA · Babyparty · Kindergeburtstag & mehr
-          </div>
-          <h1 class="hero-title">
-            <span>Sticker für</span>
-            <span class="gradient-text">jeden Anlass.</span>
-          </h1>
-          <p class="hero-description">
-            JGA-Sticker für die Braut, Foto-Aufkleber für die Babyparty, Paketaufkleber für dein Business – mach jeden Moment unvergesslich mit individuellen Stickern.
-          </p>
-          <div class="hero-actions">
-            <a href="editor.html" class="btn btn--primary btn--lg">Sticker gestalten</a>
-            <a href="products.html" class="btn btn--secondary btn--lg">Alle Produkte</a>
-          </div>
-          <div class="hero-bottom-content" style="visibility: hidden; pointer-events: none;">
-            <div class="hero-stat">
-              <div class="hero-stat-value">50+</div>
-              <div class="hero-stat-label">Sticker-Varianten</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">ab 9,90€</div>
-              <div class="hero-stat-label">Günstige Preise</div>
-            </div>
-            <div class="hero-stat">
-              <div class="hero-stat-value">5★</div>
-              <div class="hero-stat-label">Kundenbewertung</div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-visual">
-          <img src="assets/hero_slider_3.png" alt="Event-Sticker">
-        </div>
-      </div>
-    </div>
-
-    <!-- Slider Dots -->
-    <div class="hero-dots">
-      <button class="hero-dot active" data-goto="0" aria-label="Slide 1"></button>
-      <button class="hero-dot" data-goto="1" aria-label="Slide 2"></button>
-      <button class="hero-dot" data-goto="2" aria-label="Slide 3"></button>
-    </div>
-
-  </section>
-
-  <!-- ── Kategorien ── -->
-  <section class="categories">
+  <!-- ── Kompakter Kopf + Schnellbestellung ── -->
+  <header class="mini-hero">
     <div class="container">
-      <div class="categories__grid">
-        <a href="products.html?cat=rund" class="cat-card">
-          <div class="cat-card__shape">
-            <img src="images/Runde Sticker.webp?v=1" alt="Rund" style="width:100%;height:100%;object-fit:contain;">
-          </div>
-          <div class="cat-card__name">Rund</div>
-          <div class="cat-card__count">4 Größen</div>
-        </a>
-        <a href="products.html?cat=eckig" class="cat-card">
-          <div class="cat-card__shape">
-            <img src="images/Quadratische Sticker.webp?v=1" alt="Quadratisch" style="width:100%;height:100%;object-fit:contain;">
-          </div>
-          <div class="cat-card__name">Quadratisch</div>
-          <div class="cat-card__count">4 Größen</div>
-        </a>
-        <a href="products.html?cat=eckig" class="cat-card">
-          <div class="cat-card__shape">
-            <img src="images/Rechteck Sticker.webp?v=1" alt="Rechteckig" style="width:100%;height:100%;object-fit:contain;">
-          </div>
-          <div class="cat-card__name">Rechteckig</div>
-          <div class="cat-card__count">4 Größen</div>
-        </a>
-        <a href="products.html?cat=rund" class="cat-card">
-          <div class="cat-card__shape">
-            <img src="images/Oval Sticker.webp?v=1" alt="Oval" style="width:100%;height:100%;object-fit:contain;">
-          </div>
-          <div class="cat-card__name">Oval</div>
-          <div class="cat-card__count">3 Größen</div>
-        </a>
-        <a href="products.html?cat=freigestanzt" class="cat-card">
-          <div class="cat-card__shape">
-            <img src="images/Freigestanzte Sticker.webp?v=1" alt="Freigestanzt" style="width:100%;height:100%;object-fit:contain;">
-          </div>
-          <div class="cat-card__name">Freigestanzt</div>
-          <div class="cat-card__count">3 Größen</div>
-        </a>
-        <a href="products.html?cat=transparent" class="cat-card">
-          <div class="cat-card__shape">
-            <img src="images/Transparente Sticker.webp?v=1" alt="Transparent" style="width:100%;height:100%;object-fit:contain;">
-          </div>
-          <div class="cat-card__name">Transparent</div>
-          <div class="cat-card__count">3 Größen</div>
-        </a>
+      <h1 class="mini-hero__title">Sticker aussuchen, <span class="gradient-text">direkt bestellen.</span></h1>
+      <ul class="mini-hero__trust">
+        <li>✔ Wetterfest &amp; UV-beständig</li>
+        <li>✔ Lieferung in 3–5 Werktagen</li>
+        <li>✔ Versandkostenfrei ab 50 €</li>
+        <li>✔ Eigenes Design auch nach dem Kauf hochladen</li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="shop" id="shop">
+    <div class="container">
+      <div class="shop__tabs" id="shopTabs" role="tablist" aria-label="Sticker-Kategorien"></div>
+      <div id="shopGroups"></div>
+
+      <div class="shop__custom">
+        <div>
+          <strong>Du willst dein Design selbst gestalten?</strong>
+          <span>Mit unserem Editor gestaltest du deinen Sticker direkt im Browser.</span>
+        </div>
+        <a href="editor.html" class="btn btn--secondary">Zum Editor →</a>
       </div>
     </div>
   </section>
+
+  <!-- Schwebende Warenkorb-Leiste -->
+  <div class="cart-bar" id="cartBar" hidden>
+    <div class="cart-bar__info"><strong id="cartBarCount">0 Artikel</strong><span id="cartBarTotal"></span></div>
+    <a href="cart.html" class="btn btn--primary">Zum Warenkorb →</a>
+  </div>
 
   <!-- ── So funktioniert's ── -->
   <section class="steps">
@@ -1027,22 +931,6 @@
     </div>
   </section>
 
-  <!-- ── Produkte Preview ── -->
-  <section class="products-preview">
-    <div class="container">
-      <div class="products-preview__header">
-        <div>
-          <span class="section__label">Bestseller</span>
-          <h2 class="section__title" style="margin-bottom:0;">Beliebte<br><span class="gradient-text">Sticker-Typen</span></h2>
-        </div>
-        <a href="products.html" class="btn btn--ghost">Alle ansehen →</a>
-      </div>
-
-      <div class="grid grid--3" id="featuredProducts">
-        <!-- via JS befüllt -->
-      </div>
-    </div>
-  </section>
 
 
   <!-- ── Anlässe ── -->
@@ -1266,82 +1154,154 @@
   <script src="js/products.js?v=2"></script>
   <script src="js/cart.js"></script>
   <script src="js/auth-ui.js"></script>
+  <script src="js/designs.js"></script>
   <script>
-    // ── Hero Slider ──────────────────────
-    (function() {
-      let currentSlide = 0;
-      const slides = document.querySelectorAll('.hero-slide');
-      const dots = document.querySelectorAll('.hero-dot');
-      const totalSlides = slides.length;
-      let autoPlayTimer;
+    // ── Schnellbestellung ────────────────────
+    (function () {
+      const TABS = [
+        { id: 'alle', label: 'Alle' },
+        { id: 'rund', label: 'Rund' },
+        { id: 'eckig', label: 'Eckig' },
+        { id: 'freigestanzt', label: 'Freigestanzt' },
+        { id: 'transparent', label: 'Transparent' },
+        { id: 'fertige-designs', label: 'Fertige Designs' },
+      ];
+      const GROUPS = [
+        { id: 'eigene', title: 'Eigene Sticker', sub: 'Form wählen, bestellen – Design hochladen vor oder nach dem Kauf',
+          match: p => p.group === 'eigene' },
+        { id: 'designs', title: 'Fertige Designs', sub: 'Sofort bestellbar, keine Datei nötig',
+          match: p => p.group === 'designs' },
+      ];
 
-      function goToSlide(index) {
-        slides.forEach(s => s.classList.remove('active'));
-        dots.forEach(d => d.classList.remove('active'));
-        currentSlide = index;
-        slides[currentSlide].classList.add('active');
-        dots[currentSlide].classList.add('active');
+      const DESIGN_BASE = 'sticker-freigestanzt';
+      function allItems() {
+        const base = getProductById(DESIGN_BASE);
+        const own = PRODUCTS.filter(p => p.category !== 'fertige-designs')
+          .map(p => ({ ...p, baseId: p.id, group: 'eigene', detail: 'product-detail.html?product=' + p.id }));
+        const designs = (typeof MOCK_DESIGNS !== 'undefined' ? MOCK_DESIGNS : []).map(d => ({
+          id: d.id, baseId: DESIGN_BASE, group: 'designs', category: 'fertige-designs',
+          name: d.title, tagline: 'von ' + d.creator, image: d.image, popular: d.isOfficial,
+          sizes: base.sizes, quantities: base.quantities, material: base.material,
+          detail: 'design-detail.html?id=' + d.id
+        }));
+        return [...own, ...designs];
+      }
+      const itemById = id => allItems().find(i => i.id === id);
+
+      let activeTab = 'alle';
+      const choice = {}; // productId -> { size, qty }
+
+      const sel = (p) => (choice[p.id] = choice[p.id] || { size: p.sizes[0].value, qty: p.quantities[0] });
+
+      function card(p) {
+        const c = sel(p);
+        const total = getPrice(p.baseId, c.size, c.qty);
+        const unit = total / c.qty;
+        return `
+          <article class="oc" data-id="${p.id}">
+            <div class="oc__img">
+              ${p.popular ? '<span class="oc__badge">Bestseller</span>' : ''}
+              <img src="${p.image}" alt="${p.name}" loading="lazy">
+            </div>
+            <div class="oc__body">
+              <h3 class="oc__name">${p.name}</h3>
+              <div class="oc__tag">${p.tagline}</div>
+              <div class="oc__row">
+                <label class="oc__field">Größe
+                  <select data-role="size">${p.sizes.map(s => `<option value="${s.value}" ${s.value === c.size ? 'selected' : ''}>${s.label}</option>`).join('')}</select>
+                </label>
+                <label class="oc__field">Menge
+                  <select data-role="qty">${p.quantities.map(q => `<option value="${q}" ${q === c.qty ? 'selected' : ''}>${q} Stk.</option>`).join('')}</select>
+                </label>
+              </div>
+              <div class="oc__foot">
+                <div class="oc__price" data-role="price">${formatPrice(total)}<span class="oc__unit">${formatPrice(unit)} pro Sticker</span></div>
+                <button class="btn btn--primary btn--sm oc__btn" data-role="add">In den Warenkorb</button>
+              </div>
+              <a class="oc__more" href="${p.detail}">Details &amp; Material</a>
+            </div>
+          </article>`;
       }
 
-      function nextSlide() {
-        goToSlide((currentSlide + 1) % totalSlides);
+      function render() {
+        document.getElementById('shopTabs').innerHTML = TABS.map(t =>
+          `<button class="shop__tab ${t.id === activeTab ? 'active' : ''}" role="tab" data-tab="${t.id}">${t.label}</button>`).join('');
+
+        const html = GROUPS.map(g => {
+          const items = allItems().filter(p => g.match(p) && (activeTab === 'alle' || p.category === activeTab));
+          if (!items.length) return '';
+          return `<div class="shop__group">
+            <div class="shop__group-head"><h2 class="shop__group-title">${g.title}</h2><span class="shop__group-sub">${g.sub}</span></div>
+            <div class="shop__grid">${items.map(card).join('')}</div></div>`;
+        }).join('');
+        document.getElementById('shopGroups').innerHTML = html;
       }
 
-      function startAutoPlay() {
-        autoPlayTimer = setInterval(nextSlide, 6000);
+      function refreshCard(el) {
+        const p = itemById(el.dataset.id);
+        const c = sel(p);
+        const total = getPrice(p.baseId, c.size, c.qty);
+        el.querySelector('[data-role="price"]').innerHTML = `${formatPrice(total)}<span class="oc__unit">${formatPrice(total / c.qty)} pro Sticker</span>`;
       }
 
-      function resetAutoPlay() {
-        clearInterval(autoPlayTimer);
-        startAutoPlay();
+      function updateBar() {
+        const bar = document.getElementById('cartBar');
+        const n = getCartCount();
+        bar.hidden = n === 0;
+        document.getElementById('cartBarCount').textContent = n + (n === 1 ? ' Artikel' : ' Artikel');
+        document.getElementById('cartBarTotal').textContent = formatPrice(getCartTotal()) + ' (zzgl. Versand)';
       }
 
-      // Dot clicks
-      dots.forEach(dot => {
-        dot.addEventListener('click', () => {
-          goToSlide(parseInt(dot.dataset.goto));
-          resetAutoPlay();
+      document.addEventListener('DOMContentLoaded', () => {
+        // Deep-Link: ?cat=rund usw. weiterhin unterstützen
+        const cat = new URLSearchParams(location.search).get('cat');
+        if (cat && TABS.some(t => t.id === cat)) activeTab = cat;
+        render();
+        updateBar();
+
+        document.getElementById('shopTabs').addEventListener('click', e => {
+          const b = e.target.closest('[data-tab]');
+          if (!b) return;
+          activeTab = b.dataset.tab;
+          render();
+        });
+
+        document.getElementById('shopGroups').addEventListener('change', e => {
+          const card = e.target.closest('.oc');
+          const role = e.target.dataset.role;
+          if (!card || !role) return;
+          const p = itemById(card.dataset.id);
+          sel(p)[role] = role === 'qty' ? parseInt(e.target.value) : e.target.value;
+          refreshCard(card);
+        });
+
+        document.getElementById('shopGroups').addEventListener('click', e => {
+          const btn = e.target.closest('[data-role="add"]');
+          if (!btn) return;
+          const card = btn.closest('.oc');
+          const p = itemById(card.dataset.id);
+          const c = sel(p);
+          const sizeObj = p.sizes.find(s => s.value === c.size);
+          const mat = p.category === 'transparent' ? MATERIALS[2] : MATERIALS[0];
+          addToCart({
+            productId: p.baseId,
+            productName: p.name,
+            size: c.size,
+            sizeLabel: sizeObj ? sizeObj.label : c.size,
+            quantity: c.qty,
+            price: getPrice(p.baseId, c.size, c.qty),
+            previewImage: p.image,
+            material: mat.label,
+            customDesign: p.group === 'designs',
+            hasDesign: p.group === 'designs'
+          });
+          btn.textContent = '✓ Hinzugefügt';
+          btn.classList.add('added');
+          setTimeout(() => { btn.textContent = 'In den Warenkorb'; btn.classList.remove('added'); }, 1500);
+          updateBar();
         });
       });
-
-      // Start auto-play
-      startAutoPlay();
     })();
-
-    
-
-    // Featured Products auf Startseite anzeigen
-    document.addEventListener('DOMContentLoaded', () => {
-      const featured = PRODUCTS.filter(p => p.popular).slice(0, 3);
-      const all = [...PRODUCTS].slice(0, 3);
-      const toShow = featured.length >= 2 ? featured : all;
-
-      const container = document.getElementById('featuredProducts');
-      container.innerHTML = toShow.map(p => {
-        const minPrice = Math.min(...Object.values(p.prices[p.sizes[0].value]));
-        return `
-          <div class="product-card" onclick="window.location='product-detail.html?product=${p.id}'">
-            <div class="product-card__visual" style="height: 260px; overflow: hidden; position: relative; background: #000000; display: flex; align-items: center; justify-content: center;">
-              <img src="${p.image}?v=1" alt="${p.name}" class="product-card-image" style="width:100%;height:100%;object-fit:contain;z-index:2;position:relative;">
-            </div>
-            <div class="product-card__body">
-              ${p.popular ? '<span class="product-card__badge product-card__badge--popular">Bestseller</span>' : ''}
-              <div class="product-card__name">${p.name}</div>
-              <div class="product-card__desc">${p.description.slice(0, 90)}...</div>
-              <div class="product-card__price">
-                <div>
-                  <div class="product-card__price-from">ab</div>
-                  <div class="product-card__price-value">${formatPrice(minPrice)}</div>
-                </div>
-                <div class="btn btn--primary btn--sm" onclick="event.stopPropagation(); window.location='product-detail.html?product=${p.id}'">
-                  Ansehen →
-                </div>
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    });
   </script>
 <script src="js/theme-toggle.js"></script>
 </div>
