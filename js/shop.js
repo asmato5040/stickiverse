@@ -100,6 +100,14 @@
     document.getElementById('cartBarTotal').textContent = formatPrice(getCartTotal()) + ' (zzgl. Versand)';
   }
 
+  function selectTab(id) {
+    activeTab = id;
+    render();
+    const el = document.getElementById('shop');
+    if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 70, behavior: 'smooth' });
+  }
+  window.shopSelectTab = selectTab;
+
   document.addEventListener('DOMContentLoaded', () => {
     // Deep-Link: ?cat=rund usw. weiterhin unterstützen
     let cat = new URLSearchParams(location.search).get('cat');
@@ -149,5 +157,58 @@
       setTimeout(() => { btn.textContent = 'In den Warenkorb'; btn.classList.remove('added'); }, 1500);
       updateBar();
     });
+  });
+})();
+
+// ── Hero-Slider (mehrere Sticker gleichzeitig) ──
+(function () {
+  const SLIDES = [
+    { img: 'images/gallery-7.jpg', tab: 'rund', label: 'Rund' },
+    { img: 'images/gallery-1.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/Quadratische Sticker.webp', tab: 'quadrat', label: 'Quadratisch' },
+    { img: 'images/gallery-3.jpg', tab: 'oval', label: 'Oval' },
+    { img: 'images/gallery-5.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/Rechteck Sticker.webp', tab: 'rechteck', label: 'Rechteckig' },
+    { img: 'images/gallery-2.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/Transparente Sticker.webp', tab: 'transparent', label: 'Transparent' },
+    { img: 'images/gallery-6.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+  ];
+  document.addEventListener('DOMContentLoaded', () => {
+    const track = document.getElementById('heroTrack');
+    if (!track) return;
+    const fromPrice = tab => {
+      const p = getProductById('sticker-' + tab);
+      return p ? 'ab ' + formatPrice(getPrice(p.id, p.sizes[0].value, p.quantities[0])) : '';
+    };
+    track.innerHTML = SLIDES.map(s => `
+      <button class="hslide" data-tab="${s.tab}" aria-label="${s.label} Sticker auswählen">
+        <img src="${s.img}" alt="${s.label}e Sticker" loading="lazy">
+        <div class="hslide__cap">${s.label}<span>${fromPrice(s.tab)}</span></div>
+      </button>`).join('');
+
+    track.addEventListener('click', e => {
+      const b = e.target.closest('[data-tab]');
+      if (b && window.shopSelectTab) window.shopSelectTab(b.dataset.tab);
+    });
+
+    const step = () => {
+      const c = track.querySelector('.hslide');
+      return c ? c.getBoundingClientRect().width + 16 : 240;
+    };
+    const next = () => {
+      if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 4) track.scrollTo({ left: 0 });
+      else track.scrollBy({ left: step() });
+    };
+    const prev = () => track.scrollBy({ left: -step() });
+    document.getElementById('heroNext').addEventListener('click', next);
+    document.getElementById('heroPrev').addEventListener('click', prev);
+
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let timer = setInterval(next, 3500);
+    const stop = () => { clearInterval(timer); timer = null; };
+    const start = () => { if (!timer) timer = setInterval(next, 3500); };
+    const slider = document.getElementById('heroSlider');
+    slider.addEventListener('mouseenter', stop); slider.addEventListener('mouseleave', start);
+    slider.addEventListener('touchstart', stop, { passive: true }); slider.addEventListener('focusin', stop);
   });
 })();
