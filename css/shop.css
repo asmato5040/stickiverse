@@ -88,3 +88,15 @@
 .oc__btn.added { background: var(--green) !important; color: #fff !important; }
 .cart-bar { box-shadow: 0 6px 24px rgba(0,0,0,.45); border-color: var(--border-hover); }
 .shop__custom { background: var(--bg-card); border-color: var(--border); }
+
+/* ── Restliche Startseite: gleicher ruhiger Akzent (statt Lila-Pink-Verlauf) ── */
+body .gradient-text { background: none; -webkit-text-fill-color: var(--accent); color: var(--accent); }
+body .section__label { color: var(--accent); }
+body .steps__grid::before { display: none; }
+body .step-card__number { background: var(--accent); color: var(--accent-ink); box-shadow: none; }
+body .cta-banner__inner { background: var(--accent); color: var(--accent-ink); }
+body .cta-banner__inner::before { display: none; }
+body .cta-banner__title, body .cta-banner__text { color: var(--accent-ink); opacity: 1; }
+body .cta-banner__btn { background: var(--accent-ink); color: #fff; box-shadow: none; }
+body .cta-banner__btn:hover { box-shadow: none; filter: brightness(1.2); }
+body .footer .btn--primary { background: var(--accent); color: var(--accent-ink); box-shadow: none; font-weight: 700; }
