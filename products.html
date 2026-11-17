@@ -3,133 +3,773 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Produkte – Stickiverse</title>
-  <meta name="description" content="Entdecke unsere große Auswahl an Aufklebern und Etiketten.">
+  <title>Sticker bestellen – Stickiverse</title>
+  <link rel="icon" type="image/png" href="favicon.png">
+  <meta name="description" content="Alle Sticker auf einen Blick: Form, Größe und Menge wählen und sofort bestellen. Rund, quadratisch, rechteckig, oval, freigestanzt oder transparent.">
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/shop.css">
   <style>
-    .products-overview {
+    /* ── Hero Slider ──────────────────────── */
+    .hero-slider {
+      position: relative;
       padding-top: var(--nav-height);
-      min-height: 100vh;
-      background: var(--bg-primary);
+      overflow: hidden;
+      width: 100%;
     }
 
-    .overview-header {
-      padding: 80px 0 60px;
+    .hero-slide {
+      width: 100%;
+      min-width: 100%;
+      flex: 0 0 100%;
+      overflow: hidden;
+      position: absolute;
+      inset: 0;
+      top: var(--nav-height);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hero-slide.active {
+      position: relative;
+      opacity: 1;
+      pointer-events: auto;
+      top: auto;
+    }
+
+    .hero-container {
+      width: 100%;
+      max-width: 1280px;
+      height: 820px;
+      margin: 0 auto;
+      padding: 70px 64px 40px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      align-items: center;
+      position: relative;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      width: 100%;
+      max-width: 590px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      position: relative;
+      z-index: 3;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(139,92,246,0.12);
+      border: 1px solid rgba(139,92,246,0.3);
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--purple-light);
+      letter-spacing: 0.5px;
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: clamp(42px, 6vw, 72px);
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 1.05;
+      margin: 0 0 28px;
+      min-height: 215px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+    }
+
+    .hero-title span {
+      display: block;
+    }
+
+    .hero-description {
+      font-size: 18px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin: 0 0 34px;
+      min-height: 105px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      min-height: 68px;
+    }
+
+    .hero-bottom-content {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid var(--border);
+      width: 100%;
+    }
+
+    .hero-stat {
       text-align: center;
     }
 
-    .overview-breadcrumb {
-      font-size: 14px;
-      color: var(--text-muted);
-      margin-bottom: 24px;
-      font-weight: 500;
+    .hero-stat-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 28px;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
 
-    .overview-breadcrumb a {
-      color: var(--purple-light);
+    .hero-stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    /* ── Visuals ──────────────────────── */
+    .hero-visual {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1;
+    }
+
+    /* Slide 1 Floating Items */
+    .hero-canvas-bg {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulse-glow 4s ease-in-out infinite;
+    }
+
+    .sticker-float {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: float linear infinite;
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .sf-1 { width: 150px; height: 150px; background-image: url('assets/hero_transparent/hero_robot_1784152930155.png'); top: 10%; left: 0%; animation-duration: 6s; animation-delay: 0s; }
+    .sf-2 { width: 130px; height: 130px; background-image: url('assets/hero_transparent/hero_chameleon_1784152949506.png'); top: 15%; right: 0%; animation-duration: 7s; animation-delay: -2s; }
+    .sf-3 { width: 180px; height: 180px; background-image: url('assets/hero_transparent/hero_mushroom_1784152964218.png'); bottom: 20%; left: 0%; animation-duration: 8s; animation-delay: -4s; }
+    .sf-4 { width: 140px; height: 140px; background-image: url('assets/hero_transparent/hero_boombox_1784152956731.png'); bottom: 20%; right: 5%; animation-duration: 5.5s; animation-delay: -1s; }
+    .sf-5 { width: 180px; height: 180px; background-image: url('assets/hero_transparent/hero_tiger_1784152972666.png'); top: 50%; left: 50%; margin-top: -90px; margin-left: -90px; animation-duration: 9s; animation-delay: -3s; }
+    .sf-6 { width: 120px; height: 120px; background-image: url('assets/hero_transparent/hero_ufo_1784152980353.png'); top: 50%; right: 0%; animation-duration: 6.5s; animation-delay: -5s; }
+
+    /* Slide 2 Redesign */
+    .slide-2 .hero-visual {
+      position: absolute;
+      inset: 0;
+      background-image: url('assets/hero_slider_2.png');
+      background-position: right center;
+      background-size: cover;
+      background-repeat: no-repeat;
+    }
+
+    .slide-2::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        rgba(7, 6, 15, 0.98) 0%,
+        rgba(12, 7, 20, 0.92) 35%,
+        rgba(12, 7, 20, 0.35) 68%,
+        rgba(12, 7, 20, 0.08) 100%
+      );
+      z-index: 2;
+    }
+
+    .slide-2 .hero-content {
+      position: relative;
+      z-index: 3;
+    }
+
+    /* Slide 3 Specific Image */
+    .slide-3 .hero-visual img {
+      width: 100%;
+      height: 100%;
+      max-height: 600px;
+      object-fit: contain;
+      object-position: center right;
+      transform: translateY(-40px); /* Moves the image up visually */
+    }
+
+    /* ── Slider Dots ─────────────────────── */
+    .hero-dots {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .hero-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3);
+      background: transparent;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .hero-dot:hover {
+      border-color: rgba(255,255,255,0.6);
+    }
+
+    .hero-dot.active {
+      background: var(--gradient-brand);
+      border-color: transparent;
+      width: 28px;
+      border-radius: 5px;
+    }
+
+
+    /* ── Categories Preview ──────────────── */
+    .categories {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+    }
+
+    .categories__grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 16px;
+    }
+
+    .cat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      text-align: center;
+      transition: var(--transition-slow);
+      display: flex;
+      flex-direction: column;
+      height: 210px;
+      overflow: hidden;
       text-decoration: none;
     }
 
-    .overview-breadcrumb a:hover {
-      text-decoration: underline;
+    .cat-card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--border-brand);
+      transform: translateY(-6px);
+      box-shadow: 0 16px 48px rgba(139,92,246,0.15);
     }
 
-    .overview-title {
-      font-size: clamp(36px, 5vw, 56px);
-      font-weight: 900;
-      letter-spacing: -1.5px;
-      margin-bottom: 16px;
+    .cat-card__shape {
+      width: 100%;
+      height: 135px;
+      margin: 0;
+      position: relative;
+      background: #000000;
+      overflow: hidden;
+      border-radius: 0;
     }
 
-    .overview-subtitle {
-      font-size: 18px;
-      color: var(--text-secondary);
-      max-width: 600px;
-      margin: 0 auto;
-      line-height: 1.6;
+    .cat-card__shape img {
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .overview-grid {
+    .cat-card:hover .cat-card__shape img {
+      transform: scale(1.08);
+    }
+
+    .cat-card__name {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 2px;
+      color: var(--text);
+    }
+
+    .cat-card__count {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── How It Works ────────────────────── */
+    .steps {
+      padding: 96px 0;
+    }
+
+    .steps__grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 32px;
-      padding-bottom: 100px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 64px;
+      position: relative;
     }
 
-    .category-card {
+    .steps__grid::before {
+      content: '';
+      position: absolute;
+      top: 40px;
+      left: calc(12.5% + 24px);
+      right: calc(12.5% + 24px);
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-brand), transparent);
+    }
+
+    .step-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      padding: 36px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      position: relative;
+      transition: var(--transition-slow);
+    }
+
+    .step-card:hover {
+      border-color: var(--border-brand);
+      transform: translateY(-4px);
+    }
+
+    .step-card__number {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient-brand);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      margin: 0 auto 20px;
+      box-shadow: var(--shadow-brand);
+    }
+
+    .step-card__icon { font-size: 32px; margin-bottom: 16px; }
+    .step-card__title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+    .step-card__text { font-size: 14px; color: var(--text-secondary); line-height: 1.65; }
+
+    /* ── Products Section ────────────────── */
+    .products-preview {
+      padding: 96px 0;
+      background: var(--bg-secondary);
+    }
+
+    .products-preview__header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 48px;
+    }
+
+    .product-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: var(--radius-lg);
       overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      text-decoration: none;
       transition: var(--transition-slow);
-      position: relative;
+      cursor: pointer;
     }
 
-    .category-card:hover {
+    .product-card:hover {
       border-color: var(--border-brand);
-      transform: translateY(-8px);
-      box-shadow: 0 32px 64px rgba(139,92,246,0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 60px rgba(139,92,246,0.15);
     }
 
-    .category-card__visual {
-      height: 350px;
-      width: 100%;
+    .product-card__visual {
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       position: relative;
       overflow: hidden;
-      background: #151520;
     }
 
-    .category-card__visual img {
+    .product-card-image {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      transition: transform 0.6s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .category-card:hover .category-card__visual img {
-      transform: scale(1.05);
+    .product-card:hover .product-card-image {
+      transform: scale(1.08);
     }
 
-    .category-card__body {
-      padding: 40px;
-      display: flex;
-      flex-direction: column;
-      flex: 1;
+    .product-card__body {
+      padding: 24px;
     }
 
-    .category-card__title {
-      font-size: 32px;
-      font-weight: 800;
-      color: var(--text-primary);
+    .product-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: var(--radius-full);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .product-card__badge--popular {
+      background: rgba(245,158,11,0.15);
+      color: var(--yellow);
+      border: 1px solid rgba(245,158,11,0.3);
+    }
+
+    .product-card__badge--new {
+      background: rgba(16,185,129,0.15);
+      color: var(--green);
+      border: 1px solid rgba(16,185,129,0.3);
+    }
+
+    .product-card__name {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .product-card__desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
       margin-bottom: 16px;
     }
 
-    .category-card__desc {
-      font-size: 16px;
+    .product-card__price {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .product-card__price-from {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .product-card__price-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 800;
+      background: var(--gradient-brand);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── USP Section ─────────────────────── */
+    .usps {
+      padding: 96px 0;
+    }
+
+    .usp-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .usp-card {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100%;
+      padding: 32px 24px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      transition: var(--transition-slow);
+    }
+
+    .usp-card:hover {
+      border-color: var(--border-brand);
+      background: var(--bg-card-hover);
+    }
+
+    .usp-card__icon {
+      font-size: 36px;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .usp-card__title {
+      font-size: 17px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .usp-card__text {
+      font-size: 14px;
       color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 32px;
-      flex: 1;
+      line-height: 1.65;
     }
 
-    .category-card__btn {
-      align-self: flex-start;
+    /* ── CTA Banner ──────────────────────── */
+    .cta-banner {
+      margin: 0 0 96px;
     }
 
-    @media (max-width: 900px) {
-      .overview-grid {
+    .cta-banner__inner {
+      background: var(--gradient-brand);
+      border-radius: var(--radius-2xl);
+      padding: 80px 64px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cta-banner__inner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .cta-banner__title {
+      font-size: clamp(28px, 4vw, 48px);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+    }
+
+    .cta-banner__text {
+      font-size: 18px;
+      opacity: 0.85;
+      margin-bottom: 40px;
+    }
+
+    .cta-banner__btn {
+      background: white;
+      color: var(--purple-dark);
+      font-size: 17px;
+      font-weight: 800;
+      padding: 16px 40px;
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+      transition: var(--transition);
+    }
+
+    .cta-banner__btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.3);
+    }
+
+    /* ── Testimonials ────────────────────── */
+    .testimonials {
+      padding: 96px 0;
+      background: var(--bg-secondary);
+    }
+
+    .testimonial-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 24px;
+      margin-top: 56px;
+    }
+
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+    }
+
+    .testimonial-card__stars {
+      color: var(--yellow);
+      font-size: 16px;
+      margin-bottom: 16px;
+    }
+
+    .testimonial-card__text {
+      font-size: 15px;
+      color: var(--text-secondary);
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+
+    .testimonial-card__author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .testimonial-card__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .testimonial-card__name {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .testimonial-card__meta {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    /* ── Responsive ──────────────────────── */
+
+    /* ── Tablet (max 1024px) ── */
+    @media (max-width: 1024px) {
+      .hero-container {
         grid-template-columns: 1fr;
+        height: auto;
+        max-width: 100%;
+        padding: 48px 24px 40px;
+        text-align: center;
+        gap: 32px;
       }
-      .category-card__visual {
-        height: 250px;
+      .hero-content {
+        align-items: center;
+        max-width: 100%;
+      }
+      .hero-title { min-height: auto; font-size: clamp(36px, 7vw, 56px); }
+      .hero-description { min-height: auto; max-width: 100%; }
+      .hero-actions { justify-content: center; }
+      .hero-bottom-content { justify-content: center; flex-wrap: wrap; }
+      .hero-visual { height: 400px; overflow: hidden; }
+      .hero-dots { bottom: 16px; }
+
+      /* Slide 2: keep background but adjust overlay */
+      .slide-2 .hero-visual { position: absolute; inset: 0; height: auto; }
+      .slide-2 .hero-container { position: relative; z-index: 3; }
+
+      /* Slide 3 image */
+      .slide-3 .hero-visual img { transform: none; max-height: 400px; }
+
+      .categories__grid { grid-template-columns: repeat(3, 1fr); }
+      .steps__grid { grid-template-columns: repeat(2, 1fr); }
+      .usp-grid { grid-template-columns: repeat(2, 1fr); }
+      .steps__grid::before { display: none; }
+
+      /* Theme toggle bar */
+      .theme-toggle-bar { left: 8px; padding: 4px; }
+      .theme-toggle-btn { width: 30px; height: 30px; }
+    }
+
+    /* ── Small Tablet / Large Phone (max 768px) ── */
+    @media (max-width: 768px) {
+      .hero-container {
+        padding: 24px 16px 24px;
+        gap: 24px;
+      }
+      .hero-title { font-size: clamp(28px, 8vw, 44px); letter-spacing: -1px; }
+      .hero-badge { font-size: 11px; padding: 5px 12px; margin-bottom: 16px; }
+      .hero-description { font-size: 14px; margin: 0 0 20px; line-height: 1.65; }
+      .hero-actions { gap: 10px; }
+      .hero-actions .btn--lg { padding: 13px 24px; font-size: 14px; }
+      .hero-bottom-content {
+        gap: 16px;
+        margin-top: 24px;
+        padding-top: 20px;
+        flex-wrap: wrap;
+      }
+      .hero-stat-value { font-size: 20px; }
+      .hero-stat-label { font-size: 11px; }
+      .hero-visual { height: 260px; }
+      .hero-dots { bottom: 12px; }
+
+      /* Floating stickers – scale down */
+      .sticker-float { transform: scale(0.6); }
+      .hero-canvas-bg { width: 250px; height: 250px; }
+
+      /* Slide 3 image */
+      .slide-3 .hero-visual img { max-height: 260px; }
+
+      .products-preview__header { flex-direction: column; gap: 20px; align-items: flex-start; }
+      .testimonial-grid { grid-template-columns: 1fr; }
+      .cta-banner__inner { padding: 40px 20px; }
+
+      /* Theme toggle bar */
+      .theme-toggle-bar {
+        left: auto;
+        right: 8px;
+        top: auto;
+        bottom: 16px;
+        transform: none;
+        flex-direction: row;
       }
     }
+
+    /* ── Mobile (max 480px) ── */
+    @media (max-width: 480px) {
+      .hero-container {
+        padding: 20px 14px 20px;
+      }
+      .hero-title { font-size: clamp(26px, 9vw, 36px); }
+      .hero-description { font-size: 13px; }
+      .hero-actions {
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-actions .btn--lg {
+        width: 100%;
+        padding: 13px 20px;
+        font-size: 14px;
+      }
+      .hero-bottom-content { gap: 12px; }
+      .hero-stat-value { font-size: 18px; }
+      .hero-stat-label { font-size: 10px; }
+      .hero-visual { height: 200px; }
+
+      /* Floating stickers – even smaller */
+      .sticker-float { transform: scale(0.45); }
+      .hero-canvas-bg { width: 180px; height: 180px; }
+
+      /* Slide 3 image */
+      .slide-3 .hero-visual img { max-height: 200px; }
+
+      .categories__grid { grid-template-columns: repeat(2, 1fr); }
+      .steps__grid { grid-template-columns: 1fr; }
+      .usp-grid { grid-template-columns: 1fr; }
+    }
+
   </style>
 </head>
 <body>
+<div class="site-wrapper" style="overflow-x: hidden; width: 100%; position: relative;">
 
   <!-- ── Navigation ── -->
   <nav class="nav" id="mainNav">
@@ -138,23 +778,9 @@
         <a href="index.html" class="nav__logo">
           <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
         </a>
-        <div class="nav__links" id="navLinks">
+                <div class="nav__links" id="navLinks">
           <a href="index.html" class="nav__link" data-nav="index">Start</a>
-          <div class="nav__item--has-dropdown">
-            <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
-            <div class="nav__dropdown">
-              <a href="aufkleber.html" class="nav__dropdown-card" data-dropdown-nav="aufkleber">
-                <img src="assets/aufkleber/rund.jpg" alt="Aufkleber" class="nav__dropdown-img">
-                <div class="nav__dropdown-title">Aufkleber <span>→</span></div>
-                <div class="nav__dropdown-desc">Individuelle Aufkleber in verschiedenen Formen und Materialien.</div>
-              </a>
-              <a href="etiketten.html" class="nav__dropdown-card" data-dropdown-nav="etiketten">
-                <img src="assets/etiketten/flasche.jpg" alt="Etiketten" class="nav__dropdown-img">
-                <div class="nav__dropdown-title">Etiketten <span>→</span></div>
-                <div class="nav__dropdown-desc">Professionelle Etiketten für Produkte, Flaschen und Verpackungen.</div>
-              </a>
-            </div>
-          </div>
+          <a href="products.html" class="nav__link" data-nav="products">Produkte</a>
           <a href="editor.html" class="nav__link" data-nav="editor">Editor</a>
         </div>
         <div class="nav__actions">
@@ -171,53 +797,95 @@
     </div>
   </nav>
 
-  <div class="products-overview">
+  <!-- ── Kompakter Kopf + Schnellbestellung ── -->
+  <header class="mini-hero">
     <div class="container">
-      <div class="overview-header">
-        <div class="overview-breadcrumb">
-          <a href="index.html">Home</a> <span style="margin: 0 8px;">/</span> Produkte
+      <h1 class="mini-hero__title">Alle Sticker – <span class="gradient-text">Form wählen, bestellen.</span></h1>
+      <ul class="mini-hero__trust">
+        <li>✔ Wetterfest &amp; UV-beständig</li>
+        <li>✔ Lieferung in 3–5 Werktagen</li>
+        <li>✔ Versandkostenfrei ab 50 €</li>
+        <li>✔ Eigenes Design auch nach dem Kauf hochladen</li>
+      </ul>
+    </div>
+  </header>
+
+  <section class="shop" id="shop">
+    <div class="container">
+      <div class="shop__tabs" id="shopTabs" role="tablist" aria-label="Sticker-Kategorien"></div>
+      <div id="shopGroups"></div>
+
+      <div class="shop__custom">
+        <div>
+          <strong>Du willst dein Design selbst gestalten?</strong>
+          <span>Mit unserem Editor gestaltest du deinen Sticker direkt im Browser.</span>
         </div>
-        <h1 class="overview-title">Was möchtest du <span class="gradient-text">gestalten?</span></h1>
-        <p class="overview-subtitle">
-          Wähle eine Kategorie, um unsere hochwertigen und individuellen Druckprodukte zu entdecken.
-        </p>
-      </div>
-
-      <div class="overview-grid">
-        <!-- Aufkleber -->
-        <a href="aufkleber.html" class="category-card">
-          <div class="category-card__visual">
-            <img src="assets/aufkleber/rund.jpg" alt="Aufkleber Kategorie">
-          </div>
-          <div class="category-card__body">
-            <h2 class="category-card__title">Aufkleber</h2>
-            <p class="category-card__desc">
-              Individuelle Aufkleber in verschiedenen Formen, Größen und Materialien. Perfekt als Giveaways, fürs Branding oder einfach nur zum Spaß.
-            </p>
-            <div class="btn btn--primary category-card__btn">Aufkleber entdecken</div>
-          </div>
-        </a>
-
-        <!-- Etiketten -->
-        <a href="etiketten.html" class="category-card">
-          <div class="category-card__visual">
-            <img src="assets/etiketten/flasche.jpg" alt="Etiketten Kategorie">
-          </div>
-          <div class="category-card__body">
-            <h2 class="category-card__title">Etiketten</h2>
-            <p class="category-card__desc">
-              Professionelle Etiketten für Produkte, Verpackungen, Flaschen und Marken. Hochwertig gedruckt auf Rolle oder Bogen.
-            </p>
-            <div class="btn btn--primary category-card__btn">Etiketten entdecken</div>
-          </div>
-        </a>
+        <a href="editor.html" class="btn btn--secondary">Zum Editor →</a>
       </div>
     </div>
+  </section>
+
+  <!-- Schwebende Warenkorb-Leiste -->
+  <div class="cart-bar" id="cartBar" hidden>
+    <div class="cart-bar__info"><strong id="cartBarCount">0 Artikel</strong><span id="cartBarTotal"></span></div>
+    <a href="cart.html" class="btn btn--primary">Zum Warenkorb →</a>
   </div>
 
   <!-- ── Footer ── -->
-  <footer class="footer">
+  <footer class="footer" style="padding-top: 40px; padding-bottom: 80px; margin-top: 0; border-top: none;">
     <div class="container">
+      <div class="footer__grid">
+        <div>
+          <div class="nav__logo" style="margin-bottom:16px;">
+            <img src="assets/logo.png" alt="Stickiverse Logo" style="height: 42px; width: auto;">
+          </div>
+          <p class="footer__brand-desc">Individuelle Sticker in Premium-Qualität. Einfach gestalten, schnell geliefert. Dein Sticker-Shop aus Deutschland.</p>
+          <div class="footer__newsletter" style="margin-top: 24px; max-width: 340px;">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 500;">
+              Jetzt zum Newsletter anmelden und 15€ Gutschein erhalten!
+            </p>
+            <form style="display: flex; flex-direction: column; gap: 12px;" onsubmit="event.preventDefault(); alert('Danke für die Anmeldung! Dein 15€ Gutschein-Code lautet: STICKI15'); this.reset();">
+              <div style="display: flex; gap: 8px;">
+                <input type="email" placeholder="Deine E-Mail" required style="flex: 1; min-width: 0; padding: 10px 14px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-primary); font-size: 14px; outline: none;">
+                <button type="submit" class="btn btn--primary" style="padding: 10px 20px; white-space: nowrap;">Anmelden</button>
+              </div>
+              <label style="display: flex; align-items: flex-start; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; line-height: 1.4; text-align: justify; hyphens: auto;">
+                <input type="checkbox" required style="margin-top: 2px; accent-color: var(--purple);">
+                <span>Ich habe die <a href="datenschutz.html" style="color: var(--purple-light); text-decoration: underline;">Datenschutzerklärung</a> zur Kenntnis genommen und stimme zu.</span>
+              </label>
+            </form>
+          </div>
+        </div>
+        <div>
+          <div class="footer__col-title">Produkte</div>
+          <ul class="footer__links">
+            <li><a href="products.html?cat=rund" class="footer__link">Runde Sticker</a></li>
+            <li><a href="products.html?cat=eckig" class="footer__link">Eckige Sticker</a></li>
+            <li><a href="products.html?cat=freigestanzt" class="footer__link">Freigestanzt</a></li>
+            <li><a href="products.html?cat=transparent" class="footer__link">Transparent</a></li>
+            <li><a href="discover.html" class="footer__link">Sticker entdecken</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer__col-title">Shop</div>
+          <ul class="footer__links">
+            <li><a href="editor.html" class="footer__link">Sticker-Editor</a></li>
+            <li><a href="cart.html" class="footer__link">Warenkorb</a></li>
+            <li><a href="#" class="footer__link">Bestellung verfolgen</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer__col-title">Info</div>
+          <ul class="footer__links">
+            <li><a href="versand.html" class="footer__link">Versand & Zahlung</a></li>
+            <li><a href="widerruf.html" class="footer__link">Widerrufsbelehrung</a></li>
+            <li><a href="datenschutz.html" class="footer__link">Datenschutz</a></li>
+            <li><a href="cookies.html" class="footer__link">Cookie-Richtlinie</a></li>
+            <li><a href="impressum.html" class="footer__link">Impressum</a></li>
+            <li><a href="agb.html" class="footer__link">AGB</a></li>
+          </ul>
+        </div>
+      </div>
       <div class="footer__bottom">
         <span>© 2025 Stickiverse.de – Alle Rechte vorbehalten</span>
         <span>Made with in Deutschland</span>
@@ -225,7 +893,15 @@
     </div>
   </footer>
 
-  <script src="js/theme-toggle.js"></script>
-  <script src="js/nav.js"></script>
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="js/products.js?v=2"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/auth-ui.js"></script>
+  <script src="js/designs.js"></script>
+  <script src="js/shop.js"></script>
+<script src="js/theme-toggle.js"></script>
+</div>
+<script src="js/nav.js"></script>
 </body>
 </html>
