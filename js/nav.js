@@ -57,6 +57,40 @@ document.addEventListener('DOMContentLoaded', () => {
     wrap.addEventListener('mouseleave', () => wrap.classList.remove('mega-closed'));
   })();
 
+  // ── 0b. Anlässe-Menü unter "Start" (nur Desktop) ──
+  (function buildOccasionMenu() {
+    const link = document.querySelector('.nav__link[data-nav="index"]');
+    if (!link || link.parentElement.classList.contains('nav__item--has-dropdown')) return;
+    const occasions = [
+      ['JGA & Polterabend', 'Team Bride, Team Groom, freche Sprüche', 'images/slider/anlass-jga.webp'],
+      ['Gender Reveal', 'Team Boy oder Team Girl', 'images/slider/anlass-gender.webp'],
+      ['Baby Shower', 'Gastgeschenke und Deko', 'images/slider/anlass-baby.webp'],
+      ['Kindergeburtstag', 'Mitgebsel, die jeder haben will', 'images/slider/anlass-kinder.webp'],
+    ];
+    const wrap = document.createElement('div');
+    wrap.className = 'nav__item--has-dropdown nav__item--occasions';
+    link.replaceWith(wrap);
+    wrap.appendChild(link);
+    const panel = document.createElement('div');
+    panel.className = 'nav__dropdown nav__dropdown--mega nav__dropdown--occasions';
+    panel.innerHTML = `
+      <div class="mega__col mega__col--wide">
+        <div class="mega__head">Sticker für jeden Anlass</div>
+        <div class="mega__grid">${occasions.map(o => `
+          <a href="discover.html" class="mega__item">
+            <img data-src="${o[2]}" alt="" width="56" height="56">
+            <span><strong>${o[0]}</strong><small>${o[1]}</small></span>
+          </a>`).join('')}</div>
+      </div>
+      <a href="discover.html" class="mega__all">Alle Sticker entdecken →</a>`;
+    wrap.appendChild(panel);
+    let loaded = false;
+    const loadImgs = () => { if (loaded) return; loaded = true; panel.querySelectorAll('img[data-src]').forEach(i => { i.src = i.dataset.src; }); };
+    wrap.addEventListener('mouseenter', loadImgs); wrap.addEventListener('focusin', loadImgs);
+    panel.addEventListener('click', () => wrap.classList.add('mega-closed'));
+    wrap.addEventListener('mouseleave', () => wrap.classList.remove('mega-closed'));
+  })();
+
   // ── 1. Auto-Active: Mark current page in nav ──
   const currentPath = window.location.pathname.split('/').pop() || 'index.html';
   
@@ -118,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle Mobile Mega Menu Dropdown Toggle
-    const productsLink = document.querySelector('.nav__item--has-dropdown > .nav__link');
+    const productsLink = document.querySelector('.nav__item--has-dropdown > .nav__link[data-nav="products"]');
     if (productsLink) {
       productsLink.addEventListener('click', (e) => {
         // Only prevent default on mobile sizes if they click to open dropdown
@@ -135,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Close menu when a link is clicked (unless it's the products link on mobile)
     navLinks.querySelectorAll('.nav__link, .nav__dropdown-card').forEach(link => {
       link.addEventListener('click', (e) => {
-        if (link.parentElement.classList.contains('nav__item--has-dropdown') && window.innerWidth <= 768) {
+        if (link.dataset.nav === 'products' && window.innerWidth <= 768) {
           return; // Handled above
         }
         hamburger.classList.remove('active');

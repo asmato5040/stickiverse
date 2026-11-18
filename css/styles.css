@@ -563,7 +563,11 @@ input, textarea, select { font-family: inherit; }
 .mega__item--text b { color: #FFD23F; }
 .mega__all { grid-column: 1 / -1; text-align: center; padding: 11px; border-radius: 999px; background: #FFD23F; color: #14120B; font-weight: 700; font-size: 14px; text-decoration: none; }
 .mega__all:hover { filter: brightness(1.06); }
+/* schmale Hover-Brücke direkt unter dem Link, damit Nachbar-Links nicht verdeckt werden */
+.nav__dropdown--mega::before { left: 50%; right: auto; width: 72px; transform: translateX(-50%); }
+.nav__dropdown--occasions { width: 560px; grid-template-columns: 1fr; }
 @media (max-width: 768px) {
+  .nav__dropdown--occasions { display: none !important; }
   .nav__dropdown--mega { grid-template-columns: 1fr; padding: 0 0 10px 12px; width: 100%; }
   .mega__grid { grid-template-columns: 1fr; }
   .mega__col--side { border-left: 0; padding-left: 0; }
