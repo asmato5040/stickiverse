@@ -29,8 +29,8 @@ const PRODUCTS = [
     },
     baseLink: 'https://www.onlineprinters.de/p/runde-aufkleber-im-freiformat?depvar_index_setparent=%3cP8AFFXX%3e%3cP8AFFXX.AK3.1X10%3e&depvar_qty=10&depvar_index_set_1=%3cZ8AFFA3S%3e%3cZ8AFFA3SX99%3e&depvar_index_set_2=%3cZXXXXX2D%3e%3cZXXXXX2DD00%3e&depvar_index_set_3=%3cZ7AFFA3Y%3e%3cZ7AFFA3YY34%3e',
     opCode: 'P8AFFXX',
-    color: '#8B5CF6',
-    colorGradient: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
+    color: '#FFD23F',
+    colorGradient: 'linear-gradient(135deg, #FFD23F, #FFB703)',
     image: 'images/Runde Sticker.webp',
   },
   {
@@ -59,8 +59,8 @@ const PRODUCTS = [
     },
     baseLink: 'https://www.onlineprinters.de/p/eckige-aufkleber-im-freiformat?depvar_index_setparent=%3cP7AFFXX%3e%3cP7AFFXX.AK3.1X10%3e&depvar_qty=10&depvar_index_set_1=%3cZ7AFFA3S%3e%3cZ7AFFA3SX99%3e&depvar_index_set_2=%3cZXXXX93N%3e%3cZXXXX93NN90%3e&depvar_index_set_3=%3cZXXXXX2D%3e%3cZXXXXX2DD00%3e&depvar_index_set_4=%3cZ7AFFA3Y%3e%3cZ7AFFA3YY34%3e',
     opCode: 'P7AFFXX',
-    color: '#06B6D4',
-    colorGradient: 'linear-gradient(135deg, #06B6D4, #8B5CF6)',
+    color: '#FFD23F',
+    colorGradient: 'linear-gradient(135deg, #FFD23F, #FFD23F)',
     image: 'images/Quadratische Sticker.webp',
   },
   {
@@ -90,7 +90,7 @@ const PRODUCTS = [
     baseLink: 'https://www.onlineprinters.de/p/eckige-aufkleber-im-freiformat?depvar_index_setparent=%3cP7AFFXX%3e%3cP7AFFXX.AK3.1X10%3e&depvar_qty=10&depvar_index_set_1=%3cZ7AFFA3S%3e%3cZ7AFFA3SX99%3e&depvar_index_set_2=%3cZXXXX93N%3e%3cZXXXX93NN90%3e&depvar_index_set_3=%3cZXXXXX2D%3e%3cZXXXXX2DD00%3e&depvar_index_set_4=%3cZ7AFFA3Y%3e%3cZ7AFFA3YY34%3e',
     opCode: 'P7AFFXX',
     color: '#10B981',
-    colorGradient: 'linear-gradient(135deg, #10B981, #06B6D4)',
+    colorGradient: 'linear-gradient(135deg, #10B981, #FFD23F)',
     image: 'images/Rechteck Sticker.webp',
   },
   {
@@ -115,8 +115,8 @@ const PRODUCTS = [
       '7x5':  { 50: 14.90, 100: 23.90, 250: 42.90, 500: 70.90, 1000: 119.90 },
       '10x6': { 50: 17.90, 100: 27.90, 250: 51.90, 500: 86.90, 1000: 144.90 },
     },
-    color: '#EC4899',
-    colorGradient: 'linear-gradient(135deg, #EC4899, #F59E0B)',
+    color: '#FFB703',
+    colorGradient: 'linear-gradient(135deg, #FFB703, #F59E0B)',
     image: 'images/Oval Sticker.webp',
   },
   {
@@ -142,7 +142,7 @@ const PRODUCTS = [
       '10x10': { 50: 27.90, 100: 44.90, 250: 79.90, 500: 134.90, 1000: 224.90 },
     },
     color: '#F59E0B',
-    colorGradient: 'linear-gradient(135deg, #F59E0B, #EC4899)',
+    colorGradient: 'linear-gradient(135deg, #F59E0B, #FFB703)',
     image: 'images/Freigestanzte Sticker.webp',
   },
   {
@@ -167,8 +167,8 @@ const PRODUCTS = [
       '7x7':   { 50: 18.90, 100: 29.90, 250: 52.90, 500: 87.90, 1000: 144.90 },
       '10x10': { 50: 23.90, 100: 37.90, 250: 67.90, 500: 112.90, 1000: 184.90 },
     },
-    color: '#06B6D4',
-    colorGradient: 'linear-gradient(135deg, rgba(6,182,212,0.6), rgba(139,92,246,0.6))',
+    color: '#FFD23F',
+    colorGradient: 'linear-gradient(135deg, rgba(255,210,63,0.6), rgba(255,210,63,0.6))',
     image: 'images/Transparente Sticker.webp',
   },
   {
@@ -191,7 +191,7 @@ const PRODUCTS = [
       '5x5': { 5: 3.90, 10: 5.90, 50: 19.90, 100: 29.90 },
       '7x7': { 5: 4.90, 10: 7.90, 50: 24.90, 100: 39.90 },
     },
-    color: '#8B5CF6',
+    color: '#FFD23F',
     image: 'assets/hero_transparent/hero_robot_1784152930155.png',
   },
   {
@@ -256,7 +256,7 @@ const PRODUCTS = [
     prices: {
       '5x5': { 5: 3.90, 10: 5.90, 50: 19.90, 100: 29.90 },
     },
-    color: '#EC4899',
+    color: '#FFB703',
     image: 'assets/hero_transparent/hero_boombox_1784152956731.png',
   }
 ];

@@ -59,7 +59,7 @@
     .checkout-step.active .checkout-step__num {
       background: var(--gradient-brand);
       border: none;
-      color: white;
+      color: var(--accent-ink);
     }
 
     .checkout-step.done .checkout-step__num {
@@ -149,7 +149,7 @@
 
     .payment-option.selected {
       border-color: var(--purple);
-      background: rgba(139,92,246,0.08);
+      background: rgba(255,210,63,0.08);
     }
 
     .payment-option__radio {
@@ -232,12 +232,7 @@
     .summary-row--total .summary-row__value {
       font-family: 'Outfit', sans-serif;
       font-size: 26px;
-      font-weight: 900;
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      font-weight: 900; color: var(--purple-light); -webkit-text-fill-color: var(--purple-light); }
 
     .place-order-btn {
       width: 100%;
@@ -245,7 +240,7 @@
       background: var(--gradient-brand);
       border: none;
       border-radius: var(--radius-md);
-      color: white;
+      color: var(--accent-ink);
       font-size: 18px;
       font-weight: 800;
       font-family: 'Outfit', sans-serif;
@@ -261,7 +256,7 @@
 
     .place-order-btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 16px 48px rgba(139,92,246,0.4);
+      box-shadow: 0 16px 48px rgba(255,210,63,0.4);
     }
 
     .place-order-btn:disabled {
@@ -357,7 +352,7 @@
       max-width: 480px;
       width: 90%;
       animation: fadeIn 0.4s ease;
-      box-shadow: 0 32px 128px rgba(139,92,246,0.3);
+      box-shadow: 0 32px 128px rgba(255,210,63,0.3);
     }
 
     .success-modal__icon {
@@ -384,8 +379,8 @@
     .success-modal__order-nr {
       display: inline-block;
       padding: 8px 20px;
-      background: rgba(139,92,246,0.15);
-      border: 1px solid rgba(139,92,246,0.3);
+      background: rgba(255,210,63,0.15);
+      border: 1px solid rgba(255,210,63,0.3);
       border-radius: var(--radius-full);
       font-family: monospace;
       font-size: 16px;

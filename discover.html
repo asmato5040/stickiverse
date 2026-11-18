@@ -84,7 +84,7 @@
     .filter-btn.active {
       background: var(--gradient-brand);
       border-color: transparent;
-      color: white;
+      color: var(--accent-ink);
       box-shadow: var(--shadow-brand);
     }
 
@@ -111,7 +111,7 @@
     .product-full-card:hover {
       border-color: var(--border-brand);
       transform: translateY(-6px);
-      box-shadow: 0 24px 64px rgba(139,92,246,0.15);
+      box-shadow: 0 24px 64px rgba(255,210,63,0.15);
     }
 
     .product-full-card__visual {
@@ -199,8 +199,8 @@
       align-items: center;
       gap: 4px;
       padding: 4px 10px;
-      background: rgba(139,92,246,0.1);
-      border: 1px solid rgba(139,92,246,0.2);
+      background: rgba(255,210,63,0.1);
+      border: 1px solid rgba(255,210,63,0.2);
       border-radius: var(--radius-full);
       font-size: 12px;
       color: var(--purple-light);
@@ -224,12 +224,7 @@
     .product-full-card__price {
       font-family: 'Outfit', sans-serif;
       font-size: 26px;
-      font-weight: 900;
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      font-weight: 900; color: var(--purple-light); -webkit-text-fill-color: var(--purple-light); }
 
     /* ── Size selector in modal/card ── */
     .size-chips {
@@ -254,7 +249,7 @@
     .size-chip:hover, .size-chip.active {
       background: var(--gradient-brand);
       border-color: transparent;
-      color: white;
+      color: var(--accent-ink);
     }
 
     /* ── Count badge ── */
@@ -278,18 +273,18 @@
     .marketplace-header { padding: 40px 0; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
     .marketplace-layout { display: grid; grid-template-columns: 260px 1fr; gap: 40px; margin-top: 20px; padding-bottom: 80px; }
     @media(max-width: 900px) { .marketplace-layout { grid-template-columns: 1fr; } }
-    .marketplace-sidebar { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 24px; height: fit-content; position: sticky; top: calc(var(--nav-height) + 20px); }
+    .marketplace-sidebar { background: rgba(var(--ink-rgb),0.02); border: 1px solid var(--border); border-radius: 12px; padding: 24px; height: fit-content; position: sticky; top: calc(var(--nav-height) + 20px); }
     .filter-group { margin-bottom: 24px; }
     .filter-group__title { font-weight: 600; margin-bottom: 12px; font-size: 12px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-    .filter-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; font-size: 14px; color: #e2e8f0; }
+    .filter-checkbox { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; cursor: pointer; font-size: 14px; color: var(--text-primary); }
     .filter-checkbox input { accent-color: var(--primary); width: 16px; height: 16px; }
     
-    .design-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; cursor: pointer; }
+    .design-card { background: rgba(var(--ink-rgb),0.02); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; transition: transform 0.2s, border-color 0.2s; display: flex; flex-direction: column; cursor: pointer; }
     .design-card:hover { transform: translateY(-4px); border-color: var(--primary); }
     .design-card__visual { position: relative; aspect-ratio: 1; background: #000; display: flex; align-items: center; justify-content: center; padding: 20px; }
     .design-card__image { max-width: 100%; max-height: 100%; object-fit: contain; transition: transform 0.3s; }
     .design-card:hover .design-card__image { transform: scale(1.05); }
-    .design-card__badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; z-index: 10; }
+    .design-card__badge { position: absolute; top: 12px; left: 12px; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); border: 1px solid rgba(var(--ink-rgb),0.1); border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 6px; z-index: 10; }
     .design-card__badge--official { color: var(--primary); }
     .design-card__fav { position: absolute; top: 12px; right: 12px; background: rgba(0,0,0,0.4); border-radius: 50%; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; border: 1px solid transparent; color: #fff; transition: 0.2s; z-index: 10; }
     .design-card__fav:hover { background: rgba(0,0,0,0.8); border-color: #f43f5e; color: #f43f5e; }
@@ -299,7 +294,7 @@
     .design-card__meta { display: flex; gap: 12px; font-size: 12px; color: var(--text-secondary); margin-bottom: 20px; }
     .design-card__footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
     .design-card__price-label { font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; }
-    .design-card__price { font-size: 18px; font-weight: 700; color: #fff; }
+    .design-card__price { font-size: 18px; font-weight: 700; color: var(--text-primary); }
 
   </style>
 </head>

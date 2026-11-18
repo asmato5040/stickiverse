@@ -66,8 +66,8 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      background: rgba(139,92,246,0.12);
-      border: 1px solid rgba(139,92,246,0.3);
+      background: rgba(255,210,63,0.12);
+      border: 1px solid rgba(255,210,63,0.3);
       border-radius: var(--radius-full);
       padding: 6px 16px;
       font-size: 13px;
@@ -125,12 +125,7 @@
     .hero-stat-value {
       font-family: 'Outfit', sans-serif;
       font-size: 28px;
-      font-weight: 800;
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      font-weight: 800; color: var(--purple-light); -webkit-text-fill-color: var(--purple-light); }
 
     .hero-stat-label {
       font-size: 13px;
@@ -154,7 +149,7 @@
       position: absolute;
       width: 500px;
       height: 500px;
-      background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,210,63,0.12) 0%, transparent 70%);
       border-radius: 50%;
       animation: pulse-glow 4s ease-in-out infinite;
     }
@@ -231,7 +226,7 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      border: 2px solid rgba(255,255,255,0.3);
+      border: 2px solid rgba(var(--ink-rgb),0.3);
       background: transparent;
       cursor: pointer;
       transition: all 0.3s ease;
@@ -239,7 +234,7 @@
     }
 
     .hero-dot:hover {
-      border-color: rgba(255,255,255,0.6);
+      border-color: rgba(var(--ink-rgb),0.6);
     }
 
     .hero-dot.active {
@@ -280,7 +275,7 @@
       background: var(--bg-card-hover);
       border-color: var(--border-brand);
       transform: translateY(-6px);
-      box-shadow: 0 16px 48px rgba(139,92,246,0.15);
+      box-shadow: 0 16px 48px rgba(255,210,63,0.15);
     }
 
     .cat-card__shape {
@@ -405,7 +400,7 @@
     .product-card:hover {
       border-color: var(--border-brand);
       transform: translateY(-6px);
-      box-shadow: 0 20px 60px rgba(139,92,246,0.15);
+      box-shadow: 0 20px 60px rgba(255,210,63,0.15);
     }
 
     .product-card__visual {
@@ -484,12 +479,7 @@
     .product-card__price-value {
       font-family: 'Outfit', sans-serif;
       font-size: 22px;
-      font-weight: 800;
-      background: var(--gradient-brand);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+      font-weight: 800; color: var(--purple-light); -webkit-text-fill-color: var(--purple-light); }
 
     /* ── USP Section ─────────────────────── */
     .usps {
@@ -998,7 +988,7 @@
           <div class="testimonial-card__stars">★★★★★</div>
           <p class="testimonial-card__text">„Die Sticker sehen aus wie aus dem Laden gekauft – absolute Topqualität! Der Editor ist super einfach zu bedienen und die Lieferung kam schneller als erwartet."</p>
           <div class="testimonial-card__author">
-            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);">👩</div>
+            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#FFD23F,#FFB703);">👩</div>
             <div>
               <div class="testimonial-card__name">Sarah K.</div>
               <div class="testimonial-card__meta">Marketingdesignerin, Berlin</div>
@@ -1009,7 +999,7 @@
           <div class="testimonial-card__stars">★★★★★</div>
           <p class="testimonial-card__text">„Habe 500 runde Sticker für mein Café bestellt. Die Qualität ist sensationell – die Farben leuchten und die Sticker halten perfekt auf Gläsern."</p>
           <div class="testimonial-card__author">
-            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6);">👨</div>
+            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#FFD23F,#FFD23F);">👨</div>
             <div>
               <div class="testimonial-card__name">Marco L.</div>
               <div class="testimonial-card__meta">Gastronom, München</div>
@@ -1020,7 +1010,7 @@
           <div class="testimonial-card__stars">★★★★★</div>
           <p class="testimonial-card__text">„Als kleine Etsy-Verkäuferin brauche ich günstige, aber hochwertige Sticker. Stickiverse ist genau das! Immer wieder gerne."</p>
           <div class="testimonial-card__author">
-            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#EC4899,#F59E0B);">👩</div>
+            <div class="testimonial-card__avatar" style="background:linear-gradient(135deg,#FFB703,#F59E0B);">👩</div>
             <div>
               <div class="testimonial-card__name">Jana M.</div>
               <div class="testimonial-card__meta">Etsy-Verkäuferin, Hamburg</div>

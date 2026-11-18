@@ -21,10 +21,6 @@
       padding-top: var(--nav-height, 72px);
     }
     
-    /* Ensure the nav has a dark background on this light page */
-    #mainNav {
-      background: #08080f;
-    }
 
     /* ── Top Bar ── */
     .editor-topbar {
@@ -87,10 +83,10 @@
     }
 
     .topbar-btn--order {
-      background: #8B5CF6; color: white; border-color: #8B5CF6;
+      background: #FFD23F; color: var(--accent-ink); border-color: #FFD23F;
       font-weight: 700; padding: 8px 20px;
     }
-    .topbar-btn--order:hover { background: #6D28D9; border-color: #6D28D9; }
+    .topbar-btn--order:hover { background: #14120B; border-color: #14120B; }
 
     /* ── Main Area ── */
     .editor-main {
@@ -120,7 +116,7 @@
       min-height: 52px;
     }
     .tool-sidebar-btn:hover { background: #f3f4f6; color: #111827; }
-    .tool-sidebar-btn.active { background: #f5f3ff; color: #8B5CF6; }
+    .tool-sidebar-btn.active { background: #FFF7D6; color: var(--purple-light); }
 
     .tool-sidebar-btn .tool-label {
       font-size: 9px; font-weight: 600;
@@ -183,19 +179,19 @@
       transition: all 0.15s;
     }
     .cutline-option:hover { border-color: #d1d5db; background: #f3f4f6; }
-    .cutline-option.active { border-color: #3b82f6; background: #eff6ff; }
+    .cutline-option.active { border-color: #14120B; background: #FFF7D6; }
 
     .cutline-option__icon {
       width: 32px; height: 32px;
       display: flex; align-items: center; justify-content: center;
     }
     .cutline-option__icon svg { width: 24px; height: 24px; stroke: #6b7280; fill: none; stroke-width: 1.5; }
-    .cutline-option.active .cutline-option__icon svg { stroke: #3b82f6; }
+    .cutline-option.active .cutline-option__icon svg { stroke: #FFD23F; }
 
     .cutline-option__label {
       font-size: 11px; font-weight: 600; color: #6b7280;
     }
-    .cutline-option.active .cutline-option__label { color: #3b82f6; }
+    .cutline-option.active .cutline-option__label { color: #8A5F00; }
 
     /* ── Checkbox ── */
     .panel-checkbox {
@@ -203,7 +199,7 @@
       font-size: 13px; color: #374151; cursor: pointer;
     }
     .panel-checkbox input[type="checkbox"] {
-      width: 16px; height: 16px; accent-color: #3b82f6;
+      width: 16px; height: 16px; accent-color: #FFD23F;
     }
 
     /* ── Range Slider ── */
@@ -211,7 +207,7 @@
       display: flex; align-items: center; gap: 10px;
     }
     .panel-range-row input[type="range"] {
-      flex: 1; accent-color: #3b82f6;
+      flex: 1; accent-color: #FFD23F;
     }
     .panel-range-row .range-value {
       font-size: 13px; font-weight: 600; color: #374151;
@@ -232,7 +228,7 @@
       transition: all 0.15s; position: relative; overflow: hidden;
     }
     .bg-option:hover { border-color: #d1d5db; }
-    .bg-option.active { border-color: #3b82f6; }
+    .bg-option.active { border-color: #14120B; }
     .bg-option--none {
       background: #fff;
       background-image: linear-gradient(45deg, #ccc 25%, transparent 25%),
@@ -254,7 +250,7 @@
       font-size: 14px; outline: none; transition: all 0.15s;
       font-family: 'Inter', sans-serif; resize: vertical;
     }
-    .text-input-full:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+    .text-input-full:focus { border-color: #14120B; box-shadow: 0 0 0 3px rgba(255,210,63,0.1); }
 
     .font-select {
       width: 100%; padding: 9px 12px;
@@ -263,7 +259,7 @@
       font-size: 14px; outline: none; cursor: pointer;
       margin-bottom: 10px;
     }
-    .font-select:focus { border-color: #3b82f6; }
+    .font-select:focus { border-color: #14120B; }
 
     .font-size-row { display: flex; align-items: center; gap: 8px; }
 
@@ -293,7 +289,7 @@
       transition: all 0.15s;
     }
     .style-btn:hover { background: #f3f4f6; }
-    .style-btn.active { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+    .style-btn.active { background: #FFF7D6; border-color: #14120B; color: #8A5F00; }
 
     /* ── Color Picker ── */
     .color-grid {
@@ -306,7 +302,7 @@
       border: 2px solid transparent; transition: all 0.15s;
     }
     .color-swatch:hover { transform: scale(1.15); }
-    .color-swatch.active { border-color: #111827; box-shadow: 0 0 0 2px #3b82f6; }
+    .color-swatch.active { border-color: #111827; box-shadow: 0 0 0 2px #FFD23F; }
 
     .color-custom-row { display: flex; align-items: center; gap: 10px; }
 
@@ -323,7 +319,7 @@
       border-radius: 6px; color: #111827;
       font-size: 13px; font-family: monospace; outline: none;
     }
-    .color-hex-input:focus { border-color: #3b82f6; }
+    .color-hex-input:focus { border-color: #14120B; }
 
     /* ── Shape Picker ── */
     .shape-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
@@ -336,7 +332,7 @@
       color: #6b7280;
     }
     .shape-option:hover { background: #f3f4f6; border-color: #d1d5db; }
-    .shape-option.active { background: #eff6ff; border-color: #3b82f6; color: #3b82f6; }
+    .shape-option.active { background: #FFF7D6; border-color: #14120B; color: #8A5F00; }
 
     /* ── Upload Area ── */
     .upload-zone {
@@ -344,7 +340,7 @@
       padding: 32px 16px; text-align: center;
       cursor: pointer; transition: all 0.15s;
     }
-    .upload-zone:hover { border-color: #3b82f6; background: #f9fafb; }
+    .upload-zone:hover { border-color: #14120B; background: #f9fafb; }
     .upload-zone__icon { font-size: 28px; margin-bottom: 8px; color: #9ca3af; }
     .upload-zone__text { font-size: 13px; color: #6b7280; }
 
@@ -368,7 +364,7 @@
       border: 2px solid transparent; transition: all 0.15s;
     }
     .gradient-option:hover { transform: scale(1.05); }
-    .gradient-option.active { border-color: #3b82f6; }
+    .gradient-option.active { border-color: #14120B; }
 
     /* ── Sticker Type / Size / Qty Grids (moved to left panel) ── */
     .sticker-type-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -379,10 +375,10 @@
       text-align: center; cursor: pointer; transition: all 0.15s;
     }
     .sticker-type-btn:hover { background: #f3f4f6; border-color: #d1d5db; }
-    .sticker-type-btn.active { background: #eff6ff; border-color: #3b82f6; }
+    .sticker-type-btn.active { background: #FFF7D6; border-color: #14120B; }
     .sticker-type-btn__shape { font-size: 22px; margin-bottom: 2px; }
     .sticker-type-btn__name { font-size: 11px; font-weight: 600; color: #6b7280; }
-    .sticker-type-btn.active .sticker-type-btn__name { color: #3b82f6; }
+    .sticker-type-btn.active .sticker-type-btn__name { color: #8A5F00; }
 
     .size-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
 
@@ -392,7 +388,7 @@
       cursor: pointer; transition: all 0.15s; text-align: center;
     }
     .size-option:hover { background: #f3f4f6; border-color: #d1d5db; }
-    .size-option.active { background: #eff6ff; border-color: #3b82f6; }
+    .size-option.active { background: #FFF7D6; border-color: #14120B; }
     .size-option__label { font-size: 13px; font-weight: 700; font-family: 'Outfit', sans-serif; color: #111827; }
 
     .qty-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
@@ -403,19 +399,19 @@
       cursor: pointer; transition: all 0.15s; text-align: center;
     }
     .qty-option:hover { background: #f3f4f6; border-color: #d1d5db; }
-    .qty-option.active { background: #eff6ff; border-color: #3b82f6; }
+    .qty-option.active { background: #FFF7D6; border-color: #14120B; }
     .qty-option__count { font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800; color: #111827; }
     .qty-option__label { font-size: 10px; color: #9ca3af; }
 
     /* ── Price Display ── */
     .price-display {
-      background: #f5f3ff; border: 1px solid #ddd6fe;
+      background: #FFF7D6; border: 1px solid #FFE58A;
       border-radius: 12px; padding: 16px; text-align: center;
     }
     .price-display__from { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
     .price-display__total {
       font-family: 'Outfit', sans-serif; font-size: 32px; font-weight: 900;
-      color: #6D28D9; line-height: 1; margin-bottom: 4px;
+      color: var(--purple-light); line-height: 1; margin-bottom: 4px;
     }
     .price-display__per { font-size: 13px; color: #6b7280; }
     .price-display__note { font-size: 11px; color: #9ca3af; margin-top: 6px; }
@@ -429,7 +425,7 @@
       cursor: pointer; transition: all 0.15s;
     }
     .layer-item:hover { background: #f3f4f6; }
-    .layer-item.selected { border-color: #3b82f6; background: #eff6ff; }
+    .layer-item.selected { border-color: #14120B; background: #FFF7D6; }
     .layer-item__icon { font-size: 16px; flex-shrink: 0; color: #6b7280; }
     .layer-item__name { font-size: 13px; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #374151; }
     .layer-del-btn {
@@ -489,7 +485,7 @@
     }
     .zoom-btn:hover { background: #f3f4f6; color: #111827; }
 
-    .zoom-slider { width: 80px; accent-color: #3b82f6; }
+    .zoom-slider { width: 80px; accent-color: #FFD23F; }
 
     .zoom-level {
       font-size: 13px; font-weight: 600; color: #6b7280;
@@ -516,14 +512,14 @@
     /* ── Add to Cart Button (in panel) ── */
     .add-to-cart-btn {
       width: 100%; padding: 14px;
-      background: #8B5CF6; border: none;
-      border-radius: 10px; color: white;
+      background: #FFD23F; border: none;
+      border-radius: 10px; color: var(--accent-ink);
       font-size: 15px; font-weight: 700;
       font-family: 'Outfit', sans-serif;
       cursor: pointer; transition: all 0.15s;
       display: flex; align-items: center; justify-content: center; gap: 8px;
     }
-    .add-to-cart-btn:hover { background: #6D28D9; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(139,92,246,0.3); }
+    .add-to-cart-btn:hover { background: #14120B; transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,210,63,0.3); }
 
     /* ── Templates Grid ── */
     .template-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
@@ -536,7 +532,7 @@
       font-size: 11px; color: #9ca3af; text-align: center;
       padding: 8px; font-weight: 600;
     }
-    .template-card:hover { border-color: #3b82f6; background: #eff6ff; }
+    .template-card:hover { border-color: #14120B; background: #FFF7D6; }
 
     /* ── File Menu Dropdown ── */
     .file-menu {
@@ -900,8 +896,8 @@
           <div class="panel-section__label">Füllfarbe</div>
           <div class="color-grid" id="shapeFillColorGrid"></div>
           <div class="color-custom-row">
-            <input type="color" class="color-picker-input" id="shapeFillPicker" value="#3b82f6">
-            <input type="text" class="color-hex-input" id="shapeFillHex" value="#3b82f6" maxlength="7">
+            <input type="color" class="color-picker-input" id="shapeFillPicker" value="#FFD23F">
+            <input type="text" class="color-hex-input" id="shapeFillHex" value="#FFD23F" maxlength="7">
           </div>
         </div>
         <div class="panel-section">
@@ -917,7 +913,7 @@
           <div class="panel-section__label">Pinselgröße</div>
           <div class="brush-size-row">
             <div class="brush-preview"><div class="brush-dot" id="brushDot" style="width:4px;height:4px;"></div></div>
-            <input type="range" id="brushSize" min="1" max="40" value="4" style="flex:1;accent-color:#3b82f6;">
+            <input type="range" id="brushSize" min="1" max="40" value="4" style="flex:1;accent-color:#FFD23F;">
             <span class="range-value" id="brushSizeValue">4px</span>
           </div>
         </div>
@@ -940,7 +936,7 @@
         <div class="panel-section">
           <div class="panel-section__label">Text eingeben</div>
           <textarea id="textInput" class="text-input-full" rows="3" placeholder="Dein Text hier..."></textarea>
-          <button class="add-to-cart-btn" id="addTextBtn" style="margin-top:10px;background:#3b82f6;">
+          <button class="add-to-cart-btn" id="addTextBtn" style="margin-top:10px;background:var(--accent);color:var(--accent-ink);">
             + Text hinzufügen
           </button>
         </div>
@@ -1029,10 +1025,10 @@
         <div class="panel-section">
           <div class="panel-section__label">Verlauf</div>
           <div class="gradient-grid">
-            <div class="gradient-option" data-gradient="purple" style="background:linear-gradient(135deg,#8B5CF6,#EC4899);"></div>
-            <div class="gradient-option" data-gradient="sunset" style="background:linear-gradient(135deg,#F59E0B,#EC4899);"></div>
-            <div class="gradient-option" data-gradient="ocean" style="background:linear-gradient(135deg,#06B6D4,#8B5CF6);"></div>
-            <div class="gradient-option" data-gradient="nature" style="background:linear-gradient(135deg,#10B981,#06B6D4);"></div>
+            <div class="gradient-option" data-gradient="purple" style="background:linear-gradient(135deg,#FFD23F,#FFB703);"></div>
+            <div class="gradient-option" data-gradient="sunset" style="background:linear-gradient(135deg,#F59E0B,#FFB703);"></div>
+            <div class="gradient-option" data-gradient="ocean" style="background:linear-gradient(135deg,#FFD23F,#FFD23F);"></div>
+            <div class="gradient-option" data-gradient="nature" style="background:linear-gradient(135deg,#10B981,#FFD23F);"></div>
           </div>
         </div>
       </div>
@@ -1054,7 +1050,7 @@
         </div>
         <div class="panel-section">
           <div class="panel-section__label">Deckkraft</div>
-          <input type="range" id="objOpacity" min="0" max="100" value="100" style="width:100%;accent-color:#3b82f6;">
+          <input type="range" id="objOpacity" min="0" max="100" value="100" style="width:100%;accent-color:#FFD23F;">
           <div style="text-align:right;font-size:12px;color:#9ca3af;" id="opacityLabel">100%</div>
         </div>
         <div class="panel-section">
@@ -1101,8 +1097,8 @@
 const COLORS = [
   '#ffffff', '#000000', '#374151', '#6B7280',
   '#EF4444', '#F97316', '#F59E0B', '#EAB308',
-  '#22C55E', '#10B981', '#06B6D4', '#3B82F6',
-  '#8B5CF6', '#EC4899', '#F472B6', '#A78BFA',
+  '#22C55E', '#10B981', '#FFD23F', '#FFD23F',
+  '#FFD23F', '#FFB703', '#FFB703', '#FFD23F',
 ];
 
 const EMOJIS = ['⭐','🔥','❤️','💜','💙','💚','💛','🧡',
@@ -1293,7 +1289,7 @@ function updateProductInfo() {
   const featuresEl = document.getElementById('productFeatures');
   featuresEl.innerHTML = product.features.map(f => `
     <div style="display:flex;align-items:center;gap:8px;font-size:13px;">
-      <span style="color:#8B5CF6;">✓</span>
+      <span style="color: var(--purple-light);">✓</span>
       <span style="color:#6b7280;">${f}</span>
     </div>
   `).join('');
@@ -1531,8 +1527,8 @@ function loadTemplate(templateName) {
 
   const templates = {
     'jga': () => {
-      canvas.add(new fabric.IText('TEAM\nBRIDE', { left:250,top:200,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:64,fill:'#EC4899',fontWeight:'bold',textAlign:'center' }));
-      canvas.add(new fabric.IText('JGA 2025', { left:250,top:320,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:28,fill:'#8B5CF6',fontWeight:'bold' }));
+      canvas.add(new fabric.IText('TEAM\nBRIDE', { left:250,top:200,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:64,fill:'#FFB703',fontWeight:'bold',textAlign:'center' }));
+      canvas.add(new fabric.IText('JGA 2025', { left:250,top:320,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:28,fill:'#FFD23F',fontWeight:'bold' }));
     },
     'birthday': () => {
       canvas.add(new fabric.IText('Happy\nBirthday!', { left:250,top:220,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:52,fill:'#F59E0B',fontWeight:'bold',textAlign:'center' }));
@@ -1556,7 +1552,7 @@ function loadTemplate(templateName) {
       canvas.add(new fabric.IText('🌸', { left:250,top:340,originX:'center',originY:'center',fontSize:48 }));
     },
     'nature': () => {
-      const gradient = new fabric.Gradient({ type:'linear', coords:{x1:0,y1:0,x2:500,y2:500}, colorStops:[{offset:0,color:'#10B981'},{offset:1,color:'#06B6D4'}] });
+      const gradient = new fabric.Gradient({ type:'linear', coords:{x1:0,y1:0,x2:500,y2:500}, colorStops:[{offset:0,color:'#10B981'},{offset:1,color:'#FFD23F'}] });
       canvas.setBackgroundColor(gradient, () => {});
       canvas.add(new fabric.IText('🌿', { left:250,top:200,originX:'center',originY:'center',fontSize:80 }));
       canvas.add(new fabric.IText('NATURE', { left:250,top:330,originX:'center',originY:'center',fontFamily:'Outfit',fontSize:36,fill:'#ffffff',fontWeight:'bold' }));
@@ -1564,7 +1560,7 @@ function loadTemplate(templateName) {
     'retro': () => {
       canvas.setBackgroundColor('#FEF08A', () => {});
       canvas.add(new fabric.IText('RETRO', { left:250,top:200,originX:'center',originY:'center',fontFamily:'Impact',fontSize:64,fill:'#DC2626' }));
-      canvas.add(new fabric.IText('VIBES', { left:250,top:300,originX:'center',originY:'center',fontFamily:'Impact',fontSize:48,fill:'#1D4ED8' }));
+      canvas.add(new fabric.IText('VIBES', { left:250,top:300,originX:'center',originY:'center',fontFamily:'Impact',fontSize:48,fill:'#B45309' }));
     },
   };
 
@@ -1693,10 +1689,10 @@ function setupEventListeners() {
   document.querySelectorAll('[data-gradient]').forEach(el => {
     el.addEventListener('click', () => {
       const gradients = {
-        purple: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#8B5CF6'},{offset:1,color:'#EC4899'}] },
-        sunset: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#F59E0B'},{offset:1,color:'#EC4899'}] },
-        ocean:  { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#06B6D4'},{offset:1,color:'#8B5CF6'}] },
-        nature: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#10B981'},{offset:1,color:'#06B6D4'}] },
+        purple: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#FFD23F'},{offset:1,color:'#FFB703'}] },
+        sunset: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#F59E0B'},{offset:1,color:'#FFB703'}] },
+        ocean:  { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#FFD23F'},{offset:1,color:'#FFD23F'}] },
+        nature: { x1:0,y1:0,x2:500,y2:500, colorStops:[{offset:0,color:'#10B981'},{offset:1,color:'#FFD23F'}] },
       };
       const g = gradients[el.dataset.gradient];
       if (g) {
@@ -1709,7 +1705,7 @@ function setupEventListeners() {
   // Shapes
   document.querySelectorAll('[data-shape]').forEach(el => {
     el.addEventListener('click', () => {
-      const color = document.getElementById('shapeFillPicker').value || '#3b82f6';
+      const color = document.getElementById('shapeFillPicker').value || '#FFD23F';
       let shape;
       switch (el.dataset.shape) {
         case 'circle': shape = new fabric.Circle({radius:60,fill:color,left:250,top:250,originX:'center',originY:'center'}); break;
@@ -1749,7 +1745,7 @@ function setupEventListeners() {
   const uploadZone = document.getElementById('uploadZone');
   const fileInput = document.getElementById('imageFileInput');
   uploadZone.addEventListener('click', () => fileInput.click());
-  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = '#3b82f6'; });
+  uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.style.borderColor = '#FFD23F'; });
   uploadZone.addEventListener('dragleave', () => { uploadZone.style.borderColor = ''; });
   uploadZone.addEventListener('drop', (e) => { e.preventDefault(); uploadZone.style.borderColor = ''; if (e.dataTransfer.files[0]) loadImageFile(e.dataTransfer.files[0]); });
   fileInput.addEventListener('change', (e) => { if (e.target.files[0]) loadImageFile(e.target.files[0]); });

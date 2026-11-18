@@ -43,7 +43,7 @@
 
     .sidebar-logo__icon {
       width: 36px; height: 36px;
-      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      background: linear-gradient(135deg, #FFD23F, #FFB703);
       border-radius: 8px;
       display: flex; align-items: center; justify-content: center;
       font-size: 18px;
@@ -52,18 +52,18 @@
     .sidebar-logo__text {
       font-family: 'Inter', system-ui, sans-serif;
       font-size: 18px; font-weight: 800;
-      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      background: linear-gradient(135deg, #FFD23F, #FFB703);
       -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
     }
 
     .sidebar-logo__badge {
       margin-left: auto;
       padding: 2px 8px;
-      background: rgba(139,92,246,0.15);
-      border: 1px solid rgba(139,92,246,0.3);
+      background: rgba(255,210,63,0.15);
+      border: 1px solid rgba(255,210,63,0.3);
       border-radius: 100px;
       font-size: 10px; font-weight: 700;
-      color: #A78BFA;
+      color: var(--purple-light);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -99,17 +99,17 @@
 
     .nav-item:hover { background: rgba(255,255,255,0.05); color: white; }
     .nav-item.active {
-      background: rgba(139,92,246,0.12);
-      color: #A78BFA;
+      background: rgba(255,210,63,0.12);
+      color: var(--purple-light);
       font-weight: 600;
     }
-    .nav-item.active .nav-item__icon { color: #8B5CF6; }
+    .nav-item.active .nav-item__icon { color: var(--purple-light); }
 
     .nav-item__icon { font-size: 18px; width: 22px; flex-shrink: 0; }
     .nav-item__badge {
       margin-left: auto;
       min-width: 20px; height: 20px;
-      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      background: linear-gradient(135deg, #FFD23F, #FFB703);
       border-radius: 100px;
       font-size: 11px; font-weight: 700;
       display: flex; align-items: center; justify-content: center;
@@ -133,7 +133,7 @@
 
     .admin-avatar {
       width: 34px; height: 34px;
-      background: linear-gradient(135deg, #8B5CF6, #EC4899);
+      background: linear-gradient(135deg, #FFD23F, #FFB703);
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
       font-size: 14px; font-weight: 700;
@@ -151,9 +151,9 @@
       transition: all 0.2s;
     }
     .input:focus {
-      border-color: #8B5CF6;
+      border-color: #FFD23F;
       background: rgba(255,255,255,0.08);
-      box-shadow: 0 0 0 3px rgba(139,92,246,0.2);
+      box-shadow: 0 0 0 3px rgba(255,210,63,0.2);
     }
     select.input {
       appearance: none;
@@ -234,7 +234,7 @@
       padding: 24px;
       transition: all 0.3s;
     }
-    .stat-card:hover { border-color: rgba(139,92,246,0.2); transform: translateY(-2px); }
+    .stat-card:hover { border-color: rgba(255,210,63,0.2); transform: translateY(-2px); }
 
     .stat-card__label {
       font-size: 12px; font-weight: 600;
@@ -345,8 +345,8 @@
     }
 
     .status-badge--pending      { background: rgba(245,158,11,0.15); color: #F59E0B; }
-    .status-badge--confirmed    { background: rgba(6,182,212,0.15);   color: #06B6D4; }
-    .status-badge--in_production{ background: rgba(139,92,246,0.15);  color: #8B5CF6; }
+    .status-badge--confirmed    { background: rgba(255,210,63,0.15);   color: var(--purple-light); }
+    .status-badge--in_production{ background: rgba(255,210,63,0.15);  color: var(--purple-light); }
     .status-badge--shipped      { background: rgba(16,185,129,0.15);  color: #10B981; }
     .status-badge--delivered    { background: rgba(16,185,129,0.2);   color: #34D399; }
     .status-badge--cancelled    { background: rgba(239,68,68,0.15);   color: #EF4444; }
@@ -362,7 +362,7 @@
       cursor: pointer;
       outline: none;
     }
-    .status-select:focus { border-color: #8B5CF6; }
+    .status-select:focus { border-color: #FFD23F; }
 
     /* ── Order Preview ── */
     .order-preview-img {
@@ -390,7 +390,7 @@
 
     .detail-modal {
       background: #0F0F1C;
-      border: 1px solid rgba(139,92,246,0.2);
+      border: 1px solid rgba(255,210,63,0.2);
       border-radius: 24px;
       padding: 32px;
       width: 100%; max-width: 680px;
@@ -449,8 +449,8 @@
     }
     .loading-spinner {
       width: 32px; height: 32px;
-      border: 2px solid rgba(139,92,246,0.2);
-      border-top-color: #8B5CF6;
+      border: 2px solid rgba(255,210,63,0.2);
+      border-top-color: #FFD23F;
       border-radius: 50%;
       animation: spin 0.8s linear infinite;
       margin: 0 auto 12px;
@@ -716,7 +716,7 @@
           <div class="chart-card">
             <div class="chart-card__title">Supabase Info</div>
             <div style="font-size:13px;color:rgba(255,255,255,0.5);line-height:1.8;">
-              <div>URL: <code style="color:#A78BFA;" id="settingUrl">–</code></div>
+              <div>URL: <code style="color: var(--purple-light);" id="settingUrl">–</code></div>
               <div>Admin: <code style="color:#10B981;" id="settingEmail">–</code></div>
             </div>
           </div>
@@ -846,7 +846,7 @@ function showLoginForAdmin() {
           style="padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:white;font-size:15px;outline:none;">
         <input type="password" id="adminPass" placeholder="Passwort" required
           style="padding:12px 16px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:10px;color:white;font-size:15px;outline:none;">
-        <button type="submit" style="padding:14px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border:none;border-radius:10px;color:white;font-size:16px;font-weight:700;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">
+        <button type="submit" style="padding:14px;background:linear-gradient(135deg,#FFD23F,#FFB703);border:none;border-radius:10px;color: var(--accent-ink);font-size:16px;font-weight:700;font-family:'Inter',system-ui,sans-serif;cursor:pointer;">
           Einloggen
         </button>
       </form>
@@ -938,12 +938,12 @@ function initCharts() {
       labels: last30Days.map(d => d.slice(5)), // MM-DD
       datasets: [{
         data: revenueData,
-        borderColor: '#8B5CF6',
-        backgroundColor: 'rgba(139,92,246,0.08)',
+        borderColor: '#FFD23F',
+        backgroundColor: 'rgba(255,210,63,0.08)',
         borderWidth: 2,
         fill: true,
         tension: 0.4,
-        pointBackgroundColor: '#8B5CF6',
+        pointBackgroundColor: '#FFD23F',
         pointRadius: 3,
       }]
     },
@@ -975,7 +975,7 @@ function initCharts() {
       labels: labels.length > 0 ? labels : ['Noch keine Bestellungen'],
       datasets: [{
         data: values.length > 0 ? values : [1],
-        backgroundColor: ['#8B5CF6','#EC4899','#06B6D4','#10B981','#F59E0B','#EF4444'],
+        backgroundColor: ['#FFD23F','#FFB703','#FFD23F','#10B981','#F59E0B','#EF4444'],
         borderWidth: 0,
         hoverOffset: 6,
       }]
@@ -1147,7 +1147,7 @@ function renderCustomers() {
         ${allCustomers.map(c => `
           <tr>
             <td>
-              <div style="width:36px;height:36px;background:linear-gradient(135deg,#8B5CF6,#EC4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;">
+              <div style="width:36px;height:36px;background:linear-gradient(135deg,#FFD23F,#FFB703);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;">
                 ${(c.first_name?.[0] || '?').toUpperCase()}
               </div>
             </td>
@@ -1220,7 +1220,7 @@ function openOrderDetail(orderId) {
         <div class="detail-row"><span class="detail-row__label">MwSt.</span><span class="detail-row__value">${formatPrice(parseFloat(order.tax || 0))}</span></div>
         <div class="detail-row" style="border-top:1px solid rgba(255,255,255,0.06);padding-top:8px;margin-top:4px;">
           <span style="font-weight:700;">Gesamt</span>
-          <span style="font-weight:800;font-size:18px;background:linear-gradient(135deg,#8B5CF6,#EC4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${formatPrice(parseFloat(order.total))}</span>
+          <span style="font-weight:800;font-size:18px;background:linear-gradient(135deg,#FFD23F,#FFB703);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">${formatPrice(parseFloat(order.total))}</span>
         </div>
       </div>
     </div>

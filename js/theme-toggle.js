@@ -6,7 +6,27 @@
   'use strict';
 
   // Create the toggle bar
+  const SUN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>';
+  const MOON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+
+  // Umschalter direkt im Menü (Sonne/Mond). Fallback: schwebende Leiste, z. B. im Editor.
+  function createNavToggle() {
+    const actions = document.querySelector('.nav__actions');
+    if (!actions || document.querySelector('.nav__theme-btn')) return false;
+    const btn = document.createElement('button');
+    btn.className = 'nav__theme-btn';
+    btn.type = 'button';
+    btn.addEventListener('click', () => {
+      const cur = document.documentElement.getAttribute('data-theme') || 'light';
+      setTheme(cur === 'dark' ? 'light' : 'dark');
+    });
+    actions.insertBefore(btn, actions.firstChild);
+    updateActiveButton();
+    return true;
+  }
+
   function createToggleBar() {
+    if (createNavToggle()) return;
     // Don't add to editor page (it has its own light layout)
     if (document.querySelector('.editor-layout')) return;
 
@@ -53,10 +73,18 @@
   }
 
   function updateActiveButton() {
-    const current = document.documentElement.getAttribute('data-theme') || 'dark';
+    const current = document.documentElement.getAttribute('data-theme') || 'light';
     document.querySelectorAll('.theme-toggle-btn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.themeSet === current);
     });
+    const nb = document.querySelector('.nav__theme-btn');
+    if (nb) {
+      // zeigt, wohin man wechselt
+      nb.innerHTML = current === 'dark' ? SUN : MOON;
+      const label = current === 'dark' ? 'Helles Design einschalten' : 'Dunkles Design einschalten';
+      nb.setAttribute('aria-label', label);
+      nb.title = label;
+    }
   }
 
   // Apply saved theme immediately (before DOM loads to prevent flash)
