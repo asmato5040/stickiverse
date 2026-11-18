@@ -547,6 +547,30 @@ input, textarea, select { font-family: inherit; }
   line-height: 1.5;
 }
 
+/* ── Mega-Menü (Produkte) ───────────────── */
+.nav__dropdown--mega { width: 720px; grid-template-columns: 1.9fr 1fr; gap: 20px 24px; padding: 22px; }
+.nav__item--has-dropdown.mega-closed .nav__dropdown { opacity: 0; visibility: hidden; pointer-events: none; }
+.mega__head { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px; }
+.mega__grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.mega__col--side { display: flex; flex-direction: column; gap: 8px; border-left: 1px solid var(--border); padding-left: 24px; }
+.mega__col--side .mega__head { margin-bottom: 2px; }
+.mega__item { display: flex; align-items: center; gap: 12px; padding: 8px; border-radius: 12px; text-decoration: none; color: var(--text-primary); transition: background .15s; }
+.mega__item:hover { background: var(--bg-card-hover, rgba(255,255,255,.06)); }
+.mega__item img { width: 56px; height: 56px; border-radius: 10px; object-fit: cover; background: #151520; flex: 0 0 56px; }
+.mega__item strong { display: block; font-size: 15px; font-weight: 700; }
+.mega__item small { display: block; font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.mega__item--text { justify-content: space-between; padding: 10px 12px; border: 1px solid var(--border); }
+.mega__item--text b { color: #FFD23F; }
+.mega__all { grid-column: 1 / -1; text-align: center; padding: 11px; border-radius: 999px; background: #FFD23F; color: #14120B; font-weight: 700; font-size: 14px; text-decoration: none; }
+.mega__all:hover { filter: brightness(1.06); }
+@media (max-width: 768px) {
+  .nav__dropdown--mega { grid-template-columns: 1fr; padding: 0 0 10px 12px; width: 100%; }
+  .mega__grid { grid-template-columns: 1fr; }
+  .mega__col--side { border-left: 0; padding-left: 0; }
+  .mega__item img { width: 44px; height: 44px; flex-basis: 44px; }
+  .mega__all { text-align: left; background: transparent; color: #FFD23F; padding: 8px; }
+}
+
 .nav__actions {
   display: flex;
   align-items: center;

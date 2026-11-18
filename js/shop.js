@@ -163,15 +163,15 @@
 // ── Hero-Slider (mehrere Sticker gleichzeitig) ──
 (function () {
   const SLIDES = [
-    { img: 'images/gallery-7.jpg', tab: 'rund', label: 'Rund' },
-    { img: 'images/gallery-1.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/slider/gallery-7.webp', tab: 'rund', label: 'Rund' },
+    { img: 'images/slider/gallery-1.webp', tab: 'freigestanzt', label: 'Freigestanzt' },
     { img: 'images/Quadratische Sticker.webp', tab: 'quadrat', label: 'Quadratisch' },
-    { img: 'images/gallery-3.jpg', tab: 'oval', label: 'Oval' },
-    { img: 'images/gallery-5.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/slider/gallery-3.webp', tab: 'oval', label: 'Oval' },
+    { img: 'images/slider/gallery-5.webp', tab: 'freigestanzt', label: 'Freigestanzt' },
     { img: 'images/Rechteck Sticker.webp', tab: 'rechteck', label: 'Rechteckig' },
-    { img: 'images/gallery-2.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/slider/gallery-2.webp', tab: 'freigestanzt', label: 'Freigestanzt' },
     { img: 'images/Transparente Sticker.webp', tab: 'transparent', label: 'Transparent' },
-    { img: 'images/gallery-6.jpg', tab: 'freigestanzt', label: 'Freigestanzt' },
+    { img: 'images/slider/gallery-6.webp', tab: 'freigestanzt', label: 'Freigestanzt' },
   ];
   document.addEventListener('DOMContentLoaded', () => {
     const track = document.getElementById('heroTrack');
@@ -212,3 +212,12 @@
     slider.addEventListener('touchstart', stop, { passive: true }); slider.addEventListener('focusin', stop);
   });
 })();
+
+// Mega-Menü-Links: auf Seiten mit Bestellliste direkt filtern statt neu laden
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[data-shop-tab]');
+  if (!a || !window.shopSelectTab || !document.getElementById('shopGroups')) return;
+  e.preventDefault();
+  window.shopSelectTab(a.dataset.shopTab);
+  history.replaceState(null, '', '?cat=' + a.dataset.shopTab);
+});
