@@ -20,7 +20,8 @@
       const cur = document.documentElement.getAttribute('data-theme') || 'light';
       setTheme(cur === 'dark' ? 'light' : 'dark');
     });
-    actions.insertBefore(btn, actions.firstChild);
+    const cart = actions.querySelector('.nav__cart-btn');
+    if (cart) cart.insertAdjacentElement('afterend', btn); else actions.appendChild(btn);
     updateActiveButton();
     return true;
   }

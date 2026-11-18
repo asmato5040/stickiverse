@@ -789,13 +789,26 @@
 
   <!-- ── Kompakter Kopf + Schnellbestellung ── -->
   <header class="hero">
-    <div class="container">
-      <h1 class="hero__title">Sticker drucken lassen</h1>
-      <p class="hero__sub">Form wählen, Größe und Menge einstellen, bestellen. Dein Design lädst du vor oder nach dem Kauf hoch.</p>
-      <div class="hero__cta">
-        <a href="#shop" class="btn-solid">Sticker aussuchen</a>
-        <a href="editor.html" class="btn-outline">Selbst gestalten</a>
+    <section class="banner">
+      <div class="container banner__grid">
+        <div class="banner__text">
+          <span class="banner__chip">Sticker online bestellen</span>
+          <h1 class="banner__title">Deine Sticker. <span>Dein Style.</span></h1>
+          <p class="banner__sub">Form wählen, Größe einstellen, bestellen – in wenigen Klicks.</p>
+          <div class="banner__cta">
+            <a href="#shop" class="btn btn--primary btn--lg">Sticker aussuchen</a>
+            <a href="editor.html" class="btn btn--white btn--lg">Selbst gestalten</a>
+          </div>
+          <ul class="banner__points"><li>Versandkostenfrei ab 50 €</li><li>Wetterfest &amp; UV-beständig</li><li>Lieferung in 3–5 Werktagen</li></ul>
+        </div>
+        <div class="banner__art" aria-hidden="true">
+          <img class="banner__st banner__st--1" src="images/slider/gallery-1.webp" alt="" loading="eager">
+          <img class="banner__st banner__st--2" src="images/slider/gallery-2.webp" alt="" loading="eager">
+          <img class="banner__st banner__st--3" src="images/slider/gallery-3.webp" alt="" loading="eager">
+        </div>
       </div>
+    </section>
+    <div class="container">
       <div class="hslider" id="heroSlider">
         <button class="hslider__arrow hslider__arrow--prev" id="heroPrev" aria-label="Zurück">‹</button>
         <div class="hslider__track" id="heroTrack"></div>
