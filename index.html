@@ -839,6 +839,32 @@
     <a href="cart.html" class="btn btn--primary">Zum Warenkorb →</a>
   </div>
 
+  <!-- ── Mini-Spiel ── -->
+  <section class="game" id="spiel">
+    <div class="container">
+      <div class="game__head">
+        <span class="section__label">Zum Spielen</span>
+        <h2>Beklebe die Laterne</h2>
+        <p>Such dir einen Sticker aus, klebe ihn auf die Laterne &ndash; auch übereinander. Mit dem Kratzer rubbelst du Sticker wieder ab, so wie im echten Leben.</p>
+      </div>
+      <div class="game__box">
+        <div class="game__bar">
+          <div class="game__tools">
+            <button type="button" class="game__tool is-on" data-game-tool="stick">Kleben</button>
+            <button type="button" class="game__tool" data-game-tool="scratch">Kratzen</button>
+          </div>
+          <div class="game__tray" id="gameTray"></div>
+          <div class="game__tools">
+            <button type="button" class="game__tool game__tool--ghost" id="gameUndo">Rückgängig</button>
+            <button type="button" class="game__tool game__tool--ghost" id="gameClear">Leeren</button>
+          </div>
+        </div>
+        <canvas id="gameCanvas" aria-label="Laterne zum Bekleben und Zerkratzen"></canvas>
+        <p class="game__count"><strong id="gameCount">0</strong> Sticker geklebt</p>
+      </div>
+    </div>
+  </section>
+
   <!-- ── Banner: eigenes Design ── -->
   <section class="promo">
     <div class="container">
@@ -1122,5 +1148,6 @@
 <script src="js/theme-toggle.js"></script>
 </div>
 <script src="js/nav.js"></script>
+  <script src="js/sticker-game.js" defer></script>
 </body>
 </html>
